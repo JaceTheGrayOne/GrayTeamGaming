@@ -1,0 +1,880 @@
+{
+  "fetchedAt": "2026-06-14T21:49:14.246Z",
+  "source": "curseforge-api",
+  "mods": {
+    "900062": {
+      "name": "Additions Ascended: Ceratosaurus",
+      "summary": "Adds the Ceratosaurus from ARK Additions",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/aaceratosaurus_test",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/893/517/256/256/638336364345061274.jpeg",
+      "categories": [
+        "Creatures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/900062.jpeg"
+    },
+    "908148": {
+      "name": "Additions Ascended: Xiphactinus",
+      "summary": "Adds Xiphactinus from ARK Additions",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/aaxiphactinus_test",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/894/247/256/256/638337727585640972.jpeg",
+      "categories": [
+        "General",
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/908148.jpeg"
+    },
+    "912902": {
+      "name": "Additions Ascended: Deinosuchus",
+      "summary": "Adds Deinosuchus from ARK Additions",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-deinosuchus",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/894/7/256/256/638337319345014786.jpeg",
+      "categories": [
+        "Creatures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/912902.jpeg"
+    },
+    "914844": {
+      "name": "Additions Ascended: Deinotherium",
+      "summary": "Adds the Deinotherium from ARK Additions",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-deinotherium",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/894/232/256/256/638337700467727686.jpeg",
+      "categories": [
+        "Creatures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/914844.jpeg"
+    },
+    "916922": {
+      "name": "Additions Ascended: Helicoprion",
+      "summary": "Adds Helicoprion from ARK Additions",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-helicoprion",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/894/244/256/256/638337721005591677.jpeg",
+      "categories": [
+        "Creatures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/916922.jpeg"
+    },
+    "926259": {
+      "name": "Additions Ascended: Acrocanthosaurus",
+      "summary": "Adds the Acrocanthosaurus from ARK Additions",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-acro",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/966/287/256/256/638465551199787369.jpeg",
+      "categories": [
+        "Creatures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/926259.jpeg"
+    },
+    "926956": {
+      "name": "Additions Ascended: Archelon",
+      "summary": "Adds Archelon from ARK Additions",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-archelon",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1049/8/256/256/638577976791558541.jpeg",
+      "categories": [
+        "General",
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/926956.jpeg"
+    },
+    "927131": {
+      "name": "Additions Ascended: Brachiosaurus",
+      "summary": "Adds Brachiosaurus from ARK Additions",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-brachiosaurus",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/894/201/256/256/638337658060585740.octet-stream",
+      "categories": [
+        "Creatures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/927131.png"
+    },
+    "928506": {
+      "name": "Cheat Death (Homing Pigeon reloaded)",
+      "summary": "This mod can save your precious Dinos from certain Death",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cheat-death",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1375/915/256/256/638892859647890734.png",
+      "categories": [
+        "Rebalancing",
+        "Creatures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/928506.png"
+    },
+    "928621": {
+      "name": "Utilities Plus",
+      "summary": "Reusable Tools made Simple.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/utilities-plus",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/895/909/256/256/638340903071594984.png",
+      "categories": [
+        "Rebalancing",
+        "Weapons"
+      ],
+      "thumbnail": "assets/mod-thumbnails/928621.png"
+    },
+    "929271": {
+      "name": "Additional Handheld Lights",
+      "summary": "Adds 2 new handheld light sources",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additional-lights",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/896/696/256/256/638341822324348210.png",
+      "categories": [
+        "Weapons",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/929271.png"
+    },
+    "929299": {
+      "name": "Stop The Steal - Ascended  [UPDATE NOV 2024]",
+      "summary": "Prevents *wild* thieving creatures from thieving.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/stop-the-steal-ascended",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/896/610/256/256/638341744990361816.octet-stream",
+      "categories": [
+        "Rebalancing",
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/929299.png"
+    },
+    "929420": {
+      "name": "Super Spyglass Plus",
+      "summary": "Adds an Spyglass that shows advanced information about most stuff you point it at.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/super-spyglass-plus",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/904/667/256/256/638355047673327098.png",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/929420.png"
+    },
+    "929578": {
+      "name": "AP: Death Recovery [Cross-platform]",
+      "summary": "A simple cross-platform mod that adds a structure that recovers your items upon death!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/ap-death-recovery",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/896/977/256/256/638342058181975261.png",
+      "categories": [
+        "Rebalancing",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/929578.png"
+    },
+    "929800": {
+      "name": "TG Stacking Mod 1000-50",
+      "summary": "1.000 Stacks / -50% Weight",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/tg-stacking-mod-1000-50",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/897/151/256/256/638342208459426935.png",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/929800.png"
+    },
+    "929838": {
+      "name": "Scribbles - Better Signs",
+      "summary": "Improved Signs",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/scribbles-better-signs",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1320/824/256/256/638858726428478425.png",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/929838.png"
+    },
+    "930128": {
+      "name": "Klinger Additional Boats",
+      "summary": "A small Catamaran with greater capabilities.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/klinger-additional-boats-server",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/897/472/256/256/638342681267030300.png",
+      "categories": [
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/930128.png"
+    },
+    "930170": {
+      "name": "Cliffans Backpacks",
+      "summary": "Equippable backpacks with weight reduction and settings!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cliffan-backpacks",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/907/43/256/256/638357646107169510.jpeg",
+      "categories": [
+        "General",
+        "Outfits"
+      ],
+      "thumbnail": "assets/mod-thumbnails/930170.jpeg"
+    },
+    "931364": {
+      "name": "Glyph Transformations (Console Ready) (Shapeshifting) (Play as Dino)",
+      "summary": "Glyph Trasnformations is the Shapeshifting mod used on the Glyph RP server. The Mod  allows you the player to play as a creature. Fight Bosses as a Dino, RP as a Druid or other shapeshifter while retaining a fair balance towards the game.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/glyph-transformations",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/898/513/256/256/638344188112690699.png",
+      "categories": [
+        "General",
+        "Rebalancing",
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/931364.png"
+    },
+    "931874": {
+      "name": "Arkitect Structures Remastered",
+      "summary": "A cross-platform remake of my Ark Survival Evolved structure mod, Arkitect Structures: Core.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/arkitect-structures-remastered",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1085/487/256/256/638627062079853509.jpeg",
+      "categories": [
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/931874.jpeg"
+    },
+    "932225": {
+      "name": "Mouse Saver - Easy Dino Attacks",
+      "summary": "Press and hold attack button rather than spam clicking it.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/mouse-saver-easy-dino-attacks",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1320/859/256/256/638858735897608505.png",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/932225.png"
+    },
+    "933576": {
+      "name": "Return The Beacons! (RTB) {Crossplay} [Death Beam/Beacon, Corpse Locator, Dino Tracker]",
+      "summary": "Adds Customizable Death Beams and Outlines. Effective for locating your dead corpses and caches. Also works for dinos!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/return-the-beacons-rtb",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/902/996/256/256/638351719783384580.jpeg",
+      "categories": [
+        "Visuals and Sounds",
+        "Rebalancing",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/933576.jpeg"
+    },
+    "935408": {
+      "name": "Der Dino Finder",
+      "summary": "Adds a button to the minimap with which you can find dinos.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/der-dino-finder",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/903/512/256/256/638352944065725913.png",
+      "categories": [
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/935408.png"
+    },
+    "935528": {
+      "name": "Visual Storage (Cross Platform)",
+      "summary": "Adds visually updating storage containers for each resource",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/visual-storage",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/965/420/256/256/638464123145362058.png",
+      "categories": [
+        "Visuals and Sounds",
+        "ARKathon Winners",
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/935528.png"
+    },
+    "935809": {
+      "name": "Knot Better Motorboat",
+      "summary": "This mod adds a new version of the original motor boat to have a larger area for increased build areas",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/knot-better-motorboat",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1841/898/256/256/639159992079263804.png",
+      "categories": [
+        "Rebalancing",
+        "Structures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/935809.png"
+    },
+    "937184": {
+      "name": "JVH Landscaping",
+      "summary": "JVH Landscaping is a simple landscaping and garden decor mod including from-in-game trees, bushes and stones",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/jvh-landscaping-mod",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/928/242/256/256/638399354572466781.png",
+      "categories": [
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/937184.png"
+    },
+    "939244": {
+      "name": "Cliffans Weapons: Western",
+      "summary": "Revolvers, rifles, shotguns, and more! Cliffans Western Weaponry",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-weapons-western",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/907/269/256/256/638358241302782349.jpeg",
+      "categories": [
+        "Visuals and Sounds",
+        "Rebalancing",
+        "Structures",
+        "Weapons"
+      ],
+      "thumbnail": "assets/mod-thumbnails/939244.jpeg"
+    },
+    "940975": {
+      "name": "Cybers Structures QoL+ (Crossplay)",
+      "summary": "Adding support for some Quality of Life to structures and other essential items",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cybers-structures",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/985/888/256/256/638495745806778606.png",
+      "categories": [
+        "Rebalancing",
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/940975.png"
+    },
+    "941450": {
+      "name": "Awesome ARK Tools",
+      "summary": "Awesome ark tools with many fun and useful admin and non-admin features",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/awesome-admin-tools",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/909/463/256/256/638362602649322345.png",
+      "categories": [
+        "Weapons",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/941450.png"
+    },
+    "941697": {
+      "name": "Better Breeding",
+      "summary": "Better Breeding guarantees parents will pass down the best wild levels and mutations to their offspring.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/better-breeding",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/909/760/256/256/638363141448692227.octet-stream",
+      "categories": [
+        "Rebalancing",
+        "General",
+        "Game Modes"
+      ],
+      "thumbnail": "assets/mod-thumbnails/941697.png"
+    },
+    "942024": {
+      "name": "Dino Depot",
+      "summary": "Dino and creature storage done right. Crossplay enabled. \"Not a cryopod cryo mod\".  The best cryos storage mod available with over 200 config options! Forget cryopods, come play with Dinoballs!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/dino-depot",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/910/158/256/256/638363777480918040.png",
+      "categories": [
+        "ARKathon Winners",
+        "Rebalancing",
+        "Structures",
+        "Weapons"
+      ],
+      "thumbnail": "assets/mod-thumbnails/942024.png"
+    },
+    "948902": {
+      "name": "Rhythmbox",
+      "summary": "A Jukebox Mod With 101 Songs From Many Different Genres",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/rhythmbox",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/917/961/256/256/638378377539263455.png",
+      "categories": [
+        "Visuals and Sounds",
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/948902.png"
+    },
+    "949521": {
+      "name": "MarniiMods Hairstyles",
+      "summary": "Adds new hairstyles, beards & accessories for your character! ",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/marniimods-hairstyles",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/918/688/256/256/638380147825889757.png",
+      "categories": [
+        "Outfits",
+        "Visuals and Sounds",
+        "ARKathon Winners"
+      ],
+      "thumbnail": "assets/mod-thumbnails/949521.png"
+    },
+    "951148": {
+      "name": "Ark-Nucleus",
+      "summary": "Qualify of life improvements for Admins and Players. Includes: QOL UI hacks, Admin Panel/Tools, Mod Overview, Item and Dino Encyclopedia and more. \"One Mod to configure them all, One Mod to find them, One Mod to localize them all, and with JSON bind them.\"",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/ark-nucleus",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/968/590/256/256/638468984114879557.png",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/951148.png"
+    },
+    "951574": {
+      "name": "Inventory Backup Saver",
+      "summary": "This is a mod that saves backups of players who die, so that admins can later return there items",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/inventory-backup-saver",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/921/62/256/256/638385177518176255.png",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/951574.png"
+    },
+    "953108": {
+      "name": "Moro's Tylosaurus",
+      "summary": "Moro's Tylosaurus Creature Addition",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/moros-tylosaurus",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1436/979/256/256/638931272387291873.png",
+      "categories": [
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/953108.png"
+    },
+    "956237": {
+      "name": "Moro's Livyatan (Freemium)",
+      "summary": "Adds the killer Livyatan",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/moros-livyatan",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1420/224/256/256/638920130657964083.png",
+      "categories": [
+        "Structures",
+        "Creatures",
+        "General",
+        "Weapons"
+      ],
+      "thumbnail": "assets/mod-thumbnails/956237.png"
+    },
+    "957494": {
+      "name": "Global Dynamic Player Death Displayer",
+      "summary": "Introduces a Player Death System that notifies all players with details of when and how any other player dies, complete with a sound effect.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/global-dynamic-player-death-displayer",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/927/844/256/256/638398637663094560.png",
+      "categories": [
+        "Visuals and Sounds"
+      ],
+      "thumbnail": "assets/mod-thumbnails/957494.png"
+    },
+    "961601": {
+      "name": "Cliffans Wardrobe [Armor & Clothing]",
+      "summary": "A huge variety of high quality clothing skins!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-wardrobe",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/932/676/256/256/638407555887721405.octet-stream",
+      "categories": [
+        "Visuals and Sounds",
+        "General",
+        "Outfits"
+      ],
+      "thumbnail": "assets/mod-thumbnails/961601.png"
+    },
+    "966079": {
+      "name": "JVH Garden Decor",
+      "summary": "JVH Garden Decor is a selection of unique bushes, paths, lighting and other landscaping accessories",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/jvh-garden-decor",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/937/938/256/256/638416632383622421.png",
+      "categories": [
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/966079.png"
+    },
+    "970540": {
+      "name": "Paleo ARK - Evolution | Apex Predators (Crossplay)",
+      "summary": "Adds new TLCs of Tyrannosaurus and Giganotosaurus with new models, animations, and abilities! ",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-apex-predators",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1537/503/256/256/638998257118799821.png",
+      "categories": [
+        "Visuals and Sounds",
+        "Rebalancing",
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/970540.png"
+    },
+    "972484": {
+      "name": "Paleo ARK EVO+ | Native Aquatics (Crossplay!)",
+      "summary": "Adds new aquatic tames and ambient creatures to spice up your ARK's waterways!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evo-plus-native-aquatics",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1086/178/256/256/638628091161252758.png",
+      "categories": [
+        "Visuals and Sounds",
+        "Rebalancing",
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/972484.png"
+    },
+    "974371": {
+      "name": "RPG Medieval & Fantasy Jukebox",
+      "summary": "Music For Medieval & Fantasy Worlds",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/rpg-fantasy-jukbox",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1276/282/256/256/638830251189606490.png",
+      "categories": [
+        "Visuals and Sounds"
+      ],
+      "thumbnail": "assets/mod-thumbnails/974371.png"
+    },
+    "975282": {
+      "name": "Gigantoraptor",
+      "summary": "Gigantoraptor Creature",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/gigantoraptor",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/955/65/256/256/638446851376787894.png",
+      "categories": [
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/975282.png"
+    },
+    "983782": {
+      "name": "Dear Jane",
+      "summary": "Dear Jane",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/dear-jane",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/983/141/256/256/638491362428473196.png",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/983782.png"
+    },
+    "986540": {
+      "name": "Paleo ARK Ascension (Crossplay!)",
+      "summary": "Adds paleo variants of vanilla creatures and other Paleo ARK themed items",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-ascension",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1155/882/256/256/638723362124325153.png",
+      "categories": [
+        "Creatures",
+        "Visuals and Sounds"
+      ],
+      "thumbnail": "assets/mod-thumbnails/986540.png"
+    },
+    "987274": {
+      "name": "Additions Ascended: Anomalocaris",
+      "summary": "Adds the Adaptive Anomalocaris to your ARK!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-anomalocaris",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/971/889/256/256/638473845315173887.jpeg",
+      "categories": [
+        "Creatures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/987274.jpeg"
+    },
+    "1002596": {
+      "name": "Better Trains",
+      "summary": "This mod requires Bob's Tall Tales in order to craft or unlock. Adds a new train engine and tracks with many new features such as more speed options and added lights.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/better-trains",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/979/922/256/256/638485929621067445.png",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1002596.png"
+    },
+    "1011767": {
+      "name": "Better Jumping",
+      "summary": "Gives the player more control in air while jumping",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/better-jumping",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/989/196/256/256/638501675250046290.png",
+      "categories": [
+        "Rebalancing",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1011767.png"
+    },
+    "1015955": {
+      "name": "Astraeos - Trireme Ships",
+      "summary": "Trireme Shop mod for Astraeos",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/astraeos-trireme-ships",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1050/479/256/256/638579792548063258.jpeg",
+      "categories": [
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1015955.jpeg"
+    },
+    "1017926": {
+      "name": "Auto Pickup | Gaia Studios",
+      "summary": "Effortlessly auto-collect nearby items with a single button press.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/auto-pickup",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1146/297/256/256/638712519564514673.jpeg",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1017926.jpeg"
+    },
+    "1032529": {
+      "name": "Day Indicator",
+      "summary": "Adds a bit of text telling you when a new day has started",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/day-indicator",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1010/153/256/256/638533676533623377.png",
+      "categories": [
+        "Visuals and Sounds",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1032529.png"
+    },
+    "1038262": {
+      "name": "Moro's Nothosaurus",
+      "summary": "Moros Nothosaurus - Adds a medium sized, semi aquatic agile lizard that has a very unique purpose and abilites both for PVP and PvE purposes. ",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/moros-nothosaurus",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1420/225/256/256/638920130834922547.png",
+      "categories": [
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1038262.png"
+    },
+    "1051882": {
+      "name": "Juans Deep Sea Diving Equipment",
+      "summary": "Functional Deep Sea Diving equipment (Knives, suits)",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/juans-deep-sea-diving-equipment",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1029/367/256/256/638551333257067227.jpg",
+      "categories": [
+        "Weapons",
+        "General",
+        "Outfits",
+        "Visuals and Sounds"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1051882.jpg"
+    },
+    "1073132": {
+      "name": "Tek War Map",
+      "summary": "Tek version of the traditional war map with a lot of new features.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/tek-war-map",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1054/149/256/256/638584895190421019.png",
+      "categories": [
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1073132.png"
+    },
+    "1093934": {
+      "name": "Mantling",
+      "summary": "Allows you to mantle up ledges",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/mantling",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1071/77/256/256/638606459139246404.png",
+      "categories": [
+        "General",
+        "Rebalancing"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1093934.png"
+    },
+    "1105106": {
+      "name": "Paleo ARK - Evolution | Dangerous Depths (Crossplay!)",
+      "summary": "TLCs of ARK's aquatic creatures",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-dangerous-depths",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1537/502/256/256/638998256150802477.png",
+      "categories": [
+        "Visuals and Sounds",
+        "Rebalancing",
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1105106.png"
+    },
+    "1122696": {
+      "name": "Astraeos - Mythological Creatures",
+      "summary": "Astraeos - Mythological Creatures",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/astraeos-mythological-creatures",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1124/406/256/256/638681336624271998.jpeg",
+      "categories": [
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1122696.jpeg"
+    },
+    "1123428": {
+      "name": "Moro's Gigantophis (Freemium)",
+      "summary": "Adds The Gigantophis, a large prehistoric snake. ",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/moros-gigantophis",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1419/882/256/256/638919954063860619.png",
+      "categories": [
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1123428.png"
+    },
+    "1135454": {
+      "name": "Cliffans RP Emotes",
+      "summary": "Light weight emote mod animated by Cliffan",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-emotes",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1112/847/256/256/638665238215761782.jpg",
+      "categories": [
+        "General",
+        "Visuals and Sounds"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1135454.jpg"
+    },
+    "1136679": {
+      "name": "Additions Ascended: Edmontonia",
+      "summary": "Adds the fiery powder keg tanky anky, Edmontonia, to your ARK!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-edmontonia",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1162/806/256/256/638732083647789826.jpeg",
+      "categories": [
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1136679.jpeg"
+    },
+    "1137407": {
+      "name": "Castle Craft Decor",
+      "summary": "Medieval castle decorative items ",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/castle-craft-decor",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1193/954/256/256/638769480827394128.jpeg",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1137407.jpeg"
+    },
+    "1149214": {
+      "name": "Castles, Keeps, and Forts - CKF",
+      "summary": "593 Medieval structures across 3 expanded structure tiers.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/ckf-castles-keeps-forts",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1176/250/256/256/638748700680227496.jpeg",
+      "categories": [
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1149214.jpeg"
+    },
+    "1182199": {
+      "name": "Paleo ARK EVO+ | Rulers of the Wastelands",
+      "summary": "Adds desert-dwelling Apex dinosaurs Ledumahadi and Empirosaurus",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evo-rulers-of-the-wastelands",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1447/492/256/256/638939069148851456.png",
+      "categories": [
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1182199.png"
+    },
+    "1200390": {
+      "name": "Cliffans Nautical Turrets",
+      "summary": "A variety of turrents and structures!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/nautical-turrets",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1188/110/256/256/638762610402553486.jpg",
+      "categories": [
+        "Structures",
+        "General",
+        "Weapons"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1200390.jpg"
+    },
+    "1218463": {
+      "name": "Moro's Hydrovanta (Freemium)",
+      "summary": "Hydrovanta – a glowing alien stingray built for support and offense! Heal allies, inflict status effects, harvest rare resources, generate healing Gel, and track underwater loot. With smooth custom movement, it's the ultimate deep-sea companion in ARK.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/moros-hydrovanta",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1420/47/256/256/638920040695160667.png",
+      "categories": [
+        "Creatures",
+        "General",
+        "Outfits"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1218463.png"
+    },
+    "1222937": {
+      "name": "Map Unlocker",
+      "summary": "Fully unlocks the minimap without fear of map data ever getting reset.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/map-unlocker",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1201/945/256/256/638778873113716101.png",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1222937.png"
+    },
+    "1281957": {
+      "name": "Feras Immersive Food",
+      "summary": "This mod will add various new food and buff food to your game!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/feras-immersive-food",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1333/151/256/256/638866570191412091.jpg",
+      "categories": [
+        "Rebalancing"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1281957.jpg"
+    },
+    "1305730": {
+      "name": "Cliffans Improved Miners Helmet (Vanilla Replacement)",
+      "summary": "Replaces the miners helmet with an improved one!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-improved-miners-helmet",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1353/932/256/256/638879666886194539.octet-stream",
+      "categories": [
+        "General",
+        "Outfits",
+        "Rebalancing"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1305730.png"
+    },
+    "1311474": {
+      "name": "Swim Sprint",
+      "summary": "Allows the player to sprint underwater.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/swim-sprint",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1366/464/256/256/638887310405666360.png",
+      "categories": [
+        "General",
+        "Rebalancing"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1311474.png"
+    },
+    "1369237": {
+      "name": "Camping Survivor",
+      "summary": "Adds some camping structures with additional features.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/camping-survivor",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1486/469/256/256/638965926054538424.octet-stream",
+      "categories": [
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1369237.png"
+    },
+    "1382641": {
+      "name": "Paleo ARK - Evolution | Hard Hitting Herbivores",
+      "summary": "Custom TLCs of ARK's Therizinosaurus and Brontosaurus",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-hard-hitting-herbivores",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1767/449/256/256/639123291743513536.png",
+      "categories": [
+        "Visuals and Sounds",
+        "Rebalancing",
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1382641.png"
+    },
+    "1383579": {
+      "name": "Cliffans Weapons: Medieval (Freemium)",
+      "summary": "Cleaving greatswords, brutal maces, precise bows, unorthodox brawling, and more!",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-weapons-medieval",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1518/874/256/256/638986471157627306.jpg",
+      "categories": [
+        "Weapons",
+        "Visuals and Sounds",
+        "Rebalancing",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1383579.jpg"
+    },
+    "1429843": {
+      "name": "Additional Hitmarkers",
+      "summary": "Adds indicators for hitting weakspots or armoured locations on creatures",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additional-hitmarkers",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1681/481/256/256/639068447821579541.png",
+      "categories": [
+        "General",
+        "Visuals and Sounds"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1429843.png"
+    },
+    "1440987": {
+      "name": "Locational Damage",
+      "summary": "Brings back creatures being able to deal locational damage",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/creature-locational-damage",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1678/758/256/256/639067038460702093.png",
+      "categories": [
+        "Rebalancing",
+        "Creatures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1440987.png"
+    },
+    "1443086": {
+      "name": "Structure Waterfalls",
+      "summary": "Placeable waterfalls. Purely visual.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/structure-waterfalls",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1639/225/256/256/639048719768177687.jpg",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1443086.jpg"
+    },
+    "1493653": {
+      "name": "Durability Display",
+      "summary": "This mod displays durability numbers directly on item and blueprints inside any inventory and on your Quick Slots. It also comes with an HUD that show the Current durability of equipped Armor, Shields, Weapons and Saddles/Modules that use Durability.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/durability-display",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1726/876/256/256/639098752489411128.png",
+      "categories": [
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1493653.png"
+    },
+    "1528173": {
+      "name": "Cliffan’s Dynamic Survivors (Freemium Immersion Mod)",
+      "summary": "A mod that aims to add more life, personality, and storytelling tools to survivors.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-visible-immersion",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1807/606/256/256/639143644652485559.jpg",
+      "categories": [
+        "Visuals and Sounds",
+        "General",
+        "Rebalancing"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1528173.jpg"
+    },
+    "1540591": {
+      "name": "Crash Protector",
+      "summary": "Protects logged out players from being eaten by wild animals or drowning",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/crash-protector",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1803/233/256/256/639141235655017900.png",
+      "categories": [
+        "General",
+        "Rebalancing"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1540591.png"
+    },
+    "1548444": {
+      "name": "Aquarium",
+      "summary": "Adds a massive aquarium to safely house and display large aquatic creatures like Megalodons.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/aquarium",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1817/349/256/256/639148495499986902.png",
+      "categories": [
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1548444.png"
+    }
+  }
+}

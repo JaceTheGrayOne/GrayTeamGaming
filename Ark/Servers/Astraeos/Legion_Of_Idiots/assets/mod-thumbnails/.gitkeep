@@ -1,0 +1,2 @@
+Downloaded CurseForge mod logos land here as <CurseID>.<ext> (created by `npm run fetch`).
+Files in this folder are build inputs; when present the build prefers them over the category icon.

@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Server Mod Quick Reference — Legion of Idiots</title>
+<meta name="description" content="Quick reference for all mods installed on the Legion of Idiots server.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2305141f'/%3E%3Cpath d='M32 8 54 56H44l-4-9H24l-4 9H10L32 8Zm0 17-6 14h12L32 25Z' fill='%2300e5ff'/%3E%3C/svg%3E">
+
+<style>
+  :root {
+    --accent: #00e5ff;
+    --font-display: "Segoe UI", "Arial", system-ui, sans-serif;
+    --font-body: "Segoe UI", system-ui, -apple-system, sans-serif;
+    --bg: #01060a;
+    --panel: rgba(0, 9, 15, .91);
+    --panel-solid: #020d14;
+    --row: linear-gradient(90deg, rgba(7, 37, 52, .9), rgba(5, 29, 42, .8) 36%, rgba(2, 18, 28, .84));
+    --row-hover: linear-gradient(90deg, rgba(9, 53, 70, .98), rgba(6, 38, 54, .92) 38%, rgba(3, 25, 38, .94));
+    --border: rgba(0, 238, 255, .72);
+    --border-soft: rgba(65, 185, 215, .28);
+    --text: #f1f7fb;
+    --muted: #b2c0ca;
+    --pill-bg: rgba(255,255,255,.07);
+    --gold: #ffc45f;
+    --danger: #ff315d;
+    --page-overlay-opacity: .58;
+  }
+  * { box-sizing: border-box; }
+  html { overflow-x: hidden; }
+  body {
+    margin: 0; padding: 12px 18px 42px;
+    font: 15px/1.5 var(--font-body);
+    color: var(--text); background: var(--bg);
+    background-image:
+      radial-gradient(circle at 79% 22%, rgba(0, 229, 255, .16), transparent 34%),
+      linear-gradient(90deg, rgba(0, 2, 6, .58), rgba(0, 8, 14, .38) 38%, rgba(0, 4, 8, .18) 68%, rgba(0, 0, 0, .48)),
+      linear-gradient(180deg, rgba(0, 0, 0, .08), rgba(0, 0, 0, .74)),
+      url('assets/backgrounds/tek-obelisk-2560.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+    background:
+      radial-gradient(circle at 12% 14%, rgba(0, 209, 255, .12), transparent 30%),
+      linear-gradient(115deg, rgba(0, 5, 9, .2), rgba(0, 0, 0, .86)),
+      repeating-linear-gradient(90deg, rgba(0,229,255,.024) 0 1px, transparent 1px 86px),
+      repeating-linear-gradient(0deg, rgba(0,229,255,.014) 0 1px, transparent 1px 86px);
+    opacity: var(--page-overlay-opacity);
+  }
+  a { color: var(--accent); }
+  .wrap { width: min(100%, 1440px); margin: 0 auto; }
+  .panel {
+    background:
+      linear-gradient(180deg, rgba(3, 21, 31, .8), rgba(0, 9, 15, .92) 18%, rgba(0, 8, 14, .94)),
+      var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.55),
+      0 0 30px rgba(0, 229, 255, .18),
+      0 28px 80px rgba(0,0,0,.62);
+    backdrop-filter: blur(6px);
+  }
+  header.hero {
+    padding: 16px 20px 10px;
+    border-bottom: 1px solid var(--border);
+    background:
+      radial-gradient(circle at 8% 18%, rgba(0, 229, 255, .09), transparent 24%),
+      linear-gradient(90deg, rgba(0,229,255,.035), transparent 48%),
+      linear-gradient(180deg, rgba(255,255,255,.025), transparent);
+  }
+  .hero-brand {
+    display: flex; align-items: center; gap: 22px; min-height: 108px; min-width: 0;
+  }
+  .brand-mark {
+    flex: 0 0 auto; width: 150px; height: 108px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .brand-mark::before { content: none; }
+  .brand-mark img {
+    position: relative; z-index: 1; width: 166px; max-height: 96px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(0,229,255,.38)) drop-shadow(0 8px 12px rgba(0,0,0,.66));
+  }
+  .hero-copy { min-width: 0; overflow-wrap: anywhere; }
+  .hero-copy.no-logo { padding-top: 8px; }
+  .hero h1 {
+    margin: 0; font-family: var(--font-display); font-size: 40px; line-height: 1; letter-spacing: 0; font-weight: 800;
+    text-transform: none; color: #fff;
+    text-shadow: 0 0 16px rgba(0,229,255,.25), 0 2px 0 rgba(0,0,0,.5);
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .subtitle { margin: 6px 0 0; color: var(--accent); font-family: var(--font-body); font-size: 21px; font-weight: 700; letter-spacing: 0; }
+  .hero .intro { margin: 2px 0 0; color: #e1e7ec; max-width: 920px; font-size: 16px; overflow-wrap: anywhere; }
+  .controls {
+    display: flex; align-items: flex-start; gap: 18px;
+    padding: 10px 14px 12px; border-bottom: 1px solid rgba(0, 238, 255, .46);
+    background: linear-gradient(180deg, rgba(0,4,9,.2), rgba(0,8,14,.38));
+  }
+  .searchbox { position: relative; flex: 0 0 360px; width: 360px; max-width: 100%; }
+  .searchbox svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  #search {
+    width: 100%; padding: 12px 14px 12px 42px;
+    background: rgba(2,10,17,.78); border: 1px solid rgba(83, 137, 165, .58);
+    border-radius: 8px; color: var(--text); font-size: 15px;
+    box-shadow: inset 0 0 16px rgba(0,0,0,.58), 0 0 0 1px rgba(0,0,0,.26);
+  }
+  #search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,229,255,.15); }
+  .filters {
+    display: flex; flex: 1 1 auto; flex-wrap: wrap; gap: 10px 12px; align-items: center;
+    min-width: 0; overflow: visible; padding: 2px 2px 0;
+  }
+  .filter {
+    flex: 0 0 auto; min-width: 82px; cursor: pointer;
+  }
+  .filter:hover { border-color: color-mix(in srgb, var(--c) 86%, #fff); color: color-mix(in srgb, var(--c) 86%, #fff); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 0 15px color-mix(in srgb, var(--c) 28%, transparent); }
+  .filter.active {
+    border-color: color-mix(in srgb, var(--c) 92%, #fff);
+    color: color-mix(in srgb, var(--c) 92%, #fff);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--c) 34%, rgba(8,20,31,.95)), color-mix(in srgb, var(--c) 18%, rgba(2,8,14,.95)));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 0 18px color-mix(in srgb, var(--c) 34%, transparent);
+  }
+  .meta-line { padding: 9px 14px 0; color: var(--muted); font-size: 13px; }
+  .list { padding: 8px 12px 10px; }
+  .mod {
+    display: grid; grid-template-columns: 104px minmax(310px, .8fr) minmax(360px, 1.4fr) 58px;
+    gap: 14px; align-items: stretch;
+    padding: 9px 10px; border: 1px solid rgba(0, 210, 235, .44); border-radius: 9px;
+    background: var(--row);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.055), inset 0 0 26px rgba(0,229,255,.036), 0 1px 0 rgba(0,0,0,.28);
+  }
+  .mod + .mod { margin-top: 8px; }
+  .mod:hover { background: var(--row-hover); border-color: rgba(0,238,255,.62); }
+  .mod-thumb { width: 104px; height: 104px; }
+  .thumb {
+    width: 104px; height: 104px; border-radius: 8px; object-fit: cover;
+    border: 1px solid rgba(0,229,255,.22); background: #0a1018; display: block;
+    box-shadow: 0 0 18px rgba(0,0,0,.42);
+  }
+  .thumb-fallback {
+    display: flex; align-items: center; justify-content: center;
+    border-color: color-mix(in srgb, var(--c) 48%, var(--border));
+    background:
+      linear-gradient(140deg, color-mix(in srgb, var(--c) 18%, #120b0b), #06111b 74%);
+  }
+  .thumb-fallback img { width: 46px; height: 46px; opacity: .92;
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c) 60%, transparent)); }
+  .mod-main { display: contents; }
+  .mod-head {
+    min-width: 0; padding: 4px 14px 4px 2px;
+    border-right: 1px solid var(--border-soft);
+  }
+  .mod-name {
+    margin: 0 0 9px; font-family: var(--font-display); font-size: 20px; line-height: 1.18; font-weight: 800;
+    color: color-mix(in srgb, var(--title-c, #fff) 82%, #fff);
+    text-shadow:
+      0 0 12px color-mix(in srgb, var(--title-c, var(--accent)) 34%, transparent),
+      0 1px 0 rgba(0,0,0,.62);
+  }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .category-badge {
+    --c: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font: 600 14px/1.1 var(--font-body); padding: 5px 11px; border-radius: 5px;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--c) 22%, rgba(6,17,27,.94)), color-mix(in srgb, var(--c) 10%, rgba(2,8,14,.92)));
+    color: color-mix(in srgb, var(--c) 72%, #fff);
+    border: 1px solid color-mix(in srgb, var(--c) 66%, rgba(0,0,0,.25));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 0 10px color-mix(in srgb, var(--c) 18%, transparent);
+    text-transform: none; letter-spacing: 0;
+    white-space: nowrap;
+  }
+  .pill-review {
+    --c: var(--gold);
+    color: #140d00;
+    border-color: rgba(255,196,95,.86);
+    background: linear-gradient(180deg, #ffd76d, #b57511);
+  }
+  .mod-cols {
+    display: grid; grid-template-columns: minmax(260px, .95fr) minmax(320px, 1.05fr);
+    gap: 0; min-width: 0;
+  }
+  .col { padding: 4px 28px; min-width: 0; display: flex; align-items: center; }
+  .col + .col { border-left: 1px solid var(--border-soft); }
+  .col p { margin: 0; color: var(--text); }
+  .col .empty-field { min-height: 1.5em; color: transparent; }
+  .col ul { margin: 0; padding-left: 16px; color: var(--text); }
+  .col li { margin: 1px 0; }
+  .muted { color: var(--muted); }
+  .mod-action {
+    display: flex; justify-content: center; align-items: center;
+    border-left: 1px solid var(--border-soft);
+  }
+  .cf-link {
+    display: flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; border-radius: 8px; color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent); transition: .15s;
+  }
+  .cf-link:hover { background: var(--accent); color: #04121a; }
+  .empty { padding: 40px; text-align: center; color: var(--muted); display: none; }
+  footer { padding: 18px 30px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; text-align: center; }
+  @media (max-width: 1120px) {
+    body { padding: 10px 8px 34px; }
+    .panel { border-radius: 14px; }
+    .controls { flex-direction: column; align-items: stretch; gap: 10px; }
+    .searchbox { flex: 0 0 auto; width: 100%; }
+    .filters { width: 100%; }
+    .mod {
+      grid-template-columns: 104px minmax(260px, .85fr) 54px;
+      grid-template-areas:
+        "thumb head action"
+        "thumb cols action";
+      row-gap: 8px;
+    }
+    .mod-thumb { grid-area: thumb; }
+    .mod-head { grid-area: head; border-right: 0; padding-right: 6px; }
+    .mod-cols { grid-area: cols; border-top: 1px solid var(--border-soft); padding-top: 8px; }
+    .mod-action { grid-area: action; }
+  }
+  @media (max-width: 760px) {
+    body { padding: 0; }
+    .wrap { width: 100%; }
+    .panel { border-left: 0; border-right: 0; border-radius: 0; }
+    header.hero { padding: 14px 14px 12px; }
+    .hero-brand { align-items: flex-start; gap: 14px; min-height: 0; }
+    .brand-mark { width: 92px; height: 82px; }
+    .brand-mark img { width: 108px; max-height: 78px; }
+    .hero h1 { font-size: clamp(30px, 7vw, 40px); }
+    .hero .subtitle { font-size: 18px; }
+    .hero .intro { font-size: 14px; }
+    .controls { padding: 10px 12px; }
+    .list { padding: 8px 8px 10px; }
+    .mod {
+      grid-template-columns: 74px 1fr 46px;
+      grid-template-areas:
+        "thumb head action"
+        "cols cols cols";
+      gap: 8px 10px;
+      padding: 8px;
+    }
+    .mod-thumb, .thumb, .thumb-fallback { width: 74px; height: 74px; }
+    .mod-name { font-size: 18px; }
+    .category-badge { font-size: 13px; padding: 4px 9px; }
+    .mod-cols { grid-template-columns: 1fr; gap: 0; padding-top: 8px; }
+    .col { padding: 8px 4px; }
+    .col + .col { border-left: 0; border-top: 1px solid var(--border-soft); }
+    .mod-action { border-left: 0; }
+    .cf-link { width: 40px; height: 40px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <header class="hero">
+        <div class="hero-brand">
+          <div class="brand-mark"><img src="assets/brand/ark-survival-ascended-logo.png" alt="ARK logo"></div>
+          <div class="hero-copy">
+            <h1>Server Mod Quick Reference</h1>
+            <p class="subtitle">Legion of Idiots, Astraeos</p>
+            <p class="intro">Quick reference for all mods installed on the Legion of Idiots server.</p>
+          </div>
+        </div>
+      </header>
+      <div class="controls">
+        <div class="searchbox">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="search" type="search" placeholder="Search mods, categories, items, tags…" autocomplete="off">
+        </div>
+        <div class="filters">
+        <button class="filter category-badge active" data-filter="all" style="--c:#00e5ff">All</button>
+        <button class="filter category-badge" data-filter="admin" style="--c:#d9f7ff">Admin</button>
+        <button class="filter category-badge" data-filter="core mods" style="--c:#2f67ff">Core Mods</button>
+        <button class="filter category-badge" data-filter="gameplay" style="--c:#a6ff3d">Gameplay</button>
+        <button class="filter category-badge" data-filter="quality of life" style="--c:#b86cff">Quality of Life</button>
+        <button class="filter category-badge" data-filter="death &amp; recovery" style="--c:#e32636">Death &amp; Recovery</button>
+        <button class="filter category-badge" data-filter="ui &amp; info" style="--c:#8cf4ff">UI &amp; Info</button>
+        <button class="filter category-badge" data-filter="building" style="--c:#c46f32">Building</button>
+        <button class="filter category-badge" data-filter="creatures" style="--c:#38f06f">Creatures</button>
+        <button class="filter category-badge" data-filter="transportation" style="--c:#30f0c2">Transportation</button>
+        <button class="filter category-badge" data-filter="equipment &amp; items" style="--c:#ffb347">Equipment &amp; Items</button>
+        <button class="filter category-badge" data-filter="cosmetic" style="--c:#ff5fb7">Cosmetic</button>
+        <button class="filter category-badge" data-filter="audio" style="--c:#ffe45c">Audio</button>
+        </div>
+      </div>
+      <div class="meta-line"><span id="count">80</span> mods shown</div>
+      <div class="list" id="list">
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: brachiosaurus additions ascended: brachiosaurus creatures brachiosaurus dino sauropod herbivore a towering long-neck herbivore. a heavy gatherer and mobile base platform once tamed.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/927131.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additions Ascended: Brachiosaurus</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A towering long-neck herbivore.</p>
+            </div>
+            <div class="col col-why">
+              <p>A heavy gatherer and mobile base platform once tamed.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-brachiosaurus" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additions Ascended: Brachiosaurus on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: deinotherium additions ascended: deinotherium creatures deinotherium dino herbivore mammal a prehistoric elephant-like herbivore. strong melee and harvesting power; useful for clearing trees and brush.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/914844.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additions Ascended: Deinotherium</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A prehistoric elephant-like herbivore.</p>
+            </div>
+            <div class="col col-why">
+              <p>Strong melee and harvesting power; useful for clearing trees and brush.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-deinotherium" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additions Ascended: Deinotherium on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: helicoprion additions ascended: helicoprion creatures helicoprion aquatic shark ocean a saw-toothed prehistoric shark. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/916922.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additions Ascended: Helicoprion</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A saw-toothed prehistoric shark.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-helicoprion" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additions Ascended: Helicoprion on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: archelon additions ascended: archelon creatures archelon aquatic turtle ocean a giant prehistoric sea turtle. durable water travel and diving support.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/926956.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additions Ascended: Archelon</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A giant prehistoric sea turtle.</p>
+            </div>
+            <div class="col col-why">
+              <p>Durable water travel and diving support.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-archelon" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additions Ascended: Archelon on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: deinosuchus additions ascended: deinosuchus creatures deinosuchus croc semi-aquatic predator a massive prehistoric crocodile. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/912902.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additions Ascended: Deinosuchus</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A massive prehistoric crocodile.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-deinosuchus" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additions Ascended: Deinosuchus on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: acrocanthosaurus additions ascended: acrocanthosaurus creatures acrocanthosaurus acro carnivore predator alarge apex carnivore. high-tier land combat mount.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/926259.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additions Ascended: Acrocanthosaurus</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Alarge apex carnivore.</p>
+            </div>
+            <div class="col col-why">
+              <p>High-tier land combat mount.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-acro" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additions Ascended: Acrocanthosaurus on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: ceratosaurus additions ascended: ceratosaurus creatures ceratosaurus carnivore dino a horned mid-size carnivore. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/900062.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additions Ascended: Ceratosaurus</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A horned mid-size carnivore.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/aaceratosaurus_test" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additions Ascended: Ceratosaurus on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: xiphactinus additions ascended: xiphactinus creatures xiphactinus aquatic fish ocean a large aggressive prehistoric fish. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/908148.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additions Ascended: Xiphactinus</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A large aggressive prehistoric fish.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/aaxiphactinus_test" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additions Ascended: Xiphactinus on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#efad78" data-categories="building" data-search="arkitect structures remastered arkitect structures remastered building building structures modular base full replacement for the vanilla building sets. additional variants for each tier. improved ui/ux. additional snap points for all pieces. many &quot;quality of life&quot; improvements like the asr structure tray.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/931874.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Arkitect Structures Remastered</h2>
+            <div class="pills"><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Full replacement for the vanilla building sets.</p>
+            </div>
+            <div class="col col-why">
+              <ul><li>Additional variants for each tier.</li><li>Improved UI/UX.</li><li>Additional snap points for all pieces.</li><li>Many &quot;Quality of Life&quot; improvements like the ASR Structure Tray.</li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/arkitect-structures-remastered" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Arkitect Structures Remastered on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#b9fbff" data-categories="ui &amp; info" data-search="super spyglass plus super spyglass plus ui &amp; info spyglass creature info taming utility an upgraded spyglass that passively shows detailed configurable creature and structure info. read wild creature stats, levels, gender, torpor, ownership and taming info from a distance.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/929420.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Super Spyglass Plus</h2>
+            <div class="pills"><span class="category-badge" style="--c:#8cf4ff">UI &amp; Info</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>An upgraded spyglass that passively shows detailed configurable creature and structure info.</p>
+            </div>
+            <div class="col col-why">
+              <p>Read wild creature stats, levels, gender, torpor, ownership and taming info from a distance.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/super-spyglass-plus" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Super Spyglass Plus on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d0ff86" data-categories="gameplay" data-search="dino depot dino depot gameplay dino storage soul trap transport tames full replacement for the vanilla cryo pod system. much more flexible and easier to use. stakcable empty pods for inventory qol. pods fully render creature models and status.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/942024.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Dino Depot</h2>
+            <div class="pills"><span class="category-badge" style="--c:#a6ff3d">Gameplay</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Full replacement for the vanilla Cryo Pod system.</p>
+            </div>
+            <div class="col col-why">
+              <ul><li>Much more flexible and easier to use.</li><li>Stakcable empty pods for inventory QOL.</li><li>Pods fully render creature models and status.</li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/dino-depot" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Dino Depot on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="gigantoraptor gigantoraptor creatures gigantoraptor dino bird a large feathered oviraptorid.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/975282.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Gigantoraptor</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A large feathered oviraptorid.</p>
+            </div>
+            <div class="col col-why">
+              <p class="empty-field">&nbsp;</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/gigantoraptor" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Gigantoraptor on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#93aaff" data-categories="core mods" data-search="dear jane dear jane core mods decor adds additional survivor notes which can be collected. provides xp bonuses and collectible cosmetics.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/983782.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Dear Jane</h2>
+            <div class="pills"><span class="category-badge" style="--c:#2f67ff">Core Mods</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds additional survivor notes which can be collected.</p>
+            </div>
+            <div class="col col-why">
+              <p>Provides XP bonuses and collectible cosmetics.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/dear-jane" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Dear Jane on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ff9bd3" data-categories="cosmetic" data-search="marniimods hairstyles marniimods hairstyles cosmetic hair hairstyles cosmetic character adds a large selection of new character hairstyles and head pieces. apply new styles at a mirror or character customization station.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/949521.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">MarniiMods Hairstyles</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ff5fb7">Cosmetic</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds a large selection of new character hairstyles and head pieces.</p>
+            </div>
+            <div class="col col-why">
+              <p>Apply new styles at a mirror or character customization station.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/marniimods-hairstyles" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open MarniiMods Hairstyles on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#efad78" data-categories="building|quality of life" data-search="visual storage visual storage building quality of life storage display organization building storage containers that dynamically change their appearance based on their fill level. storage containers for each individual resource and collections of some resources. storage management automation including drop off and distribution.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/935528.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Visual Storage</h2>
+            <div class="pills"><span class="category-badge" style="--c:#c46f32">Building</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Storage containers that dynamically change their appearance based on their fill level.</p>
+            </div>
+            <div class="col col-why">
+              <ul><li>Storage containers for each individual resource and collections of some resources.</li><li>Storage management automation including drop off and distribution.</li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/visual-storage" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Visual Storage on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="moro&#39;s gigantophis moro&#39;s gigantophis creatures gigantophis snake dino a giant prehistoric snake.... with a gun. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1123428.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Moro&#39;s Gigantophis</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A giant prehistoric snake.... with a gun.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/moros-gigantophis" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Moro&#39;s Gigantophis on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="moro&#39;s nothosaurus moro&#39;s nothosaurus creatures nothosaurus aquatic marine an agile marine reptile. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1038262.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Moro&#39;s Nothosaurus</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>An agile marine reptile.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/moros-nothosaurus" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Moro&#39;s Nothosaurus on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="moro&#39;s tylosaurus moro&#39;s tylosaurus creatures tylosaurus aquatic marine predator a large predatory marine reptile. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/953108.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Moro&#39;s Tylosaurus</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A large predatory marine reptile.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/moros-tylosaurus" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Moro&#39;s Tylosaurus on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d7a8ff" data-categories="quality of life" data-search="stop the steal stop the steal quality of life anti-theft protection pvp security prevents the icthy and truodon from stealing items from players. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/929299.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Stop The Steal</h2>
+            <div class="pills"><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Prevents the Icthy and Truodon from stealing items from players.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/stop-the-steal-ascended" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Stop The Steal on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: edmontonia additions ascended: edmontonia creatures edmontonia herbivore armored dino an armored ankylosaur-like herbivore. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1136679.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additions Ascended: Edmontonia</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>An armored ankylosaur-like herbivore.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-edmontonia" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additions Ascended: Edmontonia on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#efad78" data-categories="building|quality of life" data-search="scribbles - better signs scribbles - better signs building quality of life signs labels decor building adds improved, customizable signs and labeling/painting tools. useful for clear storage labels, directions, and base signage.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/929838.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Scribbles - Better Signs</h2>
+            <div class="pills"><span class="category-badge" style="--c:#c46f32">Building</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds improved, customizable signs and labeling/painting tools.</p>
+            </div>
+            <div class="col col-why">
+              <p>Useful for clear storage labels, directions, and base signage.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/scribbles-better-signs" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Scribbles - Better Signs on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="moro&#39;s livyatan moro&#39;s livyatan creatures livyatan aquatic whale predator a giant predatory prehistoric whale. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/956237.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Moro&#39;s Livyatan</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A giant predatory prehistoric whale.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/moros-livyatan" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Moro&#39;s Livyatan on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#f2fdff" data-categories="admin" data-search="ark-nucleus ark-nucleus admin admin management server framework a server administration and management toolkit. accessed via a ui button in the top right of the inventory screen.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/951148.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Ark-Nucleus</h2>
+            <div class="pills"><span class="category-badge" style="--c:#d9f7ff">Admin</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A server administration and management toolkit.</p>
+            </div>
+            <div class="col col-why">
+              <p>Accessed via a UI button in the top right of the Inventory screen.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/ark-nucleus" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Ark-Nucleus on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: anomalocaris additions ascended: anomalocaris creatures anomalocaris aquatic arthropod a prehistoric aquatic arthropod. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/987274.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additions Ascended: Anomalocaris</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A prehistoric aquatic arthropod.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-anomalocaris" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additions Ascended: Anomalocaris on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="moro&#39;s hydrovanta moro&#39;s hydrovanta creatures hydrovanta aquatic creature a custom aquatic creature. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1218463.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Moro&#39;s Hydrovanta</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A custom aquatic creature.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/moros-hydrovanta" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Moro&#39;s Hydrovanta on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d0ff86" data-categories="gameplay" data-search="glyph transformations glyph transformations gameplay glyph transformation cosmetic a creature collection and morphing system allowing players to store creature dna and transform into them. levelpods are used to store creature dna and increase transformation power level. all transformation functions are accessed via the radial menu.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/931364.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Glyph Transformations</h2>
+            <div class="pills"><span class="category-badge" style="--c:#a6ff3d">Gameplay</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A creature collection and morphing system allowing players to store creature DNA and transform into them.</p>
+            </div>
+            <div class="col col-why">
+              <ul><li>Levelpods are used to store creature DNA and increase transformation power level.</li><li>All transformation functions are accessed via the Radial Menu.</li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/glyph-transformations" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Glyph Transformations on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d7a8ff" data-categories="quality of life" data-search="mouse saver - easy dino attacks mouse saver - easy dino attacks quality of life auto attack mounts accessibility qol allows holding the attack button to automatically keep attacking while riding creatures. reduces hand strain during long farming or combat sessions.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/932225.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Mouse Saver - Easy Dino Attacks</h2>
+            <div class="pills"><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Allows holding the attack button to automatically keep attacking while riding creatures.</p>
+            </div>
+            <div class="col col-why">
+              <p>Reduces hand strain during long farming or combat sessions.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/mouse-saver-easy-dino-attacks" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Mouse Saver - Easy Dino Attacks on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#f2fdff" data-categories="admin|death &amp; recovery" data-search="inventory backup saver inventory backup saver admin death &amp; recovery inventory backup recovery safety saves a backup of inventories so items can be restored after loss. backups occur every 5 minutes.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/951574.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Inventory Backup Saver</h2>
+            <div class="pills"><span class="category-badge" style="--c:#d9f7ff">Admin</span><span class="category-badge" style="--c:#e32636">Death &amp; Recovery</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Saves a backup of inventories so items can be restored after loss.</p>
+            </div>
+            <div class="col col-why">
+              <p>Backups occur every 5 minutes.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/inventory-backup-saver" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Inventory Backup Saver on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d7a8ff" data-categories="quality of life|ui &amp; info" data-search="return the beacons! return the beacons! quality of life ui &amp; info beacons supply drops loot visibility provides supply drop style light beams on player corpses when they die for easy location and recovery. can be fully configured via a button in the escape menu.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/933576.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Return The Beacons!</h2>
+            <div class="pills"><span class="category-badge" style="--c:#b86cff">Quality of Life</span><span class="category-badge" style="--c:#8cf4ff">UI &amp; Info</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Provides Supply Drop style light beams on player corpses when they die for easy location and recovery.</p>
+            </div>
+            <div class="col col-why">
+              <p>Can be fully configured via a button in the Escape menu.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/return-the-beacons-rtb" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Return The Beacons! on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d7a8ff" data-categories="quality of life" data-search="utilities plus utilities plus quality of life utility tools transfer convenience adds a collection of re-usable tools and items. torch, spear, bola, whip, parachute, glider, grappling hook, etc...">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/928621.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Utilities Plus</h2>
+            <div class="pills"><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds a collection of re-usable tools and items.</p>
+            </div>
+            <div class="col col-why">
+              <p>Torch, Spear, Bola, Whip, Parachute, Glider, Grappling Hook, etc...</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/utilities-plus" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Utilities Plus on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#efad78" data-categories="building" data-search="cybers structures qol+ (crossplay) cybers structures qol+ (crossplay) building structures building qol crossplay a complete overhaul of many existing structures and the addition of new structures to facilitate automation and qol. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/940975.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Cybers Structures QoL+ (Crossplay)</h2>
+            <div class="pills"><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A complete overhaul of many existing structures and the addition of new structures to facilitate automation and QOL.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/cybers-structures" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Cybers Structures QoL+ (Crossplay) on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d7a8ff" data-categories="quality of life" data-search="cliffans backpacks cliffans backpacks quality of life backpack storage inventory gear adds wearable backpacks that provide extra carry capacity and optional lighting. there are three tiers of backpack and backpack rarity impacts weight reduction.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/930170.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Cliffans Backpacks</h2>
+            <div class="pills"><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds wearable backpacks that provide extra carry capacity and optional lighting.</p>
+            </div>
+            <div class="col col-why">
+              <p>There are three Tiers of backpack and backpack rarity impacts weight reduction.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/cliffan-backpacks" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Cliffans Backpacks on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d7a8ff" data-categories="quality of life|ui &amp; info" data-search="der dino finder der dino finder quality of life ui &amp; info dino finder locate tames tracking configurable minimap &quot;radar&quot; for locating wild creatures. can be accessed via a button on the minimap/map.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/935408.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Der Dino Finder</h2>
+            <div class="pills"><span class="category-badge" style="--c:#b86cff">Quality of Life</span><span class="category-badge" style="--c:#8cf4ff">UI &amp; Info</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Configurable Minimap &quot;radar&quot; for locating wild creatures.</p>
+            </div>
+            <div class="col col-why">
+              <p>Can be accessed via a button on the minimap/map.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/der-dino-finder" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Der Dino Finder on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d0ff86" data-categories="gameplay|quality of life" data-search="better breeding better breeding gameplay quality of life breeding imprint babies qol streamlines the breeding process. only allows the highest stats and &quot;best&quot; traits to be passed down when breeding.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/941697.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Better Breeding</h2>
+            <div class="pills"><span class="category-badge" style="--c:#a6ff3d">Gameplay</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Streamlines the breeding process.</p>
+            </div>
+            <div class="col col-why">
+              <p>Only allows the highest stats and &quot;best&quot; traits to be passed down when breeding.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/better-breeding" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Better Breeding on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d7a8ff" data-categories="quality of life" data-search="tg stacking mod 1000-50 tg stacking mod 1000-50 quality of life stacking stack size resources inventory increases item stack sizes up to 1000. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/929800.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">TG Stacking Mod 1000-50</h2>
+            <div class="pills"><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Increases item stack sizes up to 1000.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/tg-stacking-mod-1000-50" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open TG Stacking Mod 1000-50 on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#efad78" data-categories="building" data-search="castles, keeps, and forts (ckf) castles, keeps, and forts - ckf building castle medieval building fortifications medieval castle, keep, and fort building pieces for stone-age and rp builds. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1149214.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Castles, Keeps, and Forts (CKF)</h2>
+            <div class="pills"><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Medieval castle, keep, and fort building pieces for stone-age and RP builds.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/ckf-castles-keeps-forts" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Castles, Keeps, and Forts (CKF) on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ffd18a" data-categories="equipment &amp; items" data-search="juans deep sea diving equipment juans deep sea diving equipment equipment &amp; items diving underwater oxygen gear diving gear that bridges the gap between land and sea exploration prior to the scuba armor. makes deep-sea exploration and underwater farming far more practical.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1051882.jpg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Juans Deep Sea Diving Equipment</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ffb347">Equipment &amp; Items</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Diving gear that bridges the gap between land and sea exploration prior to the Scuba Armor.</p>
+            </div>
+            <div class="col col-why">
+              <p>Makes deep-sea exploration and underwater farming far more practical.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/juans-deep-sea-diving-equipment" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Juans Deep Sea Diving Equipment on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ffd18a" data-categories="equipment &amp; items" data-search="cliffans improved miners helmet cliffans improved miners helmet equipment &amp; items helmet light mining caves an improved miner&#39;s helmet with a better light. brighter hands-free lighting for caves and night work.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1305730.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Cliffans Improved Miners Helmet</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ffb347">Equipment &amp; Items</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>An improved miner&#39;s helmet with a better light.</p>
+            </div>
+            <div class="col col-why">
+              <p>Brighter hands-free lighting for caves and night work.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/cliffans-improved-miners-helmet" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Cliffans Improved Miners Helmet on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffdf" data-categories="transportation|equipment &amp; items" data-search="cliffans nautical turrets cliffans nautical turrets transportation equipment &amp; items turrets defense nautical building cannons and mountable swivle turrets for ships. useful for defending ocean platforms and rafts.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1200390.jpg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Cliffans Nautical Turrets</h2>
+            <div class="pills"><span class="category-badge" style="--c:#30f0c2">Transportation</span><span class="category-badge" style="--c:#ffb347">Equipment &amp; Items</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Cannons and mountable swivle turrets for ships.</p>
+            </div>
+            <div class="col col-why">
+              <p>Useful for defending ocean platforms and rafts.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/nautical-turrets" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Cliffans Nautical Turrets on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ffd18a" data-categories="equipment &amp; items" data-search="cliffans weapons: medieval cliffans weapons: medieval equipment &amp; items weapons medieval rp cosmetic medieval-themed melee and ranged weapons. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1383579.jpg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Cliffans Weapons: Medieval</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ffb347">Equipment &amp; Items</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Medieval-themed melee and ranged weapons.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/cliffans-weapons-medieval" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Cliffans Weapons: Medieval on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ff9bd3" data-categories="cosmetic" data-search="cliffan&#39;s dynamic survivors cliffan&#39;s dynamic survivors cosmetic immersion survivors npc cosmetic adds immersion-focused survivor animations and behaviors. survivors will dynamically react to weather, conditions, time of day, and other circumstances with unique behaviors and animations.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1528173.jpg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Cliffan&#39;s Dynamic Survivors</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ff5fb7">Cosmetic</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds immersion-focused survivor animations and behaviors.</p>
+            </div>
+            <div class="col col-why">
+              <p>Survivors will dynamically react to weather, conditions, time of day, and other circumstances with unique behaviors and animations.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/cliffans-visible-immersion" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Cliffan&#39;s Dynamic Survivors on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ff9bd3" data-categories="cosmetic" data-search="cliffans wardrobe cliffans wardrobe cosmetic wardrobe clothing outfits cosmetic adds wardrobe outfits and clothing options for character customization. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/961601.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Cliffans Wardrobe</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ff5fb7">Cosmetic</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds wardrobe outfits and clothing options for character customization.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/cliffans-wardrobe" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Cliffans Wardrobe on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ffd18a" data-categories="equipment &amp; items" data-search="cliffans weapons: western cliffans weapons: western equipment &amp; items weapons western rp cosmetic western-themed firearms.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/939244.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Cliffans Weapons: Western</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ffb347">Equipment &amp; Items</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Western-themed firearms.</p>
+            </div>
+            <div class="col col-why">
+              <p class="empty-field">&nbsp;</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/cliffans-weapons-western" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Cliffans Weapons: Western on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#efad78" data-categories="building" data-search="jvh landscaping jvh landscaping building landscaping decor garden building adds landscaping pieces such as paths, plants, and terrain decor for base surroundings. useful for shaping yards, gardens, and immersive base exteriors.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/937184.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">JVH Landscaping</h2>
+            <div class="pills"><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds landscaping pieces such as paths, plants, and terrain decor for base surroundings.</p>
+            </div>
+            <div class="col col-why">
+              <p>Useful for shaping yards, gardens, and immersive base exteriors.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/jvh-landscaping-mod" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open JVH Landscaping on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#efad78" data-categories="building" data-search="jvh garden decor jvh garden decor building garden decor furniture building adds garden-themed decorative items like planters, furniture, and ornaments. w-i-p">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/966079.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">JVH Garden Decor</h2>
+            <div class="pills"><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds garden-themed decorative items like planters, furniture, and ornaments.</p>
+            </div>
+            <div class="col col-why">
+              <p>W-I-P</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/jvh-garden-decor" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open JVH Garden Decor on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ff9bd3" data-categories="cosmetic" data-search="cliffans rp emotes cliffans rp emotes cosmetic emotes rp animations social adds extra roleplay emotes and animations for characters. adds expressiveness for roleplay.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1135454.jpg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Cliffans RP Emotes</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ff5fb7">Cosmetic</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds extra roleplay emotes and animations for characters.</p>
+            </div>
+            <div class="col col-why">
+              <p>Adds expressiveness for roleplay.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/cliffans-emotes" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Cliffans RP Emotes on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ff7f8a" data-categories="death &amp; recovery|quality of life" data-search="cheat death cheat death death &amp; recovery quality of life death survival protection recovery allows tames to escape death.. a craftable item that as long as it is in the creatures inventory it will teleport to the assigned &quot;cheat death&quot; flag instead of dying or if it&#39;s owner dies while it is alive.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/928506.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Cheat Death</h2>
+            <div class="pills"><span class="category-badge" style="--c:#e32636">Death &amp; Recovery</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Allows tames to escape death..</p>
+            </div>
+            <div class="col col-why">
+              <p>A craftable item that as long as it is in the creatures inventory it will teleport to the assigned &quot;Cheat Death&quot; flag instead of dying or if it&#39;s owner dies while it is alive.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/cheat-death" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Cheat Death on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffdf" data-categories="transportation" data-search="better trains better trains transportation trains rail transport vehicles improved trains. faster, easier to access and control trains.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1002596.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Better Trains</h2>
+            <div class="pills"><span class="category-badge" style="--c:#30f0c2">Transportation</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Improved Trains.</p>
+            </div>
+            <div class="col col-why">
+              <p>Faster, easier to access and control Trains.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/better-trains" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Better Trains on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d0ff86" data-categories="gameplay|quality of life" data-search="mantling mantling gameplay quality of life mantling climbing movement traversal lets your character climb and pull up onto ledges instead of getting stuck on them. smoother traversal over rocks, walls, and uneven terrain.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1093934.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Mantling</h2>
+            <div class="pills"><span class="category-badge" style="--c:#a6ff3d">Gameplay</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Lets your character climb and pull up onto ledges instead of getting stuck on them.</p>
+            </div>
+            <div class="col col-why">
+              <p>Smoother traversal over rocks, walls, and uneven terrain.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/mantling" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Mantling on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d0ff86" data-categories="gameplay|quality of life" data-search="better jumping better jumping gameplay quality of life jumping movement traversal qol improves the survivor&#39;s directional control when jumping. more responsive movement and easier parkour around obstacles.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1011767.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Better Jumping</h2>
+            <div class="pills"><span class="category-badge" style="--c:#a6ff3d">Gameplay</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Improves the survivor&#39;s directional control when jumping.</p>
+            </div>
+            <div class="col col-why">
+              <p>More responsive movement and easier parkour around obstacles.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/better-jumping" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Better Jumping on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ff7f8a" data-categories="death &amp; recovery|quality of life" data-search="crash protector crash protector death &amp; recovery quality of life crash stability performance utility prevents unfair deaths and loss due to crashes. upon disconnecting abruptly, players will be rendered invulnerable until they reconnect.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1540591.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Crash Protector</h2>
+            <div class="pills"><span class="category-badge" style="--c:#e32636">Death &amp; Recovery</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Prevents unfair deaths and loss due to crashes.</p>
+            </div>
+            <div class="col col-why">
+              <p>Upon disconnecting abruptly, players will be rendered invulnerable until they reconnect.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/crash-protector" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Crash Protector on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#f2fdff" data-categories="admin" data-search="awesome ark tools awesome ark tools admin admin tools management utility a set of admin and management tools. tools for use by admins for managing the server and its players.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/941450.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Awesome ARK Tools</h2>
+            <div class="pills"><span class="category-badge" style="--c:#d9f7ff">Admin</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A set of admin and management tools.</p>
+            </div>
+            <div class="col col-why">
+              <p>Tools for use by Admins for managing the server and its players.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/awesome-admin-tools" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Awesome ARK Tools on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#efad78" data-categories="building" data-search="aquarium aquarium building aquarium decor fish building aquariums and fish-tank decor with genuine water volumes for displaying aquatic life in bases. these are very large and are genuine water volumes. they provide a safe place to store and view water tames even ones as large as the tuso or shasta.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1548444.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Aquarium</h2>
+            <div class="pills"><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Aquariums and fish-tank decor with genuine water volumes for displaying aquatic life in bases.</p>
+            </div>
+            <div class="col col-why">
+              <ul><li>These are very large and are genuine water volumes.</li><li>They provide a safe place to store and view water tames even ones as large as the Tuso or Shasta.</li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/aquarium" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Aquarium on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d0ff86" data-categories="gameplay" data-search="feras immersive food feras immersive food gameplay food cooking immersion meals adds a variety of immersive food and cooking content for more varied meals. includes meals ranging from simple and easy to hand craft to complexe recipes. recipes can restore health, stamina, hunger, and/or water. recipes can also provide buffs like damage resistance and heat resistance.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1281957.jpg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Feras Immersive Food</h2>
+            <div class="pills"><span class="category-badge" style="--c:#a6ff3d">Gameplay</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds a variety of immersive food and cooking content for more varied meals.</p>
+            </div>
+            <div class="col col-why">
+              <ul><li>Includes meals ranging from simple and easy to hand craft to complexe recipes.</li><li>Recipes can restore health, stamina, hunger, and/or Water.</li><li>Recipes can also provide buffs like Damage Resistance and Heat Resistance.</li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/feras-immersive-food" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Feras Immersive Food on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ffd18a" data-categories="equipment &amp; items" data-search="additional handheld lights additional handheld lights equipment &amp; items lights lighting torch utility handheld lantern and flashlight. both the lantern and flashlight can be attached to the player&#39;s belt/shoulder for hands-free light.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/929271.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additional Handheld Lights</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ffb347">Equipment &amp; Items</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Handheld Lantern and Flashlight.</p>
+            </div>
+            <div class="col col-why">
+              <p>Both the lantern and Flashlight can be attached to the player&#39;s belt/shoulder for hands-free light.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/additional-lights" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additional Handheld Lights on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ff7f8a" data-categories="death &amp; recovery|quality of life" data-search="ap: death recovery ap: death recovery death &amp; recovery quality of life death recovery corpse items craftable gravestones to help you recover your items and body after death. when a player dies with a gravestone built thier items will be stored at that gravestone and they can be retrieved.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/929578.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">AP: Death Recovery</h2>
+            <div class="pills"><span class="category-badge" style="--c:#e32636">Death &amp; Recovery</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Craftable Gravestones to help you recover your items and body after death.</p>
+            </div>
+            <div class="col col-why">
+              <p>When a player dies with a gravestone built thier items will be stored at that gravestone and they can be retrieved.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/ap-death-recovery" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open AP: Death Recovery on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="paleo ark ascension paleo ark ascension creatures paleo ark creatures dinos expansion a creature expansion from the paleo ark series adding new prehistoric creatures. part of the paleo ark family of creature mods.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/986540.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Paleo ARK Ascension</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A creature expansion from the Paleo ARK series adding new prehistoric creatures.</p>
+            </div>
+            <div class="col col-why">
+              <p>Part of the Paleo ARK family of creature mods.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-ascension" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Paleo ARK Ascension on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="paleo ark - evo | predators paleo ark - evo | predators creatures paleo ark predators apex creatures a creature expansion from the paleo ark series adding new prehistoric creatures. part of the paleo ark family of creature mods.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/970540.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Paleo ARK - Evo | Predators</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A creature expansion from the Paleo ARK series adding new prehistoric creatures.</p>
+            </div>
+            <div class="col col-why">
+              <p>Part of the Paleo ARK family of creature mods.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-apex-predators" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Paleo ARK - Evo | Predators on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="paleo ark - evo | herbivores paleo ark - evo | herbivores creatures paleo ark herbivores creatures a creature expansion from the paleo ark series adding new prehistoric creatures. part of the paleo ark family of creature mods.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1382641.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Paleo ARK - Evo | Herbivores</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A creature expansion from the Paleo ARK series adding new prehistoric creatures.</p>
+            </div>
+            <div class="col col-why">
+              <p>Part of the Paleo ARK family of creature mods.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-hard-hitting-herbivores" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Paleo ARK - Evo | Herbivores on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="paleo ark - evo | aquatic paleo ark - evo | aquatic creatures paleo ark aquatic creatures ocean a creature expansion from the paleo ark series adding new prehistoric creatures. part of the paleo ark family of creature mods.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1105106.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Paleo ARK - Evo | Aquatic</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A creature expansion from the Paleo ARK series adding new prehistoric creatures.</p>
+            </div>
+            <div class="col col-why">
+              <p>Part of the Paleo ARK family of creature mods.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-dangerous-depths" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Paleo ARK - Evo | Aquatic on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="paleo ark evo+ | native aquatics paleo ark evo+ | native aquatics creatures paleo ark aquatic native creatures a creature expansion from the paleo ark series adding new prehistoric creatures. part of the paleo ark family of creature mods.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/972484.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Paleo ARK EVO+ | Native Aquatics</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A creature expansion from the Paleo ARK series adding new prehistoric creatures.</p>
+            </div>
+            <div class="col col-why">
+              <p>Part of the Paleo ARK family of creature mods.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evo-plus-native-aquatics" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Paleo ARK EVO+ | Native Aquatics on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="paleo ark evo+ | rulers of the wastelands paleo ark evo+ | rulers of the wastelands creatures paleo ark wasteland creatures a creature expansion from the paleo ark series adding new prehistoric creatures. part of the paleo ark family of creature mods.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1182199.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Paleo ARK EVO+ | Rulers of the Wastelands</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A creature expansion from the Paleo ARK series adding new prehistoric creatures.</p>
+            </div>
+            <div class="col col-why">
+              <p>Part of the Paleo ARK family of creature mods.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evo-rulers-of-the-wastelands" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Paleo ARK EVO+ | Rulers of the Wastelands on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#efad78" data-categories="building" data-search="castle craft decor castle craft decor building castle decor medieval building castle and medieval-themed decorative pieces for themed builds. useful for creating themed builds and decorations.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1137407.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Castle Craft Decor</h2>
+            <div class="pills"><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Castle and medieval-themed decorative pieces for themed builds.</p>
+            </div>
+            <div class="col col-why">
+              <p>Useful for creating themed builds and decorations.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/castle-craft-decor" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Castle Craft Decor on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#b9fbff" data-categories="ui &amp; info|quality of life" data-search="map unlocker map unlocker ui &amp; info quality of life map unlock exploration navigation reveals the in-game map to survivor&#39;s on spawn. removes the need to manually explore every tile to fill the map.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1222937.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Map Unlocker</h2>
+            <div class="pills"><span class="category-badge" style="--c:#8cf4ff">UI &amp; Info</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Reveals the in-game map to survivor&#39;s on spawn.</p>
+            </div>
+            <div class="col col-why">
+              <p>Removes the need to manually explore every tile to fill the map.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/map-unlocker" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Map Unlocker on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#b9fbff" data-categories="ui &amp; info|quality of life" data-search="tek war map tek war map ui &amp; info quality of life tek map war a tek themed warmap with additional functionality displays the real time position of players. displays tribe waypoints and tames. displays tribe bases.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1073132.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Tek War Map</h2>
+            <div class="pills"><span class="category-badge" style="--c:#8cf4ff">UI &amp; Info</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>A Tek themed warmap with additional functionality</p>
+            </div>
+            <div class="col col-why">
+              <ul><li>Displays the real time position of players.</li><li>Displays tribe waypoints and tames.</li><li>Displays tribe bases.</li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/tek-war-map" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Tek War Map on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#efad78" data-categories="building" data-search="structure waterfalls structure waterfalls building waterfall decor water building adds placeable waterfall structures for decorative water features. useful for creating scenic water features in your builds.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1443086.jpg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Structure Waterfalls</h2>
+            <div class="pills"><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds placeable waterfall structures for decorative water features.</p>
+            </div>
+            <div class="col col-why">
+              <p>Useful for creating scenic water features in your builds.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/structure-waterfalls" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Structure Waterfalls on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d7a8ff" data-categories="quality of life" data-search="auto pickup auto pickup quality of life auto pickup farming harvest qol hot key to aoe-loot any dropped items in a radius around the player. hotkey is g or n by default.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1017926.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Auto Pickup</h2>
+            <div class="pills"><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Hot key to AOE-loot any dropped items in a radius around the player.</p>
+            </div>
+            <div class="col col-why">
+              <p>Hotkey is G or N by default.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/auto-pickup" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Auto Pickup on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#ffd18a" data-categories="equipment &amp; items|building" data-search="camping survivor camping survivor equipment &amp; items building camping tent survival travel adds easly craftable camping gear such as tents and campfire setups for travel and temporary rest points. useful for long expeditions away from your main base.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1369237.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Camping Survivor</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ffb347">Equipment &amp; Items</span><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds easly craftable camping gear such as tents and campfire setups for travel and temporary rest points.</p>
+            </div>
+            <div class="col col-why">
+              <p>Useful for long expeditions away from your main base.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/camping-survivor" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Camping Survivor on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffdf" data-categories="transportation" data-search="knot better motorboat knot better motorboat transportation motorboat boat water vehicles improves the motorboat with better handling, capacity, and building surface area. makes water travel and sea bases more practical.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/935809.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Knot Better Motorboat</h2>
+            <div class="pills"><span class="category-badge" style="--c:#30f0c2">Transportation</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Improves the motorboat with better handling, capacity, and building surface area.</p>
+            </div>
+            <div class="col col-why">
+              <p>Makes water travel and sea bases more practical.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/knot-better-motorboat" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Knot Better Motorboat on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#b9fbff" data-categories="ui &amp; info" data-search="durability display durability display ui &amp; info durability hud gear info shows item durability clearly so you know when gear is about to break. helps you repair or swap tools before they fail mid-task.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1493653.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Durability Display</h2>
+            <div class="pills"><span class="category-badge" style="--c:#8cf4ff">UI &amp; Info</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Shows item durability clearly so you know when gear is about to break.</p>
+            </div>
+            <div class="col col-why">
+              <p>Helps you repair or swap tools before they fail mid-task.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/durability-display" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Durability Display on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#b9fbff" data-categories="ui &amp; info|gameplay" data-search="additional hitmarkers additional hitmarkers ui &amp; info gameplay hitmarkers combat hud feedback hit-marker feedback for hitting &quot;weak&quot; or &quot;armored&quot; points on a creature or structure. better visual confirmation in combat and while harvesting.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1429843.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Additional Hitmarkers</h2>
+            <div class="pills"><span class="category-badge" style="--c:#8cf4ff">UI &amp; Info</span><span class="category-badge" style="--c:#a6ff3d">Gameplay</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Hit-Marker feedback for hitting &quot;Weak&quot; or &quot;Armored&quot; points on a creature or structure.</p>
+            </div>
+            <div class="col col-why">
+              <p>Better visual confirmation in combat and while harvesting.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/additional-hitmarkers" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Additional Hitmarkers on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#b9fbff" data-categories="ui &amp; info|gameplay" data-search="locational damage locational damage ui &amp; info gameplay locational damage headshot combat balance adds location-based damage to all creatures so hits to weak spots like the head deal more damage. rewards accurate aim against creatures.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1440987.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Locational Damage</h2>
+            <div class="pills"><span class="category-badge" style="--c:#8cf4ff">UI &amp; Info</span><span class="category-badge" style="--c:#a6ff3d">Gameplay</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Adds location-based damage to all creatures so hits to weak spots like the head deal more damage.</p>
+            </div>
+            <div class="col col-why">
+              <p>Rewards accurate aim against creatures.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/creature-locational-damage" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Locational Damage on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#b9fbff" data-categories="ui &amp; info" data-search="day indicator day indicator ui &amp; info day hud info time displays the current in-game day count on the hud. day count, map, and current biome display briefly on every day change.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1032529.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Day Indicator</h2>
+            <div class="pills"><span class="category-badge" style="--c:#8cf4ff">UI &amp; Info</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Displays the current in-game day count on the HUD.</p>
+            </div>
+            <div class="col col-why">
+              <p>Day count, Map, and Current Biome display briefly on every day change.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/day-indicator" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Day Indicator on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#d0ff86" data-categories="gameplay|quality of life" data-search="swim sprint swim sprint gameplay quality of life swimming sprint movement water lets your character sprint while swimming for faster water movement. reduces slow, tedious swimming over long distances.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1311474.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Swim Sprint</h2>
+            <div class="pills"><span class="category-badge" style="--c:#a6ff3d">Gameplay</span><span class="category-badge" style="--c:#b86cff">Quality of Life</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Lets your character sprint while swimming for faster water movement.</p>
+            </div>
+            <div class="col col-why">
+              <p>Reduces slow, tedious swimming over long distances.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/swim-sprint" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Swim Sprint on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#b9fbff" data-categories="ui &amp; info" data-search="global dynamic player death displayer global dynamic player death displayer ui &amp; info death notifications server info broadcasts player death notifications across the server. adds awareness of deaths and events happening server-wide.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/957494.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Global Dynamic Player Death Displayer</h2>
+            <div class="pills"><span class="category-badge" style="--c:#8cf4ff">UI &amp; Info</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Broadcasts player death notifications across the server.</p>
+            </div>
+            <div class="col col-why">
+              <p>Adds awareness of deaths and events happening server-wide.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/global-dynamic-player-death-displayer" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Global Dynamic Player Death Displayer on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#fff1a3" data-categories="audio|building" data-search="rhythmbox rhythmbox audio building music audio jukebox sound juke box style music player so you can play tracks in-game. useful for base ambiance and parties.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/948902.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Rhythmbox</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ffe45c">Audio</span><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Juke Box style music player so you can play tracks in-game.</p>
+            </div>
+            <div class="col col-why">
+              <p>Useful for base ambiance and parties.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/rhythmbox" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Rhythmbox on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#fff1a3" data-categories="audio|building" data-search="rpg medieval &amp; fantasy jukebox rpg medieval &amp; fantasy jukebox audio building jukebox music medieval rp medieval and fantasy themed music tracks for the ryhtmbox. sets the mood for rp and medieval-themed builds.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/974371.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">RPG Medieval &amp; Fantasy Jukebox</h2>
+            <div class="pills"><span class="category-badge" style="--c:#ffe45c">Audio</span><span class="category-badge" style="--c:#c46f32">Building</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Medieval and fantasy themed music tracks for the Ryhtmbox.</p>
+            </div>
+            <div class="col col-why">
+              <p>Sets the mood for RP and medieval-themed builds.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/rpg-fantasy-jukbox" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open RPG Medieval &amp; Fantasy Jukebox on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffdf" data-categories="transportation" data-search="klinger additional boats klinger additional boats transportation boats water transport vehicles catamaran style boat that is faster, turns more easily and has a larger building surface area compared to the raft. more options for transport, fishing, and ocean building.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/930128.png" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Klinger Additional Boats</h2>
+            <div class="pills"><span class="category-badge" style="--c:#30f0c2">Transportation</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Catamaran style boat that is faster, turns more easily and has a larger building surface area compared to the Raft.</p>
+            </div>
+            <div class="col col-why">
+              <p>More options for transport, fishing, and ocean building.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/klinger-additional-boats-server" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Klinger Additional Boats on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures|core mods" data-search="astraeos - mythological creatures astraeos - mythological creatures creatures core mods astraeos mythological creatures fantasy mythological creatures themed around the astraeos map. minotaur, medusa, skeletons, and other mythological creatures.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1122696.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Astraeos - Mythological Creatures</h2>
+            <div class="pills"><span class="category-badge" style="--c:#38f06f">Creatures</span><span class="category-badge" style="--c:#2f67ff">Core Mods</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Mythological creatures themed around the Astraeos map.</p>
+            </div>
+            <div class="col col-why">
+              <p>Minotaur, Medusa, Skeletons, and other mythological creatures.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/astraeos-mythological-creatures" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Astraeos - Mythological Creatures on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+      <article class="mod" style="--title-c:#8cffdf" data-categories="transportation|core mods" data-search="astraeos - trireme ships astraeos - trireme ships transportation core mods astraeos ships trireme boats trireme ships themed around the astraeos map with massive building surface area. large ancient-style ships for ocean transport and sea bases.">
+        <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/1015955.jpeg" alt="" loading="lazy"></div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">Astraeos - Trireme Ships</h2>
+            <div class="pills"><span class="category-badge" style="--c:#30f0c2">Transportation</span><span class="category-badge" style="--c:#2f67ff">Core Mods</span></div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>Trireme ships themed around the Astraeos map with massive building surface area.</p>
+            </div>
+            <div class="col col-why">
+              <p>Large ancient-style ships for ocean transport and sea bases.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mod-action"><a class="cf-link" href="https://www.curseforge.com/ark-survival-ascended/mods/astraeos-trireme-ships" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open Astraeos - Trireme Ships on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a></div>
+      </article>
+        <div class="empty" id="empty">No mods match your search.</div>
+      </div>
+      <footer>Legion of Idiots &middot; 80 mods</footer>
+    </div>
+  </div>
+<script>
+(function () {
+  var search = document.getElementById('search');
+  var list = document.getElementById('list');
+  var mods = Array.prototype.slice.call(list.querySelectorAll('.mod'));
+  var filters = Array.prototype.slice.call(document.querySelectorAll('.filter'));
+  var count = document.getElementById('count');
+  var empty = document.getElementById('empty');
+  var activeFilter = 'all';
+
+  function apply() {
+    var q = search.value.trim().toLowerCase();
+    var shown = 0;
+    mods.forEach(function (el) {
+      var matchText = !q || el.getAttribute('data-search').indexOf(q) !== -1;
+      var cats = el.getAttribute('data-categories').split('|');
+      var matchCat = activeFilter === 'all' || cats.indexOf(activeFilter) !== -1;
+      var visible = matchText && matchCat;
+      el.style.display = visible ? '' : 'none';
+      if (visible) shown++;
+    });
+    count.textContent = shown;
+    empty.style.display = shown ? 'none' : 'block';
+  }
+
+  search.addEventListener('input', apply);
+  filters.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      filters.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeFilter = btn.getAttribute('data-filter');
+      apply();
+    });
+  });
+  apply();
+})();
+</script>
+</body>
+</html>

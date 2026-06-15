@@ -1,0 +1,2 @@
+Drop an optional page background image here and point site.backgroundImage at it
+(e.g. assets/backgrounds/astraeos.jpg) in data/mod-reference.yaml.
