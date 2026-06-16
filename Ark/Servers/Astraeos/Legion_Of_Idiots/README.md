@@ -224,7 +224,7 @@ The site is pure static files; no framework or build server is needed.
 **Option A — point Vercel at this folder (recommended):**
 
 1. In the Vercel project settings set the **Root Directory** to
-   `docs/servers/mod-reference-site`.
+   `Ark/Servers/Astraeos/Legion_Of_Idiots`.
 2. **Framework Preset:** Other. **Build Command:** `npm run build`
    (or leave empty and commit the generated HTML files).
    **Output Directory:** `.` (the folder itself — `index.html` is at its root).
@@ -234,7 +234,7 @@ The site is pure static files; no framework or build server is needed.
 
 ```bash
 npm run build
-npx vercel --prod        # from inside docs/servers/mod-reference-site
+npx vercel --prod        # from inside Ark/Servers/Astraeos/Legion_Of_Idiots
 ```
 
 Because there are no runtime API calls, no environment variables are required on
