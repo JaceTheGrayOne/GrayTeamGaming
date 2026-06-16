@@ -1,21 +1,25 @@
-# ARK Ascended Mod Quick Reference Site
+# ARK Ascended Server Reference Site
 
-A self-contained, static HTML quick-reference page for the **Lost Colony**
-ARK: Survival Ascended mod list. The generated `index.html` opens directly in a
-browser and works with no server, no build step at view time, and no runtime
-network calls.
+A self-contained, static HTML mini-wiki for the **Lost Colony** ARK: Survival
+Ascended server reference. The generated pages open directly in a browser and
+work with no server, no build step at view time, and no runtime network calls.
 
 ```
 mod-reference-site/
-  index.html                 <- BUILD OUTPUT (do not hand-edit)
+  index.html                 <- BUILD OUTPUT: home/navigation page
+  mods.html                  <- BUILD OUTPUT: mod quick reference
+  items.html                 <- BUILD OUTPUT: item scaffold with fake sample data
+  creatures.html             <- BUILD OUTPUT: creature scaffold with fake sample data
   package.json
   data/
     mod-reference.yaml        <- SOURCE OF TRUTH (edit this)
+    item-reference.yaml       <- SOURCE OF TRUTH: item reference scaffold/data
+    creature-reference.yaml   <- SOURCE OF TRUTH: creature reference scaffold/data
     fetched-metadata.json     <- cache from `npm run fetch` (optional)
   scripts/
     seed-from-csv.mjs         <- bootstrap YAML from the CSV
     fetch-curseforge-metadata.mjs
-    build-site.mjs            <- renders index.html from the YAML
+    build-site.mjs            <- renders the static HTML pages
     lib/mini-yaml.mjs         <- tiny YAML reader/writer (no dependencies)
   assets/
     mod-thumbnails/           <- <CurseID>.<ext> logos (from fetch)
@@ -30,13 +34,17 @@ Plain Node.js only — no frameworks, no npm dependencies. Requires Node 18+
 
 ```bash
 cd docs/servers/mod-reference-site
-npm run build          # regenerate index.html from data/mod-reference.yaml
+npm run build          # regenerate index.html, mods.html, items.html, creatures.html
 # then open index.html in a browser
 ```
 
 ## Editing the page
 
-Everything the page shows is controlled by **`data/mod-reference.yaml`**.
+Reference content is controlled by YAML files in `data/`:
+
+- **`data/mod-reference.yaml`** controls `mods.html`.
+- **`data/item-reference.yaml`** controls `items.html`.
+- **`data/creature-reference.yaml`** controls `creatures.html`.
 
 - **Site text / theme** — under `site:` you can change `serverName`,
   `pageTitle`, `subtitle`, `introText`, `accentColor`, `backgroundImage`,
@@ -56,8 +64,25 @@ Everything the page shows is controlled by **`data/mod-reference.yaml`**.
   - `needsReview: true` — flags entries whose purpose wasn't confirmed; they get
     a "Needs review" pill and conservative placeholder text. **Verify these on
     CurseForge and update the text, then set `needsReview: false`.**
+- **Items and creatures** — `item-reference.yaml` and
+  `creature-reference.yaml` follow the same basic pattern: a local `categories:`
+  list, then `items:` or `creatures:` entries whose `category` matches one of
+  those category labels.
+- **Fake scaffold data** — temporary item/creature layout entries use
+  `fakeData: true`; remove that flag when replacing them with real server data.
 
-After any edit, run `npm run build` and reload `index.html`.
+After any edit, run `npm run build` and reload the generated page.
+
+### Page map
+
+- `index.html` is the home/navigation page.
+- `mods.html` is the current mod quick-reference list.
+- `items.html` is a layout scaffold with one fake item entry.
+- `creatures.html` is a layout scaffold with one fake creature entry.
+
+The fake item and creature entries live in `data/item-reference.yaml` and
+`data/creature-reference.yaml`. They are marked with `fakeData: true` and should
+be replaced with verified server reference data later.
 
 ### YAML formatting note
 
@@ -119,7 +144,7 @@ mod blocks into the curated file by hand.
 
 ## How search & filtering work
 
-`index.html` ships pre-rendered mod rows plus a small vanilla-JS block that
+`mods.html` ships pre-rendered mod rows plus a small vanilla-JS block that
 toggles row visibility — fully client-side, no backend.
 
 - **Search** matches display name, source name, primary + additional
@@ -136,9 +161,9 @@ The site is pure static files; no framework or build server is needed.
 1. In the Vercel project settings set the **Root Directory** to
    `docs/servers/mod-reference-site`.
 2. **Framework Preset:** Other. **Build Command:** `npm run build`
-   (or leave empty and commit the generated `index.html`).
+   (or leave empty and commit the generated HTML files).
    **Output Directory:** `.` (the folder itself — `index.html` is at its root).
-3. Deploy. `index.html` and `assets/` are served as-is.
+3. Deploy. The generated HTML files and `assets/` are served as-is.
 
 **Option B — drag & drop / CLI:**
 

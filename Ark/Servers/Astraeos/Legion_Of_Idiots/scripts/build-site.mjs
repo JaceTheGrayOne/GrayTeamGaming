@@ -1,7 +1,7 @@
-// Build index.html from data/mod-reference.yaml (+ optional fetched cache).
+// Build the static Lost Colony mini-wiki from the data/*-reference.yaml files.
 //
-// Fully static output: rows are server-rendered, and a small vanilla-JS block
-// handles client-side search + category filtering by toggling row visibility.
+// Fully static output: rows are server-rendered, and small vanilla-JS blocks
+// handle client-side interactions such as mod search and category filtering.
 // No runtime network calls, no framework.
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
@@ -11,14 +11,34 @@ import { parseYaml } from './lib/mini-yaml.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
-const YAML_PATH = join(root, 'data', 'mod-reference.yaml');
+const MOD_YAML_PATH = join(root, 'data', 'mod-reference.yaml');
+const ITEM_YAML_PATH = join(root, 'data', 'item-reference.yaml');
+const CREATURE_YAML_PATH = join(root, 'data', 'creature-reference.yaml');
 const CACHE_PATH = join(root, 'data', 'fetched-metadata.json');
 const THUMB_DIR = join(root, 'assets', 'mod-thumbnails');
-const OUT_PATH = join(root, 'index.html');
+
+const OUTPUTS = {
+  home: join(root, 'index.html'),
+  mods: join(root, 'mods.html'),
+  items: join(root, 'items.html'),
+  creatures: join(root, 'creatures.html'),
+};
+
+const NAV_ITEMS = [
+  { id: 'home', label: 'Home', href: 'index.html' },
+  { id: 'mods', label: 'Mods', href: 'mods.html' },
+  { id: 'items', label: 'Items', href: 'items.html' },
+  { id: 'creatures', label: 'Creatures', href: 'creatures.html' },
+];
 
 const esc = (s) => String(s ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+function loadYamlFile(path) {
+  if (!existsSync(path)) return {};
+  return parseYaml(readFileSync(path, 'utf8')) || {};
+}
 
 function loadCache() {
   if (existsSync(CACHE_PATH)) {
@@ -34,109 +54,66 @@ function thumbOnDisk(curseId) {
   return match ? `assets/mod-thumbnails/${match}` : null;
 }
 
-function main() {
-  const doc = parseYaml(readFileSync(YAML_PATH, 'utf8'));
-  const site = doc.site || {};
-  const categories = doc.categories || [];
+function buildContext() {
+  const modDoc = loadYamlFile(MOD_YAML_PATH);
+  const itemDoc = loadYamlFile(ITEM_YAML_PATH);
+  const creatureDoc = loadYamlFile(CREATURE_YAML_PATH);
+  const site = modDoc.site || {};
+  const categories = modDoc.categories || [];
   const cache = loadCache();
-  const mods = doc.mods || [];
-
+  const mods = modDoc.mods || [];
   const catByLabel = new Map(categories.map((c) => [c.label, c]));
   const accent = site.accentColor || '#00e5ff';
-  const logoImage = site.logoImage || '';
-  const fontStylesheet = site.fontStylesheet || '';
-  const categoryColor = (label) => catByLabel.get(label)?.color || accent;
-  const categoryTextColor = (label) => catByLabel.get(label)?.textColor || categoryColor(label);
 
-  // Build ordered category filter list. Honour site.categoryOrder first.
-  const order = site.categoryOrder && site.categoryOrder.length
-    ? site.categoryOrder
-    : categories.map((c) => c.label);
-  const orderedCats = [];
-  for (const label of order) {
-    const c = catByLabel.get(label);
-    if (c) orderedCats.push(c);
-  }
-  for (const c of categories) if (!orderedCats.includes(c)) orderedCats.push(c);
-
-  const resolveThumb = (m) => {
-    if (!site.showThumbnails) return null;
-    const onDisk = thumbOnDisk(m.curseId);
-    if (onDisk) return onDisk;
-    const cached = cache[m.curseId]?.thumbnail;
-    if (cached) return cached;
-    return null; // fall back to category icon
+  return {
+    site,
+    categories,
+    cache,
+    mods,
+    itemCategories: itemDoc.categories || [],
+    items: itemDoc.items || [],
+    creatureCategories: creatureDoc.categories || [],
+    creatures: creatureDoc.creatures || [],
+    catByLabel,
+    accent,
+    logoImage: site.logoImage || '',
+    fontStylesheet: site.fontStylesheet || '',
+    reviewCount: mods.filter((m) => m.needsReview).length,
   };
+}
 
-  const reviewCount = mods.filter((m) => m.needsReview).length;
+function categoryColor(ctx, label) {
+  return ctx.catByLabel.get(label)?.color || ctx.accent;
+}
 
-  const rows = mods.map((m) => {
-    const cat = catByLabel.get(m.primaryCategory);
-    const color = cat?.color || accent;
-    const titleColor = categoryTextColor(m.primaryCategory);
-    const icon = cat?.icon || 'assets/category-icons/default.svg';
-    const thumb = resolveThumb(m);
-    const allCats = [m.primaryCategory, ...(m.additionalCategories || [])].filter(Boolean);
-    const tips = m.tips || [];
-    const tags = m.tags || [];
-    const link = m.curseforgeUrl || cache[m.curseId]?.websiteUrl || '';
+function categoryTextColor(ctx, label) {
+  return ctx.catByLabel.get(label)?.textColor || categoryColor(ctx, label);
+}
 
-    const searchText = [
-      m.displayName, m.sourceName, m.primaryCategory,
-      ...(m.additionalCategories || []), ...tags, m.description, ...tips,
-    ].filter(Boolean).join(' ').toLowerCase();
+function orderedCategories(ctx) {
+  const order = ctx.site.categoryOrder && ctx.site.categoryOrder.length
+    ? ctx.site.categoryOrder
+    : ctx.categories.map((c) => c.label);
+  const ordered = [];
+  for (const label of order) {
+    const c = ctx.catByLabel.get(label);
+    if (c) ordered.push(c);
+  }
+  for (const c of ctx.categories) if (!ordered.includes(c)) ordered.push(c);
+  return ordered;
+}
 
-    const pills = [
-      `<span class="category-badge" style="--c:${esc(color)}">${esc(m.primaryCategory)}</span>`,
-      ...(site.showAdditionalCategoryPills
-        ? (m.additionalCategories || []).map((c) => `<span class="category-badge" style="--c:${esc(categoryColor(c))}">${esc(c)}</span>`)
-        : []),
-      ...(m.needsReview ? ['<span class="category-badge pill-review">Needs review</span>'] : []),
-    ].join('');
+function resolveThumb(ctx, mod) {
+  if (!ctx.site.showThumbnails) return null;
+  const onDisk = thumbOnDisk(mod.curseId);
+  if (onDisk) return onDisk;
+  const cached = ctx.cache[mod.curseId]?.thumbnail;
+  if (cached) return cached;
+  return null;
+}
 
-    const thumbHtml = thumb
-      ? `<img class="thumb" src="${esc(thumb)}" alt="" loading="lazy">`
-      : `<span class="thumb thumb-fallback" style="--c:${esc(color)}"><img src="${esc(icon)}" alt="" aria-hidden="true"></span>`;
-
-    const tipsHtml = tips.length
-      ? (tips.length === 1
-        ? `<p>${esc(tips[0])}</p>`
-        : `<ul>${tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>`)
-      : '<p class="empty-field">&nbsp;</p>';
-
-    const linkHtml = link
-      ? `<a class="cf-link" href="${esc(link)}" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open ${esc(m.displayName)} on CurseForge">
-           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-         </a>`
-      : '';
-
-    return `      <article class="mod" style="--title-c:${esc(titleColor)}" data-categories="${esc(allCats.map((c) => c.toLowerCase()).join('|'))}" data-search="${esc(searchText)}">
-        <div class="mod-thumb">${thumbHtml}</div>
-        <div class="mod-main">
-          <div class="mod-head">
-            <h2 class="mod-name">${esc(m.displayName)}</h2>
-            <div class="pills">${pills}</div>
-          </div>
-          <div class="mod-cols">
-            <div class="col col-what">
-              <p>${esc(m.description || '')}</p>
-            </div>
-            <div class="col col-why">
-              ${tipsHtml}
-            </div>
-          </div>
-        </div>
-        <div class="mod-action">${linkHtml}</div>
-      </article>`;
-  }).join('\n');
-
-  const filterButtons = [
-    `<button class="filter category-badge active" data-filter="all" style="--c:${esc(accent)}">All</button>`,
-    ...orderedCats.map((c) =>
-      `<button class="filter category-badge" data-filter="${esc(c.label.toLowerCase())}" style="--c:${esc(c.color)}">${esc(c.label)}</button>`),
-  ].join('\n        ');
-
-  const bg = site.backgroundImage
+function pageBackground(site) {
+  return site.backgroundImage
     ? `background-image:
       radial-gradient(circle at 79% 22%, rgba(0, 229, 255, .16), transparent 34%),
       linear-gradient(90deg, rgba(0, 2, 6, .58), rgba(0, 8, 14, .38) 38%, rgba(0, 4, 8, .18) 68%, rgba(0, 0, 0, .48)),
@@ -147,27 +124,14 @@ function main() {
     background-position: center center;
     background-repeat: no-repeat;`
     : '';
+}
 
-  const footer = site.footerText
-    ? esc(site.footerText)
-    : `${esc(site.serverName || '')} &middot; ${mods.length} mods${reviewCount ? ` &middot; ${reviewCount} flagged for review` : ''}`;
+function commonStyles(ctx) {
+  const bg = pageBackground(ctx.site);
 
-  const logoHtml = logoImage
-    ? `<div class="brand-mark"><img src="${esc(logoImage)}" alt="ARK logo"></div>`
-    : '';
-
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(site.pageTitle || 'ARK Mods')}${site.serverName ? ` — ${esc(site.serverName)}` : ''}</title>
-<meta name="description" content="${esc(site.introText || '')}">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2305141f'/%3E%3Cpath d='M32 8 54 56H44l-4-9H24l-4 9H10L32 8Zm0 17-6 14h12L32 25Z' fill='%2300e5ff'/%3E%3C/svg%3E">
-${fontStylesheet ? `<link rel="stylesheet" href="${esc(fontStylesheet)}">` : ''}
-<style>
+  return `
   :root {
-    --accent: ${esc(accent)};
+    --accent: ${esc(ctx.accent)};
     --font-display: "Segoe UI", "Arial", system-ui, sans-serif;
     --font-body: "Segoe UI", system-ui, -apple-system, sans-serif;
     --bg: #01060a;
@@ -182,16 +146,14 @@ ${fontStylesheet ? `<link rel="stylesheet" href="${esc(fontStylesheet)}">` : ''}
     --pill-bg: rgba(255,255,255,.07);
     --gold: #ffc45f;
     --danger: #ff315d;
-    --page-overlay-opacity: ${site.backgroundImage ? '.58' : '.92'};
+    --page-overlay-opacity: ${ctx.site.backgroundImage ? '.58' : '.92'};
   }
   * { box-sizing: border-box; }
-  html { height: 100%; overflow: hidden; }
+  html { overflow-x: hidden; }
   body {
-    min-height: 100vh; min-height: 100dvh;
-    margin: 0; padding: 12px 18px;
+    margin: 0; padding: 12px 18px 42px;
     font: 15px/1.5 var(--font-body);
     color: var(--text); background: var(--bg);
-    overflow: hidden;
     ${bg}
   }
   body::before {
@@ -204,12 +166,8 @@ ${fontStylesheet ? `<link rel="stylesheet" href="${esc(fontStylesheet)}">` : ''}
     opacity: var(--page-overlay-opacity);
   }
   a { color: var(--accent); }
-  .wrap {
-    width: min(100%, 1440px); height: calc(100vh - 24px); height: calc(100dvh - 24px);
-    margin: 0 auto; min-height: 0;
-  }
+  .wrap { width: min(100%, 1440px); margin: 0 auto; }
   .panel {
-    height: 100%; min-height: 0; display: flex; flex-direction: column;
     background:
       linear-gradient(180deg, rgba(3, 21, 31, .8), rgba(0, 9, 15, .92) 18%, rgba(0, 8, 14, .94)),
       var(--panel);
@@ -250,9 +208,27 @@ ${fontStylesheet ? `<link rel="stylesheet" href="${esc(fontStylesheet)}">` : ''}
     text-transform: none; color: #fff;
     text-shadow: 0 0 16px rgba(0,229,255,.25), 0 2px 0 rgba(0,0,0,.5);
   }
-  .hero h1 .accent { color: var(--accent); }
   .hero .subtitle { margin: 6px 0 0; color: var(--accent); font-family: var(--font-body); font-size: 21px; font-weight: 700; letter-spacing: 0; }
   .hero .intro { margin: 2px 0 0; color: #e1e7ec; max-width: 920px; font-size: 16px; overflow-wrap: anywhere; }
+  .site-nav {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(0, 238, 255, .46);
+    background: linear-gradient(180deg, rgba(0,4,9,.28), rgba(0,8,14,.5));
+  }
+  .site-nav a {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 38px; padding: 8px 14px;
+    border-radius: 7px; border: 1px solid rgba(83, 137, 165, .58);
+    color: var(--text); text-decoration: none; font-weight: 700;
+    background: rgba(2,10,17,.68);
+  }
+  .site-nav a:hover,
+  .site-nav a.active {
+    border-color: var(--accent); color: #06131a;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 84%, #fff), var(--accent));
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 28%, transparent);
+  }
   .controls {
     display: flex; align-items: flex-start; gap: 18px;
     padding: 10px 14px 12px; border-bottom: 1px solid rgba(0, 238, 255, .46);
@@ -282,17 +258,8 @@ ${fontStylesheet ? `<link rel="stylesheet" href="${esc(fontStylesheet)}">` : ''}
       linear-gradient(180deg, color-mix(in srgb, var(--c) 34%, rgba(8,20,31,.95)), color-mix(in srgb, var(--c) 18%, rgba(2,8,14,.95)));
     box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 0 18px color-mix(in srgb, var(--c) 34%, transparent);
   }
-  .meta-line { flex: 0 0 auto; padding: 9px 14px 0; color: var(--muted); font-size: 13px; }
-  .list {
-    flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
-    padding: 8px 12px 10px; scrollbar-color: rgba(0,229,255,.72) rgba(1,9,14,.66); scrollbar-width: thin;
-  }
-  .list::-webkit-scrollbar { width: 12px; }
-  .list::-webkit-scrollbar-track { background: rgba(1,9,14,.66); border-left: 1px solid rgba(0,229,255,.14); }
-  .list::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, rgba(0,229,255,.72), rgba(24,95,115,.72));
-    border: 3px solid rgba(1,9,14,.66); border-radius: 999px;
-  }
+  .meta-line { padding: 9px 14px 0; color: var(--muted); font-size: 13px; }
+  .list { padding: 8px 12px 10px; }
   .mod {
     display: grid; grid-template-columns: 104px minmax(310px, .8fr) minmax(360px, 1.4fr) 58px;
     gap: 14px; align-items: stretch;
@@ -370,14 +337,69 @@ ${fontStylesheet ? `<link rel="stylesheet" href="${esc(fontStylesheet)}">` : ''}
   }
   .cf-link:hover { background: var(--accent); color: #04121a; }
   .empty { padding: 40px; text-align: center; color: var(--muted); display: none; }
-  footer { flex: 0 0 auto; padding: 12px 30px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; text-align: center; }
+  .page-body { padding: 14px; }
+  .home-grid {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;
+  }
+  .nav-card,
+  .reference-card,
+  .sample-banner {
+    border: 1px solid rgba(0, 210, 235, .44); border-radius: 9px;
+    background: var(--row);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.055), inset 0 0 26px rgba(0,229,255,.036), 0 1px 0 rgba(0,0,0,.28);
+  }
+  .nav-card {
+    min-height: 220px; display: flex; flex-direction: column; gap: 12px;
+    padding: 16px; color: var(--text); text-decoration: none;
+  }
+  .nav-card:hover { background: var(--row-hover); border-color: rgba(0,238,255,.62); }
+  .nav-card-icon {
+    width: 58px; height: 58px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--c) 56%, var(--border));
+    background: linear-gradient(140deg, color-mix(in srgb, var(--c) 20%, #120b0b), #06111b 74%);
+  }
+  .nav-card-icon img { width: 32px; height: 32px; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c) 60%, transparent)); }
+  .nav-card h2,
+  .reference-card h2 {
+    margin: 0; font-family: var(--font-display); font-size: 24px; line-height: 1.1; color: color-mix(in srgb, var(--c, var(--accent)) 80%, #fff);
+  }
+  .nav-card p { margin: 0; color: #e1e7ec; }
+  .nav-card .status { margin-top: auto; color: var(--muted); font-size: 13px; }
+  .sample-banner {
+    margin-bottom: 12px; padding: 12px 14px; color: #ffe9b5;
+    border-color: rgba(255,196,95,.74);
+    background: linear-gradient(90deg, rgba(92, 54, 0, .58), rgba(4, 18, 26, .88));
+  }
+  .reference-list { display: grid; gap: 10px; }
+  .reference-card {
+    --c: var(--accent);
+    display: grid; grid-template-columns: 104px minmax(240px, .7fr) minmax(360px, 1.3fr);
+    gap: 14px; align-items: stretch; padding: 10px;
+  }
+  .reference-icon { width: 104px; height: 104px; }
+  .reference-main { min-width: 0; padding: 4px 14px 4px 2px; border-right: 1px solid var(--border-soft); }
+  .reference-main p { margin: 8px 0 0; color: #e1e7ec; }
+  .detail-grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+    align-content: start;
+  }
+  .detail {
+    padding: 10px; min-width: 0; border: 1px solid var(--border-soft); border-radius: 7px;
+    background: rgba(2,10,17,.48);
+  }
+  .detail b {
+    display: block; margin-bottom: 4px; color: color-mix(in srgb, var(--c) 74%, #fff);
+    font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
+  }
+  .detail span { color: var(--text); overflow-wrap: anywhere; }
+  footer { padding: 18px 30px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; text-align: center; }
   @media (max-width: 1120px) {
-    body { padding: 10px 8px; }
-    .wrap { height: calc(100vh - 20px); height: calc(100dvh - 20px); }
+    body { padding: 10px 8px 34px; }
     .panel { border-radius: 14px; }
     .controls { flex-direction: column; align-items: stretch; gap: 10px; }
     .searchbox { flex: 0 0 auto; width: 100%; }
     .filters { width: 100%; }
+    .home-grid { grid-template-columns: 1fr; }
     .mod {
       grid-template-columns: 104px minmax(260px, .85fr) 54px;
       grid-template-areas:
@@ -389,10 +411,19 @@ ${fontStylesheet ? `<link rel="stylesheet" href="${esc(fontStylesheet)}">` : ''}
     .mod-head { grid-area: head; border-right: 0; padding-right: 6px; }
     .mod-cols { grid-area: cols; border-top: 1px solid var(--border-soft); padding-top: 8px; }
     .mod-action { grid-area: action; }
+    .reference-card {
+      grid-template-columns: 104px 1fr;
+      grid-template-areas:
+        "reficon refmain"
+        "details details";
+    }
+    .reference-icon { grid-area: reficon; }
+    .reference-main { grid-area: refmain; border-right: 0; }
+    .detail-grid { grid-area: details; border-top: 1px solid var(--border-soft); padding-top: 10px; }
   }
   @media (max-width: 760px) {
     body { padding: 0; }
-    .wrap { width: 100%; height: 100vh; height: 100dvh; }
+    .wrap { width: 100%; }
     .panel { border-left: 0; border-right: 0; border-radius: 0; }
     header.hero { padding: 14px 14px 12px; }
     .hero-brand { align-items: flex-start; gap: 14px; min-height: 0; }
@@ -401,8 +432,12 @@ ${fontStylesheet ? `<link rel="stylesheet" href="${esc(fontStylesheet)}">` : ''}
     .hero h1 { font-size: clamp(30px, 7vw, 40px); }
     .hero .subtitle { font-size: 18px; }
     .hero .intro { font-size: 14px; }
+    .site-nav { padding: 10px 12px; }
+    .site-nav a { flex: 1 1 calc(50% - 10px); }
     .controls { padding: 10px 12px; }
     .list { padding: 8px 8px 10px; }
+    .page-body { padding: 10px 8px; }
+    .nav-card { min-height: 180px; }
     .mod {
       grid-template-columns: 74px 1fr 46px;
       grid-template-areas:
@@ -419,7 +454,49 @@ ${fontStylesheet ? `<link rel="stylesheet" href="${esc(fontStylesheet)}">` : ''}
     .col + .col { border-left: 0; border-top: 1px solid var(--border-soft); }
     .mod-action { border-left: 0; }
     .cf-link { width: 40px; height: 40px; }
-  }
+    .reference-card {
+      grid-template-columns: 74px 1fr;
+      gap: 8px 10px;
+      padding: 8px;
+    }
+    .reference-icon, .reference-icon .thumb, .reference-icon .thumb-fallback { width: 74px; height: 74px; }
+    .reference-card h2 { font-size: 18px; }
+    .reference-main { padding: 4px 2px; }
+    .detail-grid { grid-template-columns: 1fr; }
+  }`;
+}
+
+function pageNav(active) {
+  return NAV_ITEMS.map((item) => {
+    const activeClass = item.id === active ? ' class="active" aria-current="page"' : '';
+    return `<a href="${esc(item.href)}"${activeClass}>${esc(item.label)}</a>`;
+  }).join('\n        ');
+}
+
+function pageFooter(ctx, extraText = '') {
+  if (extraText) return esc(extraText);
+  if (ctx.site.footerText) return esc(ctx.site.footerText);
+  return `${esc(ctx.site.serverName || '')} &middot; ${ctx.mods.length} mods${ctx.reviewCount ? ` &middot; ${ctx.reviewCount} flagged for review` : ''}`;
+}
+
+function pageShell(ctx, options) {
+  const logoHtml = ctx.logoImage
+    ? `<div class="brand-mark"><img src="${esc(ctx.logoImage)}" alt="ARK logo"></div>`
+    : '';
+  const pageTitle = options.pageTitle || ctx.site.pageTitle || 'ARK Reference';
+  const title = `${pageTitle}${ctx.site.serverName ? ` - ${ctx.site.serverName}` : ''}`;
+  const description = options.description || options.intro || ctx.site.introText || '';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(description)}">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2305141f'/%3E%3Cpath d='M32 8 54 56H44l-4-9H24l-4 9H10L32 8Zm0 17-6 14h12L32 25Z' fill='%2300e5ff'/%3E%3C/svg%3E">
+${ctx.fontStylesheet ? `<link rel="stylesheet" href="${esc(ctx.fontStylesheet)}">` : ''}
+<style>${commonStyles(ctx)}
 </style>
 </head>
 <body>
@@ -428,31 +505,168 @@ ${fontStylesheet ? `<link rel="stylesheet" href="${esc(fontStylesheet)}">` : ''}
       <header class="hero">
         <div class="hero-brand">
           ${logoHtml}
-          <div class="hero-copy${logoImage ? '' : ' no-logo'}">
-            <h1>${esc(site.pageTitle || 'ARK Ascended Mods')}</h1>
-            <p class="subtitle">${esc(site.subtitle || '')}</p>
-            <p class="intro">${esc(site.introText || '')}</p>
+          <div class="hero-copy${ctx.logoImage ? '' : ' no-logo'}">
+            <h1>${esc(options.heading || pageTitle)}</h1>
+            <p class="subtitle">${esc(options.subtitle || ctx.site.subtitle || '')}</p>
+            <p class="intro">${esc(options.intro || ctx.site.introText || '')}</p>
           </div>
         </div>
       </header>
-      <div class="controls">
+      <nav class="site-nav" aria-label="Primary navigation">
+        ${pageNav(options.active)}
+      </nav>
+${options.content}
+      <footer>${pageFooter(ctx, options.footerText)}</footer>
+    </div>
+  </div>
+${options.script || ''}
+</body>
+</html>
+`;
+}
+
+function renderModRows(ctx) {
+  return ctx.mods.map((m) => {
+    const cat = ctx.catByLabel.get(m.primaryCategory);
+    const color = cat?.color || ctx.accent;
+    const titleColor = categoryTextColor(ctx, m.primaryCategory);
+    const icon = cat?.icon || 'assets/category-icons/default.svg';
+    const thumb = resolveThumb(ctx, m);
+    const allCats = [m.primaryCategory, ...(m.additionalCategories || [])].filter(Boolean);
+    const tips = m.tips || [];
+    const tags = m.tags || [];
+    const link = m.curseforgeUrl || ctx.cache[m.curseId]?.websiteUrl || '';
+
+    const searchText = [
+      m.displayName, m.sourceName, m.primaryCategory,
+      ...(m.additionalCategories || []), ...tags, m.description, ...tips,
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    const pills = [
+      `<span class="category-badge" style="--c:${esc(color)}">${esc(m.primaryCategory)}</span>`,
+      ...(ctx.site.showAdditionalCategoryPills
+        ? (m.additionalCategories || []).map((c) => `<span class="category-badge" style="--c:${esc(categoryColor(ctx, c))}">${esc(c)}</span>`)
+        : []),
+      ...(m.needsReview ? ['<span class="category-badge pill-review">Needs review</span>'] : []),
+    ].join('');
+
+    const thumbHtml = thumb
+      ? `<img class="thumb" src="${esc(thumb)}" alt="" loading="lazy">`
+      : `<span class="thumb thumb-fallback" style="--c:${esc(color)}"><img src="${esc(icon)}" alt="" aria-hidden="true"></span>`;
+
+    const tipsHtml = tips.length
+      ? (tips.length === 1
+        ? `<p>${esc(tips[0])}</p>`
+        : `<ul>${tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>`)
+      : '<p class="empty-field">&nbsp;</p>';
+
+    const linkHtml = link
+      ? `<a class="cf-link" href="${esc(link)}" target="_blank" rel="noopener noreferrer" title="Open on CurseForge" aria-label="Open ${esc(m.displayName)} on CurseForge">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a>`
+      : '';
+
+    return `      <article class="mod" style="--title-c:${esc(titleColor)}" data-categories="${esc(allCats.map((c) => c.toLowerCase()).join('|'))}" data-search="${esc(searchText)}">
+        <div class="mod-thumb">${thumbHtml}</div>
+        <div class="mod-main">
+          <div class="mod-head">
+            <h2 class="mod-name">${esc(m.displayName)}</h2>
+            <div class="pills">${pills}</div>
+          </div>
+          <div class="mod-cols">
+            <div class="col col-what">
+              <p>${esc(m.description || '')}</p>
+            </div>
+            <div class="col col-why">
+              ${tipsHtml}
+            </div>
+          </div>
+        </div>
+        <div class="mod-action">${linkHtml}</div>
+      </article>`;
+  }).join('\n');
+}
+
+function renderHomePage(ctx) {
+  const cardData = [
+    {
+      title: 'Mods',
+      href: 'mods.html',
+      icon: 'assets/category-icons/core-utility.svg',
+      color: '#2f67ff',
+      text: 'Browse installed server mods, filter by category, and get quick notes on what each mod adds.',
+      status: `${ctx.mods.length} mod entries available`,
+    },
+    {
+      title: 'Items',
+      href: 'items.html',
+      icon: 'assets/category-icons/equipment-items.svg',
+      color: '#ffb347',
+      text: 'Future home for important modded items, tools, stations, unlocks, and practical use notes.',
+      status: `${ctx.items.length} item ${ctx.items.length === 1 ? 'entry' : 'entries'} loaded from YAML`,
+    },
+    {
+      title: 'Creatures',
+      href: 'creatures.html',
+      icon: 'assets/category-icons/creatures.svg',
+      color: '#38f06f',
+      text: 'Future home for modded creatures, taming notes, utility roles, and saddle or unlock context.',
+      status: `${ctx.creatures.length} creature ${ctx.creatures.length === 1 ? 'entry' : 'entries'} loaded from YAML`,
+    },
+  ];
+
+  const cards = cardData.map((card) => `
+        <a class="nav-card" href="${esc(card.href)}" style="--c:${esc(card.color)}">
+          <span class="nav-card-icon"><img src="${esc(card.icon)}" alt="" aria-hidden="true"></span>
+          <h2>${esc(card.title)}</h2>
+          <p>${esc(card.text)}</p>
+          <span class="status">${esc(card.status)}</span>
+        </a>`).join('');
+
+  return pageShell(ctx, {
+    active: 'home',
+    pageTitle: 'Server Reference Home',
+    heading: 'Server Reference',
+    intro: 'Quick navigation for the Legion of Idiots server reference pages.',
+    content: `      <main class="page-body">
+        <div class="home-grid">
+${cards}
+        </div>
+      </main>
+`,
+  });
+}
+
+function renderModsPage(ctx) {
+  const filterButtons = [
+    `<button class="filter category-badge active" data-filter="all" style="--c:${esc(ctx.accent)}">All</button>`,
+    ...orderedCategories(ctx).map((c) =>
+      `<button class="filter category-badge" data-filter="${esc(c.label.toLowerCase())}" style="--c:${esc(c.color)}">${esc(c.label)}</button>`),
+  ].join('\n        ');
+
+  const rows = renderModRows(ctx);
+
+  return pageShell(ctx, {
+    active: 'mods',
+    pageTitle: ctx.site.pageTitle || 'Server Mod Quick Reference',
+    heading: ctx.site.pageTitle || 'Server Mod Quick Reference',
+    intro: ctx.site.introText || '',
+    content: `      <div class="controls">
         <div class="searchbox">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input id="search" type="search" placeholder="Search mods, categories, items, tags…" autocomplete="off">
+          <input id="search" type="search" placeholder="Search mods, categories, items, tags..." autocomplete="off">
         </div>
         <div class="filters">
         ${filterButtons}
         </div>
       </div>
-      <div class="meta-line"><span id="count">${mods.length}</span> mods shown</div>
+      <div class="meta-line"><span id="count">${ctx.mods.length}</span> mods shown</div>
       <div class="list" id="list">
 ${rows}
         <div class="empty" id="empty">No mods match your search.</div>
       </div>
-      <footer>${footer}</footer>
-    </div>
-  </div>
-<script>
+`,
+    script: `<script>
 (function () {
   var search = document.getElementById('search');
   var list = document.getElementById('list');
@@ -488,14 +702,122 @@ ${rows}
   });
   apply();
 })();
-</script>
-</body>
-</html>
-`;
+</script>`,
+  });
+}
 
-  writeFileSync(OUT_PATH, html, 'utf8');
-  console.log(`Built ${OUT_PATH}`);
-  console.log(`  ${mods.length} mods, ${categories.length} categories, ${reviewCount} flagged needsReview`);
+function renderReferenceEntry(entry, details) {
+  const badges = [
+    `<span class="category-badge" style="--c:${esc(entry.color)}">${esc(entry.category)}</span>`,
+    ...(entry.fakeData ? ['<span class="category-badge pill-review">Fake test data</span>'] : []),
+    ...(!entry.fakeData && entry.needsReview ? ['<span class="category-badge pill-review">Needs review</span>'] : []),
+  ].join('');
+  const tipsHtml = entry.tips?.length
+    ? `<div class="detail"><b>Notes</b><span>${esc(entry.tips.join(' '))}</span></div>`
+    : '';
+  const detailHtml = details.filter(([, value]) => value).map(([label, value]) => `
+          <div class="detail"><b>${esc(label)}</b><span>${esc(value)}</span></div>`).join('');
+
+  return `        <article class="reference-card" style="--c:${esc(entry.color)}">
+          <div class="reference-icon">
+            <span class="thumb thumb-fallback" style="--c:${esc(entry.color)}"><img src="${esc(entry.icon)}" alt="" aria-hidden="true"></span>
+          </div>
+          <div class="reference-main">
+            <h2>${esc(entry.displayName)}</h2>
+            <div class="pills">
+              ${badges}
+            </div>
+            <p>${esc(entry.description)}</p>
+          </div>
+          <div class="detail-grid">
+${detailHtml}
+          ${tipsHtml}
+          </div>
+        </article>`;
+}
+
+function enrichReferenceEntry(entry, categories, fallback) {
+  const category = categories.find((c) => c.label === entry.category);
+  return {
+    ...entry,
+    category: entry.category || category?.label || 'Uncategorized',
+    color: entry.color || category?.color || fallback.color,
+    icon: entry.icon || category?.icon || fallback.icon,
+  };
+}
+
+function renderItemsPage(ctx) {
+  const entries = ctx.items.map((item) => enrichReferenceEntry(item, ctx.itemCategories, {
+    color: '#ffb347',
+    icon: 'assets/category-icons/equipment-items.svg',
+  })).map((item) => renderReferenceEntry(item, [
+    ['Source mod', item.sourceMod],
+    ['How to get', item.howToGet],
+    ['Crafting station', item.craftingStation],
+    ['Unlock', item.unlock],
+  ])).join('\n');
+
+  return pageShell(ctx, {
+    active: 'items',
+    pageTitle: 'Item Reference',
+    heading: 'Item Reference',
+    intro: 'Placeholder page for future item reference data.',
+    content: `      <main class="page-body">
+        <div class="sample-banner">This page currently contains fake sample data for layout testing only.</div>
+        <div class="reference-list">
+${entries}
+        </div>
+      </main>
+`,
+    footerText: `${ctx.site.serverName || 'Server'} - Item page scaffold`,
+  });
+}
+
+function renderCreaturesPage(ctx) {
+  const entries = ctx.creatures.map((creature) => enrichReferenceEntry(creature, ctx.creatureCategories, {
+    color: '#38f06f',
+    icon: 'assets/category-icons/creatures.svg',
+  })).map((creature) => renderReferenceEntry(creature, [
+    ['Source mod', creature.sourceMod],
+    ['Taming method', creature.tamingMethod],
+    ['Spawn context', creature.spawnContext],
+    ['Utility', creature.utility],
+    ['Saddle / unlock', creature.saddleOrUnlock],
+  ])).join('\n');
+
+  return pageShell(ctx, {
+    active: 'creatures',
+    pageTitle: 'Creature Reference',
+    heading: 'Creature Reference',
+    intro: 'Placeholder page for future creature reference data.',
+    content: `      <main class="page-body">
+        <div class="sample-banner">This page currently contains fake sample data for layout testing only.</div>
+        <div class="reference-list">
+${entries}
+        </div>
+      </main>
+`,
+    footerText: `${ctx.site.serverName || 'Server'} - Creature page scaffold`,
+  });
+}
+
+function main() {
+  const ctx = buildContext();
+  const pages = [
+    ['home', OUTPUTS.home, renderHomePage(ctx)],
+    ['mods', OUTPUTS.mods, renderModsPage(ctx)],
+    ['items', OUTPUTS.items, renderItemsPage(ctx)],
+    ['creatures', OUTPUTS.creatures, renderCreaturesPage(ctx)],
+  ];
+
+  for (const [, path, html] of pages) {
+    writeFileSync(path, html, 'utf8');
+    console.log(`Built ${path}`);
+  }
+
+  console.log(`  ${ctx.mods.length} mods, ${ctx.categories.length} categories, ${ctx.reviewCount} flagged needsReview`);
+  console.log(`  ${ctx.items.length} items from data/item-reference.yaml`);
+  console.log(`  ${ctx.creatures.length} creatures from data/creature-reference.yaml`);
 }
 
 main();

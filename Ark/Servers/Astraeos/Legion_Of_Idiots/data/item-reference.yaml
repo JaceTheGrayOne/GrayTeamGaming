@@ -1,0 +1,37 @@
+# ===========================================================================
+# item-reference.yaml - human-editable source of truth for the item reference page.
+#
+# This scaffold intentionally contains one fake entry for layout testing.
+# Replace it with verified server item data when the item reference is ready.
+#
+# Style rules for this file:
+#   - one value per line
+#   - 2-space indentation
+#   - quote any sequence item that starts with "word:"
+#   - each item has exactly ONE category (must match a category label below)
+# ===========================================================================
+
+categories:
+  - id: utility
+    label: Utility
+    color: "#ffb347"
+    textColor: "#ffd18a"
+    icon: assets/category-icons/equipment-items.svg
+
+items:
+  - id: sample-item-layout-test
+    displayName: "Sample Item (Layout Test)"
+    sourceMod: Temporary scaffold entry
+    category: Utility
+    description: Fake placeholder item used only to test the item reference page layout.
+    howToGet: Future reference data will describe where players unlock, craft, or obtain this.
+    craftingStation: Sample crafting station
+    unlock: Sample unlock note
+    tips:
+      - Replace this with verified item data later.
+    tags:
+      - fake
+      - layout-test
+      - placeholder
+    fakeData: true
+    needsReview: true

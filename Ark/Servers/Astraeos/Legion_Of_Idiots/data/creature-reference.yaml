@@ -1,0 +1,38 @@
+# ===========================================================================
+# creature-reference.yaml - human-editable source of truth for the creature reference page.
+#
+# This scaffold intentionally contains one fake entry for layout testing.
+# Replace it with verified server creature data when the creature reference is ready.
+#
+# Style rules for this file:
+#   - one value per line
+#   - 2-space indentation
+#   - quote any sequence item that starts with "word:"
+#   - each creature has exactly ONE category (must match a category label below)
+# ===========================================================================
+
+categories:
+  - id: utility-tame
+    label: Utility Tame
+    color: "#38f06f"
+    textColor: "#8cffad"
+    icon: assets/category-icons/creatures.svg
+
+creatures:
+  - id: sample-creature-layout-test
+    displayName: "Sample Creature (Layout Test)"
+    sourceMod: Temporary scaffold entry
+    category: Utility Tame
+    description: Fake placeholder creature used only to test the creature reference page layout.
+    tamingMethod: Sample taming method
+    spawnContext: Sample spawn context
+    utility: Future reference data will describe real server usefulness here.
+    saddleOrUnlock: Sample saddle or unlock note
+    tips:
+      - Replace this with verified creature data later.
+    tags:
+      - fake
+      - layout-test
+      - placeholder
+    fakeData: true
+    needsReview: true
