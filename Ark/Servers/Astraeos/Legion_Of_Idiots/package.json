@@ -2,11 +2,15 @@
   "name": "ark-mod-reference-site",
   "version": "1.0.0",
   "private": true,
-  "description": "Static quick-reference page for the Lost Colony ARK: Survival Ascended mod list.",
+  "description": "Static quick-reference pages for the Legion of Idiots ARK: Survival Ascended server.",
   "type": "module",
   "scripts": {
     "seed": "node scripts/seed-from-csv.mjs",
     "fetch": "node scripts/fetch-curseforge-metadata.mjs",
+    "collect:items": "node scripts/collect-item-manifest.mjs",
+    "collect:icons": "node scripts/collect-item-icons.mjs",
+    "collect:items-and-icons": "npm run collect:items && npm run collect:icons",
+    "enrich:items": "node scripts/enrich-item-wiki-data.mjs",
     "build": "node scripts/build-site.mjs",
     "rebuild": "npm run fetch && npm run build",
     "start": "node scripts/build-site.mjs"

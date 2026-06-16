@@ -1,37 +1,224 @@
 # ===========================================================================
-# item-reference.yaml - human-editable source of truth for the item reference page.
+# item-reference.yaml - page config and manual overrides for the item reference.
 #
-# This scaffold intentionally contains one fake entry for layout testing.
-# Replace it with verified server item data when the item reference is ready.
+# Item rows are generated from:
+#   - assets/items/ASA_LegionOfIdiots_Item_Manifest.csv
+#   - assets/items/ASA_LegionOfIdiots_Item_Manifest_With_Icons.csv
+#   - data/item-wiki-cache.json
 #
-# Style rules for this file:
-#   - one value per line
-#   - 2-space indentation
-#   - quote any sequence item that starts with "word:"
-#   - each item has exactly ONE category (must match a category label below)
+# Keep bulk item data in the generated CSV/cache files. Add hand-curated fixes
+# under manualOverrides, keyed by className whenever possible.
 # ===========================================================================
 
+page:
+  title: Item Reference
+  intro: Quick lookup for server items, sources, crafting context, and spawn codes.
+  defaultIcon: assets/category-icons/equipment-items.svg
+  unknownCraftingStationLabel: Not listed
+  unavailableDescriptionLabel: Description unavailable
+  maxSourceFilterButtons: 18
+
+sourceLabels:
+  base-game: Ark
+  map: Ark
+  server-config: Ark
+
 categories:
-  - id: utility
-    label: Utility
+  - id: ammo
+    label: Ammo
+    color: "#ff6b6b"
+    textColor: "#ffb0b0"
+    icon: assets/category-icons/equipment-items.svg
+  - id: armor
+    label: Armor
+    color: "#8cf4ff"
+    textColor: "#b9fbff"
+    icon: assets/category-icons/equipment-items.svg
+  - id: artifact
+    label: Artifact
+    color: "#d7a8ff"
+    textColor: "#ead3ff"
+    icon: assets/category-icons/equipment-items.svg
+  - id: consumable
+    label: Consumable
+    color: "#a6ff3d"
+    textColor: "#d0ff86"
+    icon: assets/category-icons/equipment-items.svg
+  - id: cosmetic
+    label: Cosmetic
+    color: "#ff5fb7"
+    textColor: "#ff9bd3"
+    icon: assets/category-icons/cosmetic.svg
+  - id: resource
+    label: Resource
     color: "#ffb347"
     textColor: "#ffd18a"
     icon: assets/category-icons/equipment-items.svg
+  - id: saddle
+    label: Saddle
+    color: "#30f0c2"
+    textColor: "#8cffdf"
+    icon: assets/category-icons/equipment-items.svg
+  - id: skin
+    label: Skin
+    color: "#d9f7ff"
+    textColor: "#f2fdff"
+    icon: assets/category-icons/cosmetic.svg
+  - id: structure
+    label: Structure
+    color: "#c46f32"
+    textColor: "#efad78"
+    icon: assets/category-icons/building.svg
+  - id: tool
+    label: Tool
+    color: "#2f67ff"
+    textColor: "#93aaff"
+    icon: assets/category-icons/equipment-items.svg
+  - id: trophy
+    label: Trophy
+    color: "#ffe45c"
+    textColor: "#fff1a3"
+    icon: assets/category-icons/equipment-items.svg
+  - id: utility
+    label: Utility
+    color: "#b86cff"
+    textColor: "#d7a8ff"
+    icon: assets/category-icons/equipment-items.svg
+  - id: weapon
+    label: Weapon
+    color: "#e32636"
+    textColor: "#ff7f8a"
+    icon: assets/category-icons/equipment-items.svg
+  - id: unknown
+    label: Unknown
+    color: "#b2c0ca"
+    textColor: "#e1e7ec"
+    icon: assets/category-icons/equipment-items.svg
 
-items:
-  - id: sample-item-layout-test
-    displayName: "Sample Item (Layout Test)"
-    sourceMod: Temporary scaffold entry
+manualOverrides:
+  # Ammo override template
+  PrimalItemAmmo_AdvancedBullet_C:
+    displayName: Advanced Bullet
+    category: Ammo
+    description: Small-caliber modern ammo primarily used by fabricated pistols.
+    craftingStation: Fabricator; Tek Replicator; Exo-Mek
+    notes: Used by the Fabricated Pistol.
+    wikiUrl: https://ark.wiki.gg/wiki/Advanced_Bullet
+    needsReview: false
+  # Armor override template
+  PrimalItemArmor_MetalBoots_C:
+    displayName: Flak Boots
+    category: Armor
+    description: Durable metal armor for the survivor's feet.
+    craftingStation: Smithy; Argentavis Saddle; Castoroides Saddle; Thorny Dragon Saddle; Tek Replicator
+    notes: Standard mid-tier armor piece.
+    wikiUrl: https://ark.wiki.gg/wiki/Flak_Boots
+    needsReview: false
+  # Artifact override template
+  PrimalItemArtifact_Extinction_ForestKaiju_C:
+    displayName: Artifact of Growth
+    category: Artifact
+    description: Artifact used for boss and tribute progression.
+    craftingStation: Not listed
+    notes: Keep artifact entries short and use notes for map or tribute context.
+    wikiUrl: https://ark.wiki.gg/wiki/Artifact_of_Growth
+    needsReview: false
+  # Consumable override template
+  PrimalItemConsumable_Berry_Amarberry_C:
+    displayName: Amarberry
+    category: Consumable
+    description: Yellow berry eaten by survivors and many herbivores.
+    craftingStation: Not listed
+    notes: Also used as a basic cooking and taming ingredient.
+    wikiUrl: https://ark.wiki.gg/wiki/Amarberry
+    needsReview: false
+  # Cosmetic override template
+  PrimalItem_Harp_Disks_C:
+    displayName: Harp Disks
+    category: Cosmetic
+    sourceLabel: Castle Craft Decor
+    description: Decorative harp music disk from Castle Craft Decor.
+    craftingStation: Not listed
+    notes: Mod item override example without an ARK wiki URL.
+    needsReview: false
+  # Resource override template
+  PrimalItemResource_MetalIngot_C:
+    displayName: Metal Ingot
+    category: Resource
+    description: Refined metal used in advanced tools, weapons, armor, and structures.
+    craftingStation: Refining Forge; Industrial Forge; Magmasaur
+    notes: Also accepts Scrap Metal Ingot in many recipes.
+    wikiUrl: https://ark.wiki.gg/wiki/Metal_Ingot
+    needsReview: false
+  # Saddle override template
+  PrimalItemArmor_AcroSaddle_C:
+    displayName: Acro Saddle
+    category: Saddle
+    description: Saddle used to ride an Acrocanthosaurus.
+    craftingStation: Smithy
+    notes: Verify mod and map availability if this changes.
+    wikiUrl: https://ark.wiki.gg/wiki/Acro_Saddle
+    needsReview: false
+  # Skin override template
+  PrimalItemSkin_AberrationHelmet_C:
+    displayName: Aberrant Helmet Skin
+    category: Skin
+    description: Cosmetic helmet skin with Aberration styling.
+    craftingStation: Not listed
+    notes: Skin overrides are useful for event or unlock context.
+    wikiUrl: https://ark.wiki.gg/wiki/Aberrant_Helmet_Skin
+    needsReview: false
+  # Structure override template
+  PrimalItemStructure_AdobeCeiling_C:
+    displayName: Adobe Ceiling
+    category: Structure
+    description: Adobe building ceiling piece for heat-resistant structures.
+    craftingStation: Inventory; Smithy
+    notes: Use structure notes for snap, tier, or server placement caveats.
+    wikiUrl: https://ark.wiki.gg/wiki/Adobe_Ceiling
+    needsReview: false
+  # Tool override template
+  PrimalItem_WeaponGPS_C:
+    displayName: GPS
+    category: Tool
+    description: Navigation tool that displays current map coordinates.
+    craftingStation: Fabricator; Tek Replicator
+    notes: Useful for sharing exact base, cave, and tame locations.
+    wikiUrl: https://ark.wiki.gg/wiki/GPS
+    needsReview: false
+  # Trophy override template
+  PrimalItemTrophy_AlphaWorm_C:
+    displayName: Alpha Deathworm Trophy
+    category: Trophy
+    description: Trophy harvested from an Alpha Deathworm.
+    craftingStation: Not listed
+    notes: Trophy entries are good places for tribute or display context.
+    wikiUrl: https://ark.wiki.gg/wiki/Alpha_Deathworm_Trophy
+    needsReview: false
+  # Utility override template
+  PrimalItem_TreasureMap_ShoulderDragon_C:
+    displayName: Dragon Hoard Key
     category: Utility
-    description: Fake placeholder item used only to test the item reference page layout.
-    howToGet: Future reference data will describe where players unlock, craft, or obtain this.
-    craftingStation: Sample crafting station
-    unlock: Sample unlock note
-    tips:
-      - Replace this with verified item data later.
-    tags:
-      - fake
-      - layout-test
-      - placeholder
-    fakeData: true
-    needsReview: true
+    description: Utility key item tied to dragon hoard treasure content.
+    craftingStation: Not listed
+    notes: Use utility notes for event, quest, or server-specific usage.
+    wikiUrl: https://ark.wiki.gg/wiki/Dragon_Hoard_Key
+    needsReview: false
+  # Weapon override template
+  PrimalItem_WeaponOneShotRifle_C:
+    displayName: Longneck Rifle
+    category: Weapon
+    description: Single-shot rifle used for ranged combat and tranquilizer darts.
+    craftingStation: Smithy; Argentavis Saddle; Castoroides Saddle; Thorny Dragon Saddle; Tek Replicator
+    notes: Supports Simple Rifle Ammo and several dart types.
+    wikiUrl: https://ark.wiki.gg/wiki/Longneck_Rifle
+    needsReview: false
+  # Unknown category override template
+  PrimalItemCanoe_C:
+    displayName: Canoe
+    category: Unknown
+    description: Small paddle boat for low-tech river and shoreline travel.
+    craftingStation: Inventory
+    notes: Keep Unknown only when a better category has not been verified.
+    wikiUrl: https://ark.wiki.gg/wiki/Canoe
+    needsReview: false

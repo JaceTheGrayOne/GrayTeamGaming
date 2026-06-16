@@ -8,6 +8,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { parseYaml } from './lib/mini-yaml.mjs';
+import { readCsv } from './lib/csv.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -15,6 +16,9 @@ const MOD_YAML_PATH = join(root, 'data', 'mod-reference.yaml');
 const ITEM_YAML_PATH = join(root, 'data', 'item-reference.yaml');
 const CREATURE_YAML_PATH = join(root, 'data', 'creature-reference.yaml');
 const CACHE_PATH = join(root, 'data', 'fetched-metadata.json');
+const ITEM_WIKI_CACHE_PATH = join(root, 'data', 'item-wiki-cache.json');
+const ITEM_MANIFEST_PATH = join(root, 'assets', 'items', 'ASA_LegionOfIdiots_Item_Manifest.csv');
+const ITEM_ICON_MANIFEST_PATH = join(root, 'assets', 'items', 'ASA_LegionOfIdiots_Item_Manifest_With_Icons.csv');
 const THUMB_DIR = join(root, 'assets', 'mod-thumbnails');
 
 const OUTPUTS = {
@@ -35,9 +39,31 @@ const esc = (s) => String(s ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
+const ITEM_CATEGORY_DEFAULTS = [
+  { id: 'ammo', label: 'Ammo', color: '#ff6b6b', textColor: '#ffb0b0', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'armor', label: 'Armor', color: '#8cf4ff', textColor: '#b9fbff', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'artifact', label: 'Artifact', color: '#d7a8ff', textColor: '#ead3ff', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'consumable', label: 'Consumable', color: '#a6ff3d', textColor: '#d0ff86', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'cosmetic', label: 'Cosmetic', color: '#ff5fb7', textColor: '#ff9bd3', icon: 'assets/category-icons/cosmetic.svg' },
+  { id: 'resource', label: 'Resource', color: '#ffb347', textColor: '#ffd18a', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'saddle', label: 'Saddle', color: '#30f0c2', textColor: '#8cffdf', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'skin', label: 'Skin', color: '#d9f7ff', textColor: '#f2fdff', icon: 'assets/category-icons/cosmetic.svg' },
+  { id: 'structure', label: 'Structure', color: '#c46f32', textColor: '#efad78', icon: 'assets/category-icons/building.svg' },
+  { id: 'tool', label: 'Tool', color: '#2f67ff', textColor: '#93aaff', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'trophy', label: 'Trophy', color: '#ffe45c', textColor: '#fff1a3', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'utility', label: 'Utility', color: '#b86cff', textColor: '#d7a8ff', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'weapon', label: 'Weapon', color: '#e32636', textColor: '#ff7f8a', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'unknown', label: 'Unknown', color: '#b2c0ca', textColor: '#e1e7ec', icon: 'assets/category-icons/equipment-items.svg' },
+];
+
 function loadYamlFile(path) {
   if (!existsSync(path)) return {};
   return parseYaml(readFileSync(path, 'utf8')) || {};
+}
+
+function loadJsonFile(path, fallback = {}) {
+  if (!existsSync(path)) return fallback;
+  try { return JSON.parse(readFileSync(path, 'utf8')); } catch { return fallback; }
 }
 
 function loadCache() {
@@ -54,10 +80,269 @@ function thumbOnDisk(curseId) {
   return match ? `assets/mod-thumbnails/${match}` : null;
 }
 
+function boolish(value) {
+  return value === true || String(value || '').toLowerCase() === 'true';
+}
+
+function filterKey(value) {
+  return String(value || 'unknown')
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'unknown';
+}
+
+function firstWikiUrl(enrichmentSources) {
+  return String(enrichmentSources || '')
+    .split(';')
+    .map((part) => part.trim())
+    .find((url) => {
+      if (!/^https:\/\/ark\.wiki\.gg\/wiki\//i.test(url)) return false;
+      const title = decodeURIComponent(url.split('/wiki/')[1] || '');
+      return !/^(Special|File|Category|Template):/i.test(title);
+    }) || '';
+}
+
+function wikiTitleFromUrl(url) {
+  try {
+    const parsed = new URL(url);
+    if (!/(\.|^)ark\.wiki\.gg$/i.test(parsed.hostname)) return '';
+    if (!parsed.pathname.startsWith('/wiki/')) return '';
+    return decodeURIComponent(parsed.pathname.slice('/wiki/'.length)).replace(/_/g, ' ');
+  } catch {
+    return '';
+  }
+}
+
+function normalizeAssetPath(path) {
+  return String(path || '').replace(/\\/g, '/').replace(/^\/+/, '');
+}
+
+function assetExists(assetPath) {
+  if (!assetPath) return false;
+  return existsSync(join(root, ...normalizeAssetPath(assetPath).split('/')));
+}
+
+function categoryMap(categories) {
+  const byLabel = new Map();
+  for (const category of ITEM_CATEGORY_DEFAULTS) byLabel.set(category.label, category);
+  for (const category of categories || []) byLabel.set(category.label, category);
+  return byLabel;
+}
+
+function loadIconAssociations() {
+  if (!existsSync(ITEM_ICON_MANIFEST_PATH)) return { byKey: new Map(), byClass: new Map() };
+  const rows = readCsv(ITEM_ICON_MANIFEST_PATH).rows;
+  const byKey = new Map();
+  const byClass = new Map();
+  for (const row of rows) {
+    if (row.itemKey) byKey.set(row.itemKey, row);
+    if (row.className) byClass.set(row.className.toLowerCase(), row);
+  }
+  return { byKey, byClass };
+}
+
+function itemCacheEntries() {
+  const cache = loadJsonFile(ITEM_WIKI_CACHE_PATH, {});
+  return cache.items || cache.pages || {};
+}
+
+function cacheForItem(row, cacheItems) {
+  return cacheItems[row.itemKey]
+    || cacheItems[row.className]
+    || cacheItems[String(row.className || '').toLowerCase()]
+    || cacheItems[row.displayName]
+    || {};
+}
+
+function overrideForItem(row, manualOverrides) {
+  return manualOverrides?.[row.itemKey]
+    || manualOverrides?.[row.className]
+    || manualOverrides?.[row.displayName]
+    || {};
+}
+
+function sourceLabelFor(row, sourceLabels, override) {
+  if (override.sourceLabel) return override.sourceLabel;
+  if (row.sourceType === 'mod') return row.sourceModName || (row.sourceModId ? `Mod ${row.sourceModId}` : 'Mod');
+  return sourceLabels[row.sourceType] || row.sourceType || 'Unknown';
+}
+
+function itemIconFor(row, icon, category, pageConfig) {
+  const local = normalizeAssetPath(icon.iconLocalPath);
+  const resolvedPath = icon.iconStatus === 'resolved' && local ? `assets/items/${local}` : '';
+  if (resolvedPath && assetExists(resolvedPath)) {
+    return {
+      path: resolvedPath,
+      fallback: false,
+      status: icon.iconStatus,
+    };
+  }
+
+  return {
+    path: category?.icon || pageConfig.defaultIcon || 'assets/category-icons/equipment-items.svg',
+    fallback: true,
+    status: icon.iconStatus || 'missing',
+  };
+}
+
+function spawnDisplayFor(row) {
+  if (row.gfiCode) {
+    return {
+      label: 'Spawn Code',
+      code: `cheat gfi ${row.gfiCode} 1 0 0`,
+    };
+  }
+  if (row.spawnCommand) {
+    return {
+      label: 'Spawn Command',
+      code: row.spawnCommand,
+    };
+  }
+  return {
+    label: 'Spawn Code',
+    code: 'Unavailable',
+  };
+}
+
+function displayNotes(value) {
+  if (Array.isArray(value)) return value.filter(Boolean).join(' ');
+  return String(value || '').trim();
+}
+
+function normalizeItemRows(itemDoc) {
+  const pageConfig = {
+    title: 'Item Reference',
+    intro: 'Quick lookup for server items, sources, crafting context, and spawn codes.',
+    defaultIcon: 'assets/category-icons/equipment-items.svg',
+    unknownCraftingStationLabel: 'Not listed',
+    unavailableDescriptionLabel: 'Description unavailable',
+    maxSourceFilterButtons: 18,
+    ...(itemDoc.page || {}),
+  };
+  const sourceLabels = {
+    'base-game': 'Ark',
+    map: 'Ark',
+    'server-config': 'Ark',
+    ...(itemDoc.sourceLabels || {}),
+  };
+  const manualOverrides = itemDoc.manualOverrides || {};
+  const cacheItems = itemCacheEntries();
+  const iconAssociations = loadIconAssociations();
+  const itemCategories = itemDoc.categories?.length ? itemDoc.categories : ITEM_CATEGORY_DEFAULTS;
+  const catByLabel = categoryMap(itemCategories);
+  const fallbackCategory = catByLabel.get('Unknown') || ITEM_CATEGORY_DEFAULTS.at(-1);
+
+  if (!existsSync(ITEM_MANIFEST_PATH)) {
+    return {
+      pageConfig,
+      categories: itemCategories,
+      catByLabel,
+      items: [],
+      stats: {
+        manifestRows: 0,
+        wikiUrls: 0,
+        descriptions: 0,
+        icons: 0,
+      },
+    };
+  }
+
+  const manifestRows = readCsv(ITEM_MANIFEST_PATH).rows;
+  const items = manifestRows.map((row) => {
+    const icon = iconAssociations.byKey.get(row.itemKey)
+      || iconAssociations.byClass.get(String(row.className || '').toLowerCase())
+      || {};
+    const cache = cacheForItem(row, cacheItems);
+    const override = overrideForItem(row, manualOverrides);
+    const categoryLabel = override.category || row.category || 'Unknown';
+    const category = catByLabel.get(categoryLabel) || fallbackCategory;
+    const sourceLabel = sourceLabelFor(row, sourceLabels, override);
+    const wikiUrl = override.wikiUrl || cache.wikiUrl || firstWikiUrl(row.enrichmentSources);
+    const description = override.description || cache.description || pageConfig.unavailableDescriptionLabel;
+    const craftingStation = override.craftingStation || cache.craftingStation || row.craftingStation || pageConfig.unknownCraftingStationLabel;
+    const notes = displayNotes(override.notes || cache.notes || row.notes) || 'No notes listed.';
+    const spawn = spawnDisplayFor(row);
+    const itemIcon = itemIconFor(row, icon, category, pageConfig);
+    const displayName = override.displayName || row.displayName || row.className || row.itemKey;
+    const hasReviewOverride = Object.prototype.hasOwnProperty.call(override, 'needsReview');
+    const needsReview = hasReviewOverride
+      ? boolish(override.needsReview)
+      : boolish(row.needsReview) || description === pageConfig.unavailableDescriptionLabel;
+    const sourceFilter = filterKey(sourceLabel);
+
+    const searchText = [
+      displayName,
+      sourceLabel,
+      row.sourceType,
+      row.sourceModName,
+      row.sourceModId,
+      categoryLabel,
+      craftingStation,
+      row.gfiCode,
+      spawn.code,
+      row.className,
+      row.blueprintPath,
+      description,
+      notes,
+      row.enrichmentSources,
+      row.notes,
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    return {
+      itemKey: row.itemKey,
+      displayName,
+      className: row.className,
+      category: categoryLabel,
+      categoryColor: category.color || fallbackCategory.color,
+      categoryTextColor: category.textColor || category.color || fallbackCategory.color,
+      categoryIcon: category.icon || fallbackCategory.icon,
+      sourceLabel,
+      sourceType: row.sourceType,
+      sourceModName: row.sourceModName,
+      sourceModId: row.sourceModId,
+      sourceFilter,
+      craftingStation,
+      description,
+      wikiUrl,
+      wikiTitle: wikiTitleFromUrl(wikiUrl),
+      gfiCode: row.gfiCode,
+      spawnLabel: spawn.label,
+      spawnCode: spawn.code,
+      notes,
+      iconPath: itemIcon.path,
+      iconFallback: itemIcon.fallback,
+      iconStatus: itemIcon.status,
+      needsReview,
+      searchText,
+    };
+  }).sort((a, b) => {
+    const aSource = a.sourceLabel === 'Ark' ? `0 ${a.sourceLabel}` : `1 ${a.sourceLabel}`;
+    const bSource = b.sourceLabel === 'Ark' ? `0 ${b.sourceLabel}` : `1 ${b.sourceLabel}`;
+    return aSource.localeCompare(bSource, undefined, { sensitivity: 'base' })
+      || a.category.localeCompare(b.category, undefined, { sensitivity: 'base' })
+      || a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' });
+  });
+
+  return {
+    pageConfig,
+    categories: itemCategories,
+    catByLabel,
+    items,
+    stats: {
+      manifestRows: manifestRows.length,
+      wikiUrls: items.filter((item) => item.wikiUrl).length,
+      descriptions: items.filter((item) => item.description !== pageConfig.unavailableDescriptionLabel).length,
+      icons: items.filter((item) => !item.iconFallback).length,
+    },
+  };
+}
+
 function buildContext() {
   const modDoc = loadYamlFile(MOD_YAML_PATH);
   const itemDoc = loadYamlFile(ITEM_YAML_PATH);
   const creatureDoc = loadYamlFile(CREATURE_YAML_PATH);
+  const itemData = normalizeItemRows(itemDoc);
   const site = modDoc.site || {};
   const categories = modDoc.categories || [];
   const cache = loadCache();
@@ -70,8 +355,11 @@ function buildContext() {
     categories,
     cache,
     mods,
-    itemCategories: itemDoc.categories || [],
-    items: itemDoc.items || [],
+    itemPage: itemData.pageConfig,
+    itemCategories: itemData.categories,
+    itemCatByLabel: itemData.catByLabel,
+    items: itemData.items,
+    itemStats: itemData.stats,
     creatureCategories: creatureDoc.categories || [],
     creatures: creatureDoc.creatures || [],
     catByLabel,
@@ -211,7 +499,7 @@ function commonStyles(ctx) {
   .hero .subtitle { margin: 6px 0 0; color: var(--accent); font-family: var(--font-body); font-size: 21px; font-weight: 700; letter-spacing: 0; }
   .hero .intro { margin: 2px 0 0; color: #e1e7ec; max-width: 920px; font-size: 16px; overflow-wrap: anywhere; }
   .site-nav {
-    display: flex; flex-wrap: wrap; gap: 10px;
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
     padding: 10px 14px;
     border-bottom: 1px solid rgba(0, 238, 255, .46);
     background: linear-gradient(180deg, rgba(0,4,9,.28), rgba(0,8,14,.5));
@@ -230,11 +518,11 @@ function commonStyles(ctx) {
     box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 28%, transparent);
   }
   .controls {
-    display: flex; align-items: flex-start; gap: 18px;
+    display: flex; flex-direction: column; align-items: stretch; gap: 10px;
     padding: 10px 14px 12px; border-bottom: 1px solid rgba(0, 238, 255, .46);
     background: linear-gradient(180deg, rgba(0,4,9,.2), rgba(0,8,14,.38));
   }
-  .searchbox { position: relative; flex: 0 0 360px; width: 360px; max-width: 100%; }
+  .searchbox { position: relative; flex: 0 0 auto; align-self: center; width: min(520px, 100%); max-width: 100%; }
   .searchbox svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
   #search {
     width: 100%; padding: 12px 14px 12px 42px;
@@ -244,7 +532,7 @@ function commonStyles(ctx) {
   }
   #search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,229,255,.15); }
   .filters {
-    display: flex; flex: 1 1 auto; flex-wrap: wrap; gap: 10px 12px; align-items: center;
+    display: flex; flex: 1 1 auto; flex-wrap: wrap; gap: 10px 12px; align-items: center; justify-content: center;
     min-width: 0; overflow: visible; padding: 2px 2px 0;
   }
   .filter {
@@ -392,6 +680,81 @@ function commonStyles(ctx) {
     font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
   }
   .detail span { color: var(--text); overflow-wrap: anywhere; }
+  .item-list { padding: 8px 12px 10px; }
+  .item-row {
+    --c: var(--accent);
+    display: grid; grid-template-columns: 88px minmax(320px, 1fr) minmax(430px, .9fr) 58px;
+    gap: 12px; align-items: stretch;
+    padding: 9px 10px; border: 1px solid rgba(0, 210, 235, .44); border-radius: 9px;
+    background: var(--row);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.055), inset 0 0 26px rgba(0,229,255,.036), 0 1px 0 rgba(0,0,0,.28);
+  }
+  .item-row + .item-row { margin-top: 8px; }
+  .item-row:hover { background: var(--row-hover); border-color: rgba(0,238,255,.62); }
+  .item-icon { width: 88px; height: 88px; }
+  .item-thumb {
+    width: 88px; height: 88px; border-radius: 8px; object-fit: contain;
+    border: 1px solid rgba(0,229,255,.22); background: rgba(2,10,17,.82); display: block;
+    box-shadow: 0 0 18px rgba(0,0,0,.42);
+  }
+  .item-thumb-fallback {
+    display: flex; align-items: center; justify-content: center;
+    border-color: color-mix(in srgb, var(--c) 48%, var(--border));
+    background: linear-gradient(140deg, color-mix(in srgb, var(--c) 18%, #120b0b), #06111b 74%);
+  }
+  .item-thumb-fallback img { width: 40px; height: 40px; opacity: .92; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c) 60%, transparent)); }
+  .item-main { min-width: 0; padding: 3px 14px 3px 0; border-right: 1px solid var(--border-soft); }
+  .item-name {
+    margin: 0 0 7px; font-family: var(--font-display); font-size: 20px; line-height: 1.16; font-weight: 800;
+    color: color-mix(in srgb, var(--c) 78%, #fff);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--c) 30%, transparent), 0 1px 0 rgba(0,0,0,.62);
+  }
+  .item-row .category-badge { max-width: 100%; white-space: normal; text-align: center; overflow-wrap: anywhere; }
+  .item-source-badge { --c: var(--accent); }
+  .item-description {
+    margin: 8px 0 0; color: #e1e7ec; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .item-details {
+    display: grid; grid-template-columns: minmax(170px, .42fr) minmax(230px, .58fr);
+    gap: 10px; min-width: 0; padding: 2px 12px 2px 0;
+    align-items: stretch;
+    border-right: 1px solid var(--border-soft);
+  }
+  .item-detail-stack {
+    display: flex; flex-direction: column; min-width: 0; min-height: 100%;
+  }
+  .item-facts {
+    display: grid; grid-template-columns: 1fr; gap: 8px; align-content: start; min-width: 0;
+    padding: 0;
+  }
+  .item-fact,
+  .item-notes {
+    min-width: 0; padding: 8px 10px; border: 1px solid var(--border-soft); border-radius: 7px;
+    background: rgba(2,10,17,.48);
+  }
+  .item-notes { flex: 1 1 auto; }
+  .item-fact b,
+  .item-notes b {
+    display: block; margin-bottom: 4px; color: var(--accent);
+    font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
+  }
+  .item-fact span,
+  .item-notes span { color: var(--text); overflow-wrap: anywhere; }
+  .item-spawn-detail {
+    display: flex; align-items: baseline; gap: 8px;
+    margin-top: 10px;
+  }
+  .item-spawn-detail b { margin-bottom: 0; flex: 0 0 auto; }
+  .item-spawn-detail code {
+    min-width: 0; color: #f7fbff; font: 12px/1.35 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    overflow-wrap: anywhere;
+  }
+  .item-action {
+    display: flex; justify-content: center; align-items: center;
+  }
+  .wiki-link { color: var(--accent); }
+  .item-empty { padding: 40px; text-align: center; color: var(--muted); display: none; }
   footer { padding: 18px 30px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; text-align: center; }
   @media (max-width: 1120px) {
     body { padding: 10px 8px 34px; }
@@ -420,6 +783,17 @@ function commonStyles(ctx) {
     .reference-icon { grid-area: reficon; }
     .reference-main { grid-area: refmain; border-right: 0; }
     .detail-grid { grid-area: details; border-top: 1px solid var(--border-soft); padding-top: 10px; }
+    .item-row {
+      grid-template-columns: 88px minmax(260px, 1fr) 54px;
+      grid-template-areas:
+        "itemicon itemmain itemaction"
+        "itemicon itemdetails itemaction";
+      row-gap: 8px;
+    }
+    .item-icon { grid-area: itemicon; }
+    .item-main { grid-area: itemmain; border-right: 0; padding-right: 6px; }
+    .item-details { grid-area: itemdetails; grid-template-columns: minmax(220px, .55fr) minmax(240px, .45fr); border-right: 0; border-top: 1px solid var(--border-soft); padding: 8px 0 0; }
+    .item-action { grid-area: itemaction; }
   }
   @media (max-width: 760px) {
     body { padding: 0; }
@@ -463,6 +837,23 @@ function commonStyles(ctx) {
     .reference-card h2 { font-size: 18px; }
     .reference-main { padding: 4px 2px; }
     .detail-grid { grid-template-columns: 1fr; }
+    .item-list { padding: 8px 8px 10px; }
+    .item-row {
+      grid-template-columns: 74px 1fr 46px;
+      grid-template-areas:
+        "itemicon itemmain itemaction"
+        "itemdetails itemdetails itemdetails";
+      gap: 8px 10px;
+      padding: 8px;
+    }
+    .item-icon, .item-thumb, .item-thumb-fallback { width: 74px; height: 74px; }
+    .item-thumb-fallback img { width: 32px; height: 32px; }
+    .item-main { padding: 2px 0; }
+    .item-name { font-size: 18px; }
+    .item-description { -webkit-line-clamp: 3; }
+    .item-details { grid-template-columns: 1fr; }
+    .item-facts { grid-template-columns: 1fr; }
+    .item-action { align-items: flex-start; }
   }`;
 }
 
@@ -587,6 +978,66 @@ function renderModRows(ctx) {
   }).join('\n');
 }
 
+function itemSourceFilters(ctx) {
+  const counts = new Map();
+  for (const item of ctx.items) {
+    counts.set(item.sourceLabel, (counts.get(item.sourceLabel) || 0) + 1);
+  }
+
+  const maxButtons = Number(ctx.itemPage.maxSourceFilterButtons || 18);
+  const sources = [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], undefined, { sensitivity: 'base' }));
+  const ark = sources.find(([label]) => label === 'Ark');
+  const selected = [];
+  if (ark) selected.push(ark);
+  for (const source of sources) {
+    if (source[0] === 'Ark') continue;
+    if (selected.length >= maxButtons) break;
+    selected.push(source);
+  }
+  return selected;
+}
+
+function renderItemRows(ctx) {
+  return ctx.items.map((item) => {
+    const iconHtml = item.iconFallback
+      ? `<span class="item-thumb item-thumb-fallback" style="--c:${esc(item.categoryColor)}"><img src="${esc(item.iconPath)}" alt="" aria-hidden="true"></span>`
+      : `<img class="item-thumb" src="${esc(item.iconPath)}" alt="" loading="lazy" decoding="async">`;
+
+    const pills = [
+      `<span class="category-badge item-source-badge" style="--c:${esc(ctx.accent)}">${esc(item.sourceLabel)}</span>`,
+      `<span class="category-badge" style="--c:${esc(item.categoryColor)}">${esc(item.category)}</span>`,
+      ...(item.needsReview ? ['<span class="category-badge pill-review">Needs review</span>'] : []),
+    ].join('');
+
+    const wikiHtml = item.wikiUrl
+      ? `<a class="cf-link wiki-link" href="${esc(item.wikiUrl)}" target="_blank" rel="noopener noreferrer" title="Open on ARK wiki" aria-label="Open ${esc(item.displayName)} on ARK wiki">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+         </a>`
+      : '';
+
+    return `      <article class="item-row" style="--c:${esc(item.categoryColor)}" data-source="${esc(item.sourceFilter)}" data-search="${esc(item.searchText)}">
+        <div class="item-icon">${iconHtml}</div>
+        <div class="item-main">
+          <h2 class="item-name">${esc(item.displayName)}</h2>
+          <div class="pills">${pills}</div>
+          <p class="item-description">${esc(item.description)}</p>
+          <div class="item-fact item-spawn-detail"><b>${esc(item.spawnLabel)}</b><code>${esc(item.spawnCode)}</code></div>
+        </div>
+        <div class="item-details">
+          <div class="item-facts">
+            <div class="item-fact"><b>Source</b><span>${esc(item.sourceLabel)}</span></div>
+            <div class="item-fact"><b>Crafting</b><span>${esc(item.craftingStation)}</span></div>
+          </div>
+          <div class="item-detail-stack">
+            <div class="item-notes"><b>Notes</b><span>${esc(item.notes)}</span></div>
+          </div>
+        </div>
+        <div class="item-action">${wikiHtml}</div>
+      </article>`;
+  }).join('\n');
+}
+
 function renderHomePage(ctx) {
   const cardData = [
     {
@@ -602,8 +1053,8 @@ function renderHomePage(ctx) {
       href: 'items.html',
       icon: 'assets/category-icons/equipment-items.svg',
       color: '#ffb347',
-      text: 'Future home for important modded items, tools, stations, unlocks, and practical use notes.',
-      status: `${ctx.items.length} item ${ctx.items.length === 1 ? 'entry' : 'entries'} loaded from YAML`,
+      text: 'Look up server items, sources, icons, crafting context, spawn commands, and wiki links.',
+      status: `${ctx.items.length} item ${ctx.items.length === 1 ? 'entry' : 'entries'} loaded from manifests`,
     },
     {
       title: 'Creatures',
@@ -706,7 +1157,7 @@ ${rows}
   });
 }
 
-function renderReferenceEntry(entry, details) {
+function renderReferenceEntry(entry, details, options = {}) {
   const badges = [
     `<span class="category-badge" style="--c:${esc(entry.color)}">${esc(entry.category)}</span>`,
     ...(entry.fakeData ? ['<span class="category-badge pill-review">Fake test data</span>'] : []),
@@ -718,7 +1169,10 @@ function renderReferenceEntry(entry, details) {
   const detailHtml = details.filter(([, value]) => value).map(([label, value]) => `
           <div class="detail"><b>${esc(label)}</b><span>${esc(value)}</span></div>`).join('');
 
-  return `        <article class="reference-card" style="--c:${esc(entry.color)}">
+  const extraClass = options.className ? ` ${options.className}` : '';
+  const dataAttrs = options.dataAttrs || '';
+
+  return `        <article class="reference-card${extraClass}" style="--c:${esc(entry.color)}"${dataAttrs}>
           <div class="reference-icon">
             <span class="thumb thumb-fallback" style="--c:${esc(entry.color)}"><img src="${esc(entry.icon)}" alt="" aria-hidden="true"></span>
           </div>
@@ -747,57 +1201,179 @@ function enrichReferenceEntry(entry, categories, fallback) {
 }
 
 function renderItemsPage(ctx) {
-  const entries = ctx.items.map((item) => enrichReferenceEntry(item, ctx.itemCategories, {
-    color: '#ffb347',
-    icon: 'assets/category-icons/equipment-items.svg',
-  })).map((item) => renderReferenceEntry(item, [
-    ['Source mod', item.sourceMod],
-    ['How to get', item.howToGet],
-    ['Crafting station', item.craftingStation],
-    ['Unlock', item.unlock],
-  ])).join('\n');
+  const filterButtons = [
+    `<button class="filter category-badge active" data-filter="all" style="--c:${esc(ctx.accent)}">All</button>`,
+    ...itemSourceFilters(ctx).map(([label]) =>
+      `<button class="filter category-badge" data-filter="${esc(filterKey(label))}" style="--c:${esc(ctx.accent)}">${esc(label)}</button>`),
+  ].join('\n        ');
+
+  const rows = renderItemRows(ctx);
 
   return pageShell(ctx, {
     active: 'items',
-    pageTitle: 'Item Reference',
-    heading: 'Item Reference',
-    intro: 'Placeholder page for future item reference data.',
-    content: `      <main class="page-body">
-        <div class="sample-banner">This page currently contains fake sample data for layout testing only.</div>
-        <div class="reference-list">
-${entries}
+    pageTitle: ctx.itemPage.title || 'Item Reference',
+    heading: ctx.itemPage.title || 'Item Reference',
+    intro: ctx.itemPage.intro || '',
+    content: `      <div class="controls">
+        <div class="searchbox">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="search" type="search" placeholder="Search items, sources, GFI codes, crafting stations..." autocomplete="off">
         </div>
-      </main>
+        <div class="filters">
+        ${filterButtons}
+        </div>
+      </div>
+      <div class="meta-line"><span id="count">${ctx.items.length}</span> items shown</div>
+      <div class="item-list" id="list">
+${rows}
+        <div class="item-empty" id="empty">No items match your search.</div>
+      </div>
 `,
-    footerText: `${ctx.site.serverName || 'Server'} - Item page scaffold`,
+    footerText: `${ctx.site.serverName || 'Server'} - ${ctx.items.length} items, ${ctx.itemStats.icons} icons, ${ctx.itemStats.descriptions} descriptions`,
+    script: `<script>
+(function () {
+  var search = document.getElementById('search');
+  var list = document.getElementById('list');
+  var items = Array.prototype.slice.call(list.querySelectorAll('.item-row'));
+  var filters = Array.prototype.slice.call(document.querySelectorAll('.filter'));
+  var count = document.getElementById('count');
+  var empty = document.getElementById('empty');
+  var activeFilter = 'all';
+  var timer = null;
+
+  function apply() {
+    var q = search.value.trim().toLowerCase();
+    var shown = 0;
+    items.forEach(function (el) {
+      var matchText = !q || el.getAttribute('data-search').indexOf(q) !== -1;
+      var matchSource = activeFilter === 'all' || el.getAttribute('data-source') === activeFilter;
+      var visible = matchText && matchSource;
+      el.style.display = visible ? '' : 'none';
+      if (visible) shown++;
+    });
+    count.textContent = shown;
+    empty.style.display = shown ? 'none' : 'block';
+  }
+
+  function scheduleApply() {
+    if (timer) window.clearTimeout(timer);
+    timer = window.setTimeout(apply, 80);
+  }
+
+  search.addEventListener('input', scheduleApply);
+  filters.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      filters.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeFilter = btn.getAttribute('data-filter');
+      apply();
+    });
+  });
+  apply();
+})();
+</script>`,
   });
 }
 
 function renderCreaturesPage(ctx) {
+  const creatureCategories = ctx.creatureCategories.length ? ctx.creatureCategories : [{
+    label: 'Creatures',
+    color: '#38f06f',
+  }];
+  const filterButtons = [
+    `<button class="filter category-badge active" data-filter="all" style="--c:${esc(ctx.accent)}">All</button>`,
+    ...creatureCategories.map((category) =>
+      `<button class="filter category-badge" data-filter="${esc(filterKey(category.label))}" style="--c:${esc(category.color || '#38f06f')}">${esc(category.label)}</button>`),
+  ].join('\n        ');
+
   const entries = ctx.creatures.map((creature) => enrichReferenceEntry(creature, ctx.creatureCategories, {
     color: '#38f06f',
     icon: 'assets/category-icons/creatures.svg',
-  })).map((creature) => renderReferenceEntry(creature, [
+  })).map((creature) => {
+    const searchText = [
+      creature.displayName,
+      creature.category,
+      creature.sourceMod,
+      creature.description,
+      creature.tamingMethod,
+      creature.spawnContext,
+      creature.utility,
+      creature.saddleOrUnlock,
+      ...(creature.tips || []),
+      ...(creature.tags || []),
+    ].filter(Boolean).join(' ').toLowerCase();
+    return renderReferenceEntry(creature, [
     ['Source mod', creature.sourceMod],
     ['Taming method', creature.tamingMethod],
     ['Spawn context', creature.spawnContext],
     ['Utility', creature.utility],
     ['Saddle / unlock', creature.saddleOrUnlock],
-  ])).join('\n');
+    ], {
+      className: 'creature-row',
+      dataAttrs: ` data-category="${esc(filterKey(creature.category))}" data-search="${esc(searchText)}"`,
+    });
+  }).join('\n');
 
   return pageShell(ctx, {
     active: 'creatures',
     pageTitle: 'Creature Reference',
     heading: 'Creature Reference',
     intro: 'Placeholder page for future creature reference data.',
-    content: `      <main class="page-body">
+    content: `      <div class="controls">
+        <div class="searchbox">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="search" type="search" placeholder="Search creatures, sources, taming, utility..." autocomplete="off">
+        </div>
+        <div class="filters">
+        ${filterButtons}
+        </div>
+      </div>
+      <main class="page-body">
         <div class="sample-banner">This page currently contains fake sample data for layout testing only.</div>
-        <div class="reference-list">
+        <div class="meta-line"><span id="count">${ctx.creatures.length}</span> creatures shown</div>
+        <div class="reference-list" id="list">
 ${entries}
+          <div class="empty" id="empty">No creatures match your search.</div>
         </div>
       </main>
 `,
     footerText: `${ctx.site.serverName || 'Server'} - Creature page scaffold`,
+    script: `<script>
+(function () {
+  var search = document.getElementById('search');
+  var list = document.getElementById('list');
+  var rows = Array.prototype.slice.call(list.querySelectorAll('.creature-row'));
+  var filters = Array.prototype.slice.call(document.querySelectorAll('.filter'));
+  var count = document.getElementById('count');
+  var empty = document.getElementById('empty');
+  var activeFilter = 'all';
+
+  function apply() {
+    var q = search.value.trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function (el) {
+      var matchText = !q || el.getAttribute('data-search').indexOf(q) !== -1;
+      var matchCategory = activeFilter === 'all' || el.getAttribute('data-category') === activeFilter;
+      var visible = matchText && matchCategory;
+      el.style.display = visible ? '' : 'none';
+      if (visible) shown++;
+    });
+    count.textContent = shown;
+    empty.style.display = shown ? 'none' : 'block';
+  }
+
+  search.addEventListener('input', apply);
+  filters.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      filters.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeFilter = btn.getAttribute('data-filter');
+      apply();
+    });
+  });
+  apply();
+})();
+</script>`,
   });
 }
 
@@ -816,7 +1392,7 @@ function main() {
   }
 
   console.log(`  ${ctx.mods.length} mods, ${ctx.categories.length} categories, ${ctx.reviewCount} flagged needsReview`);
-  console.log(`  ${ctx.items.length} items from data/item-reference.yaml`);
+  console.log(`  ${ctx.items.length} items from item manifest (${ctx.itemStats.icons} icons, ${ctx.itemStats.descriptions} descriptions)`);
   console.log(`  ${ctx.creatures.length} creatures from data/creature-reference.yaml`);
 }
 
