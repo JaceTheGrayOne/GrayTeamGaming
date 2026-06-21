@@ -72,9 +72,6 @@ Reference content is controlled by YAML files in `data/`:
   - `description` — *what it does* (left column)
   - `tips` — *why it matters* / practical notes (right column)
   - `tags` — extra keywords for search
-  - `needsReview: true` — flags entries whose purpose wasn't confirmed; they get
-    a "Needs review" pill and conservative placeholder text. **Verify these on
-    CurseForge and update the text, then set `needsReview: false`.**
 - **Items** — bulk rows are generated from the item CSVs. Keep
   `item-reference.yaml` to page config and targeted `manualOverrides:` keyed by
   class name when a description, crafting station, source label, wiki URL, or
@@ -158,6 +155,16 @@ Set `site.showThumbnails: false` to force category icons everywhere.
   crafting-station values gathered from wiki infobox fields.
 - `data/item-reference.yaml` supplies page text, source labels, category colors,
   and manual overrides.
+
+The build applies a publication filter before rendering `items.html`. Public
+rows must have credible ASA/server evidence; unresolved config-only rows,
+blocked platform rows such as `Mobile:*`, low-confidence wiki-only rows, and
+known non-ASA blueprint roots are hidden from the player-facing page and listed
+in `_local/docs/Data_Collection/Item_Publication_Filter_Report.md`.
+Category corrections and rejected wiki descriptions are also reported in:
+
+- `_local/docs/Data_Collection/Item_Category_Normalization_Report.md`
+- `_local/docs/Data_Collection/Item_Description_Sanitization_Report.md`
 
 Refresh local wiki-derived item descriptions and crafting stations with:
 

@@ -12,10 +12,15 @@
     "collect:items-and-icons": "npm run collect:items && npm run collect:icons",
     "enrich:items": "node scripts/enrich-item-wiki-data.mjs",
     "build": "node scripts/build-site.mjs",
+    "editor": "node scripts/editor-server.mjs",
+    "editor:open": "node scripts/editor-server.mjs --open",
     "rebuild": "npm run fetch && npm run build",
     "start": "node scripts/build-site.mjs"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "yaml": "^2.9.0"
   }
 }

@@ -77,6 +77,11 @@ const ICON_MANIFEST_COLUMNS = [
   'iconNotes',
 ];
 
+const BLOCKED_WIKI_TITLE_PATTERNS = [
+  /^Mobile:/i,
+  /^ARK Mobile:/i,
+];
+
 function parseArgs(argv) {
   const options = {
     skipPackage: false,
@@ -226,6 +231,10 @@ function titleKey(title) {
     .toLowerCase();
 }
 
+function isBlockedWikiTitle(title) {
+  return BLOCKED_WIKI_TITLE_PATTERNS.some((pattern) => pattern.test(String(title || '').trim()));
+}
+
 function asFileTitle(value) {
   const s = String(value || '').trim();
   if (!s) return '';
@@ -355,7 +364,7 @@ function pageTitleFromWikiUrl(raw) {
     if (!/(\.|^)ark\.wiki\.gg$/i.test(url.hostname)) return '';
     if (!url.pathname.startsWith('/wiki/')) return '';
     const title = decodeURIComponent(url.pathname.slice('/wiki/'.length)).replace(/_/g, ' ');
-    if (!title || /^special:/i.test(title) || /^file:/i.test(title)) return '';
+    if (!title || /^special:/i.test(title) || /^file:/i.test(title) || isBlockedWikiTitle(title)) return '';
     return title;
   } catch {
     return '';
@@ -364,7 +373,7 @@ function pageTitleFromWikiUrl(raw) {
 
 function pageTitlesForRow(row) {
   const titles = [];
-  if (get(row, 'displayName')) titles.push(get(row, 'displayName'));
+  if (get(row, 'displayName') && !isBlockedWikiTitle(get(row, 'displayName'))) titles.push(get(row, 'displayName'));
   for (const part of String(get(row, 'enrichmentSources')).split(';')) {
     const title = pageTitleFromWikiUrl(part);
     if (title) titles.push(title);
@@ -373,6 +382,10 @@ function pageTitlesForRow(row) {
 }
 
 function isWikiEligible(row) {
+  const publishStatus = String(get(row, 'publishStatus') || '').toLowerCase();
+  if (publishStatus && publishStatus !== 'publish') return false;
+  if (isBlockedWikiTitle(get(row, 'displayName'))) return false;
+  if (String(get(row, 'platformScope') || '').toLowerCase() === 'mobile') return false;
   const sourceType = get(row, 'sourceType');
   if (sourceType === 'base-game' || sourceType === 'map') return true;
   if (String(get(row, 'sourceEvidence')).includes('wiki')) return true;

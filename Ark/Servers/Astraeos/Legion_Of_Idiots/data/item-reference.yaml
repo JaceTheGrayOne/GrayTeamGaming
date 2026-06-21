@@ -8,6 +8,8 @@
 #
 # Keep bulk item data in the generated CSV/cache files. Add hand-curated fixes
 # under manualOverrides, keyed by className whenever possible.
+# Manual overrides may also set publishStatus: publish, review-only, or exclude
+# with publishReason when an item needs a documented publication decision.
 # ===========================================================================
 
 page:
@@ -17,6 +19,11 @@ page:
   unknownCraftingStationLabel: Not listed
   unavailableDescriptionLabel: Description unavailable
   maxSourceFilterButtons: 18
+
+collection:
+  serverConfigRoot: G:/Development/Ark/Servers/Josh_Remote/Astraeos
+  packageDiscoveryRoot: G:/Development/Ark/Servers/Lost_Colony/Beacon Mod Discovery
+  packageDiscoveryPurpose: shared-package-cache
 
 sourceLabels:
   base-game: Ark
@@ -49,6 +56,21 @@ categories:
     color: "#ff5fb7"
     textColor: "#ff9bd3"
     icon: assets/category-icons/cosmetic.svg
+  - id: egg
+    label: Egg
+    color: "#e9f7da"
+    textColor: "#f5ffe8"
+    icon: assets/category-icons/equipment-items.svg
+  - id: kibble
+    label: Kibble
+    color: "#c37cff"
+    textColor: "#e2c2ff"
+    icon: assets/category-icons/equipment-items.svg
+  - id: recipe
+    label: Recipe
+    color: "#f2d27a"
+    textColor: "#fff0b2"
+    icon: assets/category-icons/equipment-items.svg
   - id: resource
     label: Resource
     color: "#ffb347"
@@ -104,7 +126,6 @@ manualOverrides:
     craftingStation: Fabricator; Tek Replicator; Exo-Mek
     notes: Used by the Fabricated Pistol.
     wikiUrl: https://ark.wiki.gg/wiki/Advanced_Bullet
-    needsReview: false
   # Armor override template
   PrimalItemArmor_MetalBoots_C:
     displayName: Flak Boots
@@ -113,16 +134,13 @@ manualOverrides:
     craftingStation: Smithy; Argentavis Saddle; Castoroides Saddle; Thorny Dragon Saddle; Tek Replicator
     notes: Standard mid-tier armor piece.
     wikiUrl: https://ark.wiki.gg/wiki/Flak_Boots
-    needsReview: false
   # Artifact override template
   PrimalItemArtifact_Extinction_ForestKaiju_C:
     displayName: Artifact of Growth
     category: Artifact
     description: Artifact used for boss and tribute progression.
     craftingStation: Not listed
-    notes: Keep artifact entries short and use notes for map or tribute context.
-    wikiUrl: https://ark.wiki.gg/wiki/Artifact_of_Growth
-    needsReview: false
+    wikiUrl: "https://ark.wiki.gg/wiki/Artifact_of_Growth"
   # Consumable override template
   PrimalItemConsumable_Berry_Amarberry_C:
     displayName: Amarberry
@@ -131,7 +149,6 @@ manualOverrides:
     craftingStation: Not listed
     notes: Also used as a basic cooking and taming ingredient.
     wikiUrl: https://ark.wiki.gg/wiki/Amarberry
-    needsReview: false
   # Cosmetic override template
   PrimalItem_Harp_Disks_C:
     displayName: Harp Disks
@@ -140,7 +157,6 @@ manualOverrides:
     description: Decorative harp music disk from Castle Craft Decor.
     craftingStation: Not listed
     notes: Mod item override example without an ARK wiki URL.
-    needsReview: false
   # Resource override template
   PrimalItemResource_MetalIngot_C:
     displayName: Metal Ingot
@@ -149,7 +165,6 @@ manualOverrides:
     craftingStation: Refining Forge; Industrial Forge; Magmasaur
     notes: Also accepts Scrap Metal Ingot in many recipes.
     wikiUrl: https://ark.wiki.gg/wiki/Metal_Ingot
-    needsReview: false
   # Saddle override template
   PrimalItemArmor_AcroSaddle_C:
     displayName: Acro Saddle
@@ -158,7 +173,6 @@ manualOverrides:
     craftingStation: Smithy
     notes: Verify mod and map availability if this changes.
     wikiUrl: https://ark.wiki.gg/wiki/Acro_Saddle
-    needsReview: false
   # Skin override template
   PrimalItemSkin_AberrationHelmet_C:
     displayName: Aberrant Helmet Skin
@@ -167,7 +181,6 @@ manualOverrides:
     craftingStation: Not listed
     notes: Skin overrides are useful for event or unlock context.
     wikiUrl: https://ark.wiki.gg/wiki/Aberrant_Helmet_Skin
-    needsReview: false
   # Structure override template
   PrimalItemStructure_AdobeCeiling_C:
     displayName: Adobe Ceiling
@@ -176,7 +189,6 @@ manualOverrides:
     craftingStation: Inventory; Smithy
     notes: Use structure notes for snap, tier, or server placement caveats.
     wikiUrl: https://ark.wiki.gg/wiki/Adobe_Ceiling
-    needsReview: false
   # Tool override template
   PrimalItem_WeaponGPS_C:
     displayName: GPS
@@ -185,7 +197,6 @@ manualOverrides:
     craftingStation: Fabricator; Tek Replicator
     notes: Useful for sharing exact base, cave, and tame locations.
     wikiUrl: https://ark.wiki.gg/wiki/GPS
-    needsReview: false
   # Trophy override template
   PrimalItemTrophy_AlphaWorm_C:
     displayName: Alpha Deathworm Trophy
@@ -194,7 +205,6 @@ manualOverrides:
     craftingStation: Not listed
     notes: Trophy entries are good places for tribute or display context.
     wikiUrl: https://ark.wiki.gg/wiki/Alpha_Deathworm_Trophy
-    needsReview: false
   # Utility override template
   PrimalItem_TreasureMap_ShoulderDragon_C:
     displayName: Dragon Hoard Key
@@ -203,7 +213,6 @@ manualOverrides:
     craftingStation: Not listed
     notes: Use utility notes for event, quest, or server-specific usage.
     wikiUrl: https://ark.wiki.gg/wiki/Dragon_Hoard_Key
-    needsReview: false
   # Weapon override template
   PrimalItem_WeaponOneShotRifle_C:
     displayName: Longneck Rifle
@@ -212,7 +221,6 @@ manualOverrides:
     craftingStation: Smithy; Argentavis Saddle; Castoroides Saddle; Thorny Dragon Saddle; Tek Replicator
     notes: Supports Simple Rifle Ammo and several dart types.
     wikiUrl: https://ark.wiki.gg/wiki/Longneck_Rifle
-    needsReview: false
   # Unknown category override template
   PrimalItemCanoe_C:
     displayName: Canoe
@@ -221,4 +229,279 @@ manualOverrides:
     craftingStation: Inventory
     notes: Keep Unknown only when a better category has not been verified.
     wikiUrl: https://ark.wiki.gg/wiki/Canoe
-    needsReview: false
+  PrimalItemAmmo_AdvancedRifleBullet_C:
+    notes: "Ammunition for:\nAssault Rifle\n Auto Turret\n Minigun Turret\n Minigun\n Heavy Auto Turret\n Andrewsarchus Saddle"
+  PrimalItemArmor_ClothBoots_C:
+    craftingStation: Inventory
+  PrimalItemConsumable_Crafted_FourthOfJulyDinoCandy_C:
+    description: Holiday Event
+    publishStatus: exclude
+  PrimalItemConsumable_EasterDinoCandy_C:
+    description: Holiday Event
+    publishStatus: exclude
+  PrimalItemConsumable_FE_Crafted_CandyCorn_C:
+    description: Holiday Event
+    publishStatus: exclude
+  PrimalItemConsumable_FestiveDinoCandy_C:
+    description: Holiday Event
+    publishStatus: exclude
+  PrimalItemConsumable_TT_Crafted_ThanksgivingCandy_C:
+    description: Holiday Event
+    publishStatus: exclude
+  PrimalItemConsumable_ValentinesDinoCandy_C:
+    description: Holiday Event
+    publishStatus: exclude
+  PrimalItemConsumable_RawPrimeMeat_C:
+    publishStatus: exclude
+  PrimalItemConsumable_CakeSlice_Harvest_C:
+    publishStatus: exclude
+  PrimalItemConsumable_CakeSlice_Experience_C:
+    publishStatus: exclude
+  PrimalItemConsumable_CakeSlice_Imprint_C:
+    publishStatus: exclude
+  PrimalItemConsumable_CakeSlice_Taming_C:
+    publishStatus: exclude
+  PrimalItemConsumable_Lootcrate_lvl1_C:
+    publishStatus: exclude
+  PrimalItemConsumable_Lootcrate_lvl2_C:
+    publishStatus: exclude
+  PrimalItemConsumable_Lootcrate_lvl3_C:
+    publishStatus: exclude
+  PrimalItemResource_CakeSlice_C:
+    publishStatus: exclude
+  PrimalItemStructure_BirthdayCake_C:
+    publishStatus: exclude
+  PrimalItemConsumable_Mushroom_Aquatic_C:
+    category: Resource
+  PrimalItemConsumable_Mushroom_Ascerbic_C:
+    category: Resource
+  PrimalItemConsumable_Mushroom_Auric_C:
+    category: Resource
+  PrimalItemConsumable_Mushroom_Aquatic_Child_C:
+    category: Resource
+  PrimalItemConsumable_Mushroom_Ascerbic_Child_C:
+    category: Resource
+  PrimalItemConsumable_Mushroom_Auric_Child_C:
+    category: Resource
+  PrimalItemConsumable_JellyVenom_C:
+    category: Resource
+  PrimalItemConsumable_CakeSlice_Breeding_C:
+    publishStatus: exclude
+  PrimalItemConsumable_CactusSap_C:
+    category: Resource
+  PrimalItemConsumable_CanteenCraftable_C:
+    category: Utility
+  PrimalItemConsumablePoop_C:
+    category: Resource
+  PrimalItemConsumable_Fertilizer_Compost_C:
+    category: Resource
+  PrimalItemConsumable_Honey_C:
+    category: Resource
+  PrimalItemConsumable_HumanPoop_C:
+    category: Resource
+  PrimalItemConsumable_DinoPoopLarge_C:
+    category: Resource
+  PrimalItemConsumable_DinoPoopMassive_C:
+    category: Resource
+  PrimalItemConsumable_DinoPoopMedium_C:
+    category: Resource
+  PrimalItemConsumable_NamelessVenom_C:
+    category: Resource
+  PrimalItemConsumable_RawMeat_Fish_C:
+    category: Resource
+  PrimalItemConsumable_RawMutton_C:
+    category: Resource
+  PrimalItemConsumable_RawPrimeMeat_Fish_C:
+    category: Resource
+  PrimalItemConsumableMiracleGro_C:
+    category: Resource
+  PrimalItemConsumable_DinoPoopSmall_C:
+    category: Resource
+  PrimalItemConsumable_OwlPellet_C:
+    category: Resource
+  PrimalItemConsumable_SpoiledMeat_C:
+    category: Resource
+  PrimalItemConsumable_WaterJarCraftable_C:
+    category: Utility
+  PrimalItemConsumable_WaterskinCraftable_C:
+    category: Utility
+  PrimalItemArmor_Accessory_DisguiseMask_C:
+    displayName: Disguise Mask
+    sourceLabel: Cliffan’s Dynamic Survivors
+  PrimalItem_Backpack_TravelLantern_C:
+    category: Utility
+  PrimalItem_Backpack_TravelLanternTier2_C:
+    category: Utility
+  PrimalItem_Backpack_TravelLanternTier3_C:
+    category: Utility
+  PrimalItemArmor_ImprovedMinersHelmet_C:
+    sourceLabel: Cliffans Improved Miners Helmet
+  PrimalItemConsumable_CW_LootBag_C:
+    publishStatus: exclude
+  PrimalItemSkin_CW_Base_C:
+    publishStatus: exclude
+  PrimalItemConsumable_CatWhisperer_CS_C:
+    publishStatus: exclude
+  PrimalItemStructure_EggIncubator_CS_C:
+    category: Structure
+  PrimalItem_AmmoniteBloodCS_C:
+    category: Resource
+  PrimalItem_BioToxinCS_C:
+    category: Resource
+  PrimalItem_BlackPearlCS_C:
+    category: Resource
+  PrimalItem_ChitinCS_C:
+    category: Resource
+  PrimalItem_ChitinKeratinCS_C:
+    category: Resource
+  PrimalItem_ClayCS_C:
+    category: Resource
+  PrimalItem_CrystalCS_C:
+    category: Resource
+  PrimalItem_ElementDustCS_C:
+    category: Resource
+  PrimalItem_FiberCS_C:
+    category: Resource
+  PrimalItem_FlintCS_C:
+    category: Resource
+  PrimalItem_FungalWoodCS_C:
+    category: Resource
+  PrimalItem_GasBallCS_C:
+    category: Resource
+  PrimalItem_Gem_BlueCS_C:
+    category: Resource
+  PrimalItem_Gem_GreenCS_C:
+    category: Resource
+  PrimalItem_Gem_RedCS_C:
+    category: Resource
+  PrimalItem_HideCS_C:
+    category: Resource
+  PrimalItem_KeratinChitinCS_C:
+    category: Resource
+  PrimalItem_MetalCS_C:
+    category: Resource
+  PrimalItem_MetalIngotCS_C:
+    category: Resource
+  PrimalItem_PreservingSaltCS_C:
+    category: Resource
+  PrimalItem_PropellantCS_C:
+    category: Resource
+  PrimalItem_RawPrimeFishCS_C:
+    category: Resource
+  PrimalItem_RawPrimeMeatCS_C:
+    category: Resource
+  PrimalItem_RawSaltCS_C:
+    category: Resource
+  PrimalItem_SandCS_C:
+    category: Resource
+  PrimalItem_SapCactusCS_C:
+    category: Resource
+  PrimalItem_SapCS_C:
+    category: Resource
+  PrimalItem_ShellCS_C:
+    category: Resource
+  PrimalItem_SilicaPearlCS_C:
+    category: Resource
+  PrimalItem_SilkCS_C:
+    category: Resource
+  PrimalItem_SpoiledFishCS_C:
+    category: Resource
+  PrimalItem_SpoiledMeatCS_C:
+    category: Resource
+  PrimalItem_SpoiledMuttonCS_C:
+    category: Resource
+  PrimalItem_SulfurCS_C:
+    category: Resource
+  PrimalItem_ThatchCS_C:
+    category: Resource
+  PrimalItem_WoolHideCS_C:
+    category: Resource
+  PrimalItem_AdminGun_CS_C:
+    category: Tool
+  PrimalItemStructure_TestBox_CS_C:
+    publishStatus: exclude
+  PrimalItemWeapon_CS_Base_C:
+    publishStatus: exclude
+  PrimalItemWeaponGenericAmmolesConsumeSelf_CS_C:
+    publishStatus: exclude
+  PrimalItemStructure_TestDedi_CS_C:
+    publishStatus: exclude
+  PrimalItemConsumable_BowlEmpty_C:
+    publishStatus: exclude
+  PrimalItem_SurvivorAxe_C:
+    category: Tool
+  PrimalItem_SurvivorSickle_C:
+    category: Tool
+  PrimalItem_WeaponSickle_C:
+    category: Tool
+  EggProductionData_C:
+    publishStatus: exclude
+  LaidEggData_C:
+    publishStatus: exclude
+  WeaponDepotPad_C:
+    publishStatus: exclude
+  ItemDepotPad_C:
+    publishStatus: exclude
+  ItemStructureDepotTerminal_C:
+    publishStatus: exclude
+  ItemWeaponDigitizerRailGun_C:
+    publishStatus: exclude
+  WeaponDigitizerRailGun_C:
+    publishStatus: exclude
+  ItemWeaponDigitizerRifle_C:
+    publishStatus: exclude
+  WeaponDigitizerRifle_C:
+    publishStatus: exclude
+  WeaponDinoball_C:
+    publishStatus: exclude
+  PrimalItemStructure_Base_AAT_C:
+    publishStatus: exclude
+  PrimalItem_Base_AAT_C:
+    publishStatus: exclude
+  PrimalItemStructure_ZoneGenerator_AAT_C:
+    publishStatus: exclude
+  PrimalItem_DyePackage_C:
+    publishStatus: exclude
+  PrimalItemWeapon_AwesomeAdminTool_AAT_C:
+    publishStatus: exclude
+  Weapon_AwesomeAdminTool_AAT_C:
+    publishStatus: exclude
+  PrimalItemWeapon_Base_AAT_C:
+    publishStatus: exclude
+  PrimalItem_WeaponElectronicBinoculars_Plus_C:
+    publishStatus: exclude
+  PrimalItem_WeaponReinWhip_C:
+    displayName: Reusable Whip
+    category: Utility
+  PrimalItem_WeaponReusableBola_C:
+    displayName: Reusable Bola
+    category: Utility
+  PrimalItem_WeaponReusableFlareGun_C:
+    displayName: Reusable Flare Gun
+    category: Utility
+  PrimalItem_WeaponReusableSpear_C:
+    displayName: Reusabled Spear
+  PrimalItem_WeaponReuseableLasso_C:
+    displayName: Reusabled Lasso
+    category: Utility
+  PrimalItem_WeaponTorch_Reusabled_C:
+    displayName: Reusabled Torch
+    category: Utility
+  Ammo_HookPlus_C:
+    displayName: Reusabled Grappling Hook
+    category: Utility
+  PrimalItemConsumableBuff_ReusableParachute_C:
+    category: Utility
+  PrimalItem_WeaponHandHeldFlashlight_C:
+    displayName: Handheld Flashlight
+    publishStatus: exclude
+  WeapHandheldFlashlight_C:
+    publishStatus: exclude
+  PrimalItem_Weapon_1H_HandheldSalmon_C:
+    publishStatus: exclude
+  Weapon_1H_HandheldSalmon_C:
+    publishStatus: exclude
+  PrimalItem_WeaponHandHeldLantern_C:
+    publishStatus: exclude
+  WeapHandHeldLantern_Frontier_C:
+    displayName: Hand Held Frontier Lantern

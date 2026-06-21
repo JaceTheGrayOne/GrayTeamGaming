@@ -60,10 +60,9 @@ const mods = rows
     thumbnail: `assets/mod-thumbnails/${parseInt(r[idIdx], 10)}.webp`,
     primaryCategory: 'Uncategorized',
     additionalCategories: [],
-    description: 'Pending review — describe what this mod does.',
+    description: 'Describe what this mod does.',
     tips: [],
     tags: [],
-    needsReview: true,
   }));
 
 const doc = {

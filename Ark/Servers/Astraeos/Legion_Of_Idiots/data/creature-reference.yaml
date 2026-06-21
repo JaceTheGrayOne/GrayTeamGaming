@@ -35,4 +35,3 @@ creatures:
       - layout-test
       - placeholder
     fakeData: true
-    needsReview: true

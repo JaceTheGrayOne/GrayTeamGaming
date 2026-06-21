@@ -4,11 +4,12 @@
 // handle client-side interactions such as mod search and category filtering.
 // No runtime network calls, no framework.
 
-import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { parseYaml } from './lib/mini-yaml.mjs';
 import { readCsv } from './lib/csv.mjs';
+import { itemEngramClassCandidates } from './lib/item-engram-helpers.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -19,6 +20,9 @@ const CACHE_PATH = join(root, 'data', 'fetched-metadata.json');
 const ITEM_WIKI_CACHE_PATH = join(root, 'data', 'item-wiki-cache.json');
 const ITEM_MANIFEST_PATH = join(root, 'assets', 'items', 'ASA_LegionOfIdiots_Item_Manifest.csv');
 const ITEM_ICON_MANIFEST_PATH = join(root, 'assets', 'items', 'ASA_LegionOfIdiots_Item_Manifest_With_Icons.csv');
+const ITEM_PUBLICATION_REPORT_PATH = join(root, '_local', 'docs', 'Data_Collection', 'Item_Publication_Filter_Report.md');
+const ITEM_CATEGORY_REPORT_PATH = join(root, '_local', 'docs', 'Data_Collection', 'Item_Category_Normalization_Report.md');
+const ITEM_DESCRIPTION_REPORT_PATH = join(root, '_local', 'docs', 'Data_Collection', 'Item_Description_Sanitization_Report.md');
 const THUMB_DIR = join(root, 'assets', 'mod-thumbnails');
 
 const OUTPUTS = {
@@ -45,6 +49,9 @@ const ITEM_CATEGORY_DEFAULTS = [
   { id: 'artifact', label: 'Artifact', color: '#d7a8ff', textColor: '#ead3ff', icon: 'assets/category-icons/equipment-items.svg' },
   { id: 'consumable', label: 'Consumable', color: '#a6ff3d', textColor: '#d0ff86', icon: 'assets/category-icons/equipment-items.svg' },
   { id: 'cosmetic', label: 'Cosmetic', color: '#ff5fb7', textColor: '#ff9bd3', icon: 'assets/category-icons/cosmetic.svg' },
+  { id: 'egg', label: 'Egg', color: '#e9f7da', textColor: '#f5ffe8', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'kibble', label: 'Kibble', color: '#c37cff', textColor: '#e2c2ff', icon: 'assets/category-icons/equipment-items.svg' },
+  { id: 'recipe', label: 'Recipe', color: '#f2d27a', textColor: '#fff0b2', icon: 'assets/category-icons/equipment-items.svg' },
   { id: 'resource', label: 'Resource', color: '#ffb347', textColor: '#ffd18a', icon: 'assets/category-icons/equipment-items.svg' },
   { id: 'saddle', label: 'Saddle', color: '#30f0c2', textColor: '#8cffdf', icon: 'assets/category-icons/equipment-items.svg' },
   { id: 'skin', label: 'Skin', color: '#d9f7ff', textColor: '#f2fdff', icon: 'assets/category-icons/cosmetic.svg' },
@@ -66,6 +73,39 @@ function loadJsonFile(path, fallback = {}) {
   try { return JSON.parse(readFileSync(path, 'utf8')); } catch { return fallback; }
 }
 
+function configuredPath(value) {
+  const raw = String(value || '').trim();
+  return raw ? resolve(raw) : '';
+}
+
+function collectionGameIniPath(itemDoc) {
+  const collection = itemDoc.collection || {};
+  if (collection.gameIniPath) return configuredPath(collection.gameIniPath);
+  if (collection.serverConfigRoot) return join(configuredPath(collection.serverConfigRoot), 'Game.ini');
+  return '';
+}
+
+function parseDisabledEngrams(gameIniText) {
+  const disabled = new Map();
+  const lines = String(gameIniText || '').split(/\r?\n/);
+  lines.forEach((line, index) => {
+    if (!/OverrideNamedEngramEntries/i.test(line) || !/\bEngramHidden\s*=\s*True\b/i.test(line)) return;
+    const match = line.match(/\bEngramClassName\s*=\s*"([^"]+)"/i);
+    if (!match) return;
+    disabled.set(match[1].toLowerCase(), {
+      className: match[1],
+      lineNumber: index + 1,
+    });
+  });
+  return disabled;
+}
+
+function loadDisabledEngrams(itemDoc) {
+  const path = collectionGameIniPath(itemDoc);
+  if (!path || !existsSync(path)) return { path, disabled: new Map() };
+  return { path, disabled: parseDisabledEngrams(readFileSync(path, 'utf8')) };
+}
+
 function loadCache() {
   if (existsSync(CACHE_PATH)) {
     try { return JSON.parse(readFileSync(CACHE_PATH, 'utf8')).mods || {}; } catch { /* ignore */ }
@@ -84,6 +124,268 @@ function boolish(value) {
   return value === true || String(value || '').toLowerCase() === 'true';
 }
 
+const BLOCKED_WIKI_TITLE_PATTERNS = [
+  /^Mobile:/i,
+  /^ARK Mobile:/i,
+];
+
+const BLOCKED_BLUEPRINT_ROOTS = [
+  {
+    pattern: /^\/Game\/Abyss\//i,
+    platformScope: 'ase',
+    reason: 'blocked-blueprint-root-abyss',
+  },
+];
+
+function splitDelimited(value) {
+  return String(value || '')
+    .split(';')
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+function hasDelimitedValue(value, expected) {
+  const needle = String(expected || '').toLowerCase();
+  return splitDelimited(value).some((part) => part.toLowerCase() === needle);
+}
+
+function wikiUrlForTitle(title) {
+  return `https://ark.wiki.gg/wiki/${encodeURIComponent(String(title || '').trim().replace(/\s+/g, '_'))}`;
+}
+
+function nonLinkCraftingStation(value) {
+  return /^(?:not listed|unknown|unavailable|none)$/i.test(String(value || '').trim());
+}
+
+function craftingStationLinksHtml(value) {
+  const stations = splitDelimited(value);
+  if (!stations.length) return esc(value);
+  return stations.map((station, index) => {
+    const separator = index ? '<span class="crafting-separator">; </span>' : '';
+    if (nonLinkCraftingStation(station)) return `${separator}${esc(station)}`;
+    return `${separator}<a class="crafting-link" href="${esc(wikiUrlForTitle(station))}" target="_blank" rel="noopener noreferrer">${esc(station)}</a>`;
+  }).join('');
+}
+
+function wikiTitleFromSource(value) {
+  try {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+    const parsed = new URL(raw);
+    if (!/(\.|^)ark\.wiki\.gg$/i.test(parsed.hostname)) return '';
+    if (!parsed.pathname.startsWith('/wiki/')) return '';
+    return decodeURIComponent(parsed.pathname.slice('/wiki/'.length)).replace(/_/g, ' ');
+  } catch {
+    return '';
+  }
+}
+
+function isBlockedWikiTitle(title) {
+  return BLOCKED_WIKI_TITLE_PATTERNS.some((pattern) => pattern.test(String(title || '').trim()));
+}
+
+function hasBlockedWikiTitle(row) {
+  if (isBlockedWikiTitle(row.displayName)) return true;
+  return splitDelimited(row.enrichmentSources).some((source) => isBlockedWikiTitle(wikiTitleFromSource(source)));
+}
+
+function blueprintBody(value) {
+  const match = String(value || '').match(/Blueprint'([^']+)'/i);
+  return match ? match[1] : String(value || '');
+}
+
+function blockedBlueprintRoot(row) {
+  const body = blueprintBody(row.blueprintPath);
+  if (!body) return null;
+  return BLOCKED_BLUEPRINT_ROOTS.find((entry) => entry.pattern.test(body)) || null;
+}
+
+function hardCategoryForClass(className = '', assetPath = '', displayName = '', rawCategory = '') {
+  const haystack = `${className} ${assetPath} ${displayName}`;
+  if (
+    /^Skins?$/i.test(rawCategory)
+    || /\b(Skin|Costume|Emote|Hair(?:style)?|Hair\s+Style|Head\s+Hair\s+Style)\b/i.test(displayName)
+    || /(?:UnlockEmote|UnlockHair|Hairstyle|HairStyle)/i.test(className)
+    || /^PrimalItemSkin_/i.test(className)
+  ) {
+    return { category: 'Cosmetic', reason: 'skin-cosmetic' };
+  }
+  if (/^Saddles?$/i.test(rawCategory) || /\bSaddle\b/i.test(displayName) || /\/Saddles?\//i.test(assetPath) || /PrimalItemArmor_.*Saddle/i.test(className)) {
+    return { category: 'Saddle', reason: 'saddle-item' };
+  }
+  if (/\bRecipe\b/i.test(displayName) || /RecipeNote|_Recipe|Recipes?\//i.test(haystack)) return { category: 'Recipe', reason: 'recipe-item' };
+  if (/\bKibble\b/i.test(displayName) || /Kibble/i.test(className)) return { category: 'Kibble', reason: 'kibble-item' };
+  if (/\bEgg\b/i.test(displayName) || /(?:^|_)Egg_/i.test(className) || /_Egg_|Egg_/i.test(className)) return { category: 'Egg', reason: 'egg-item' };
+  if (/^(PrimalItemStructure_|ItemStructure)/i.test(className)) return { category: 'Structure', reason: 'class-structure' };
+  if (/^PrimalItemArmor_/i.test(className)) return { category: 'Armor', reason: 'class-armor' };
+  if (/^PrimalItemAmmo_/i.test(className) || /\bAmmo\b/i.test(assetPath)) return { category: 'Ammo', reason: 'class-ammo' };
+  if (/^(PrimalItemWeapon_|PrimalItem_Weapon|Weapon_|Weap)/i.test(className)) return { category: 'Weapon', reason: 'class-weapon' };
+  if (/^PrimalItemResource_/i.test(className)) return { category: 'Resource', reason: 'class-resource' };
+  if (/^PrimalItemConsumable_/i.test(className)) return { category: 'Consumable', reason: 'class-consumable' };
+  if (/^PrimalItemArtifact/i.test(className)) return { category: 'Artifact', reason: 'class-artifact' };
+  if (/^PrimalItemTrophy/i.test(className)) return { category: 'Trophy', reason: 'class-trophy' };
+  if (/\/Structures?\//i.test(haystack)) return { category: 'Structure', reason: 'path-structure' };
+  return null;
+}
+
+function normalizedItemCategory(row, override) {
+  if (override.category) return { category: override.category, reason: 'manual-override' };
+  const hard = hardCategoryForClass(
+    row.className || '',
+    row.assetPath || row.blueprintPath || '',
+    row.displayName || '',
+    row.category || ''
+  );
+  if (hard) return hard;
+  return { category: row.category || 'Unknown', reason: row.category ? 'source-category' : 'missing-category' };
+}
+
+function decodeEntities(value) {
+  return String(value || '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
+
+function cleanDescriptionText(value) {
+  return decodeEntities(value)
+    .replace(/<\/?(?:onlyinclude|includeonly|noinclude)\b[^>]*>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function isUsableDescription(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return false;
+  if (/<[^>]+>/.test(raw)) return false;
+  if (/^\s*[a-z]{2}\s*:/i.test(raw)) return false;
+  const cleaned = cleanDescriptionText(raw);
+  if (!cleaned) return false;
+  if (/^\s*[a-z]{2}\s*:/i.test(cleaned)) return false;
+  if (/^\{\{.*\}\}$/.test(cleaned)) return false;
+  return cleaned.length >= 8;
+}
+
+function usableDescription(value) {
+  const cleaned = cleanDescriptionText(value);
+  return isUsableDescription(cleaned) ? cleaned : '';
+}
+
+function platformScopeForItem(row) {
+  if (hasBlockedWikiTitle(row)) return 'mobile';
+  const blockedRoot = blockedBlueprintRoot(row);
+  if (blockedRoot) return blockedRoot.platformScope;
+  if (row.sourceType === 'base-game' || row.sourceType === 'map') return 'asa';
+  if (row.sourceType === 'mod') return 'asa';
+  return 'unknown';
+}
+
+function evidenceTierFor(row, override) {
+  if (override.publishStatus === 'publish') return 'manual';
+  const hasPackage = hasDelimitedValue(row.sourceEvidence, 'package-manifest');
+  const hasWiki = hasDelimitedValue(row.sourceEvidence, 'wiki');
+  const hasConfig = hasDelimitedValue(row.sourceEvidence, 'config');
+  if (hasPackage && hasConfig) return 'package+config';
+  if (hasPackage) return 'package';
+  if (hasWiki && hasConfig) return 'wiki+config';
+  if (hasWiki) return 'wiki-only';
+  if (hasConfig || row.sourceType === 'server-config') return 'config-only';
+  return 'unknown';
+}
+
+function hasExecutableIdentity(row) {
+  return Boolean(row.className || row.blueprintPath || row.spawnCommand);
+}
+
+function disabledEngramForRow(row, disabledEngrams) {
+  for (const engram of itemEngramClassCandidates(row)) {
+    const disabled = disabledEngrams.get(engram.toLowerCase());
+    if (disabled) return disabled;
+  }
+  return null;
+}
+
+function itemPublication(row, cache, override, descriptionWasRejected, disabledEngrams) {
+  const platformScope = platformScopeForItem(row);
+  const evidenceTier = evidenceTierFor(row, override);
+  const manualStatus = String(override.publishStatus || '').trim().toLowerCase();
+
+  if (manualStatus === 'exclude' || manualStatus === 'review-only') {
+    return {
+      publishStatus: manualStatus,
+      publishReason: override.publishReason || `manual-${manualStatus}`,
+      evidenceTier,
+      platformScope,
+    };
+  }
+
+  const disabledEngram = disabledEngramForRow(row, disabledEngrams);
+  if (disabledEngram) {
+    return {
+      publishStatus: 'exclude',
+      publishReason: 'game-ini-engram-hidden',
+      evidenceTier,
+      platformScope,
+      disabledEngram,
+    };
+  }
+
+  const rowPublishStatus = String(row.publishStatus || '').trim().toLowerCase();
+  const rowPublishReason = String(row.publishReason || '').trim().toLowerCase();
+  if ((rowPublishStatus === 'exclude' || rowPublishStatus === 'review-only') && rowPublishReason !== 'game-ini-engram-hidden') {
+    return {
+      publishStatus: rowPublishStatus,
+      publishReason: row.publishReason || 'manifest-publish-status',
+      evidenceTier: row.evidenceTier || evidenceTier,
+      platformScope: row.platformScope || platformScope,
+    };
+  }
+
+  if (platformScope === 'mobile') {
+    return { publishStatus: 'exclude', publishReason: 'mobile-platform-exclusive', evidenceTier, platformScope };
+  }
+
+  const blockedRoot = blockedBlueprintRoot(row);
+  if (blockedRoot && !hasDelimitedValue(row.sourceEvidence, 'package-manifest')) {
+    return { publishStatus: 'exclude', publishReason: blockedRoot.reason, evidenceTier, platformScope };
+  }
+
+  if (evidenceTier === 'config-only' || row.sourceType === 'server-config') {
+    return { publishStatus: 'review-only', publishReason: 'config-only-unresolved', evidenceTier, platformScope };
+  }
+
+  if (evidenceTier === 'wiki-only' && !hasExecutableIdentity(row)) {
+    return { publishStatus: 'exclude', publishReason: 'wiki-only-no-executable-id', evidenceTier, platformScope };
+  }
+
+  if (evidenceTier === 'wiki-only' && row.confidence === 'low' && !boolish(row.serverReferenced)) {
+    return { publishStatus: 'review-only', publishReason: 'low-confidence-wiki-only', evidenceTier, platformScope };
+  }
+
+  if (evidenceTier === 'package' && row.confidence === 'low') {
+    return { publishStatus: 'review-only', publishReason: 'low-confidence-package-inference', evidenceTier, platformScope };
+  }
+
+  if (descriptionWasRejected && evidenceTier === 'wiki-only' && !boolish(row.serverReferenced)) {
+    return { publishStatus: 'review-only', publishReason: 'wiki-only-rejected-description', evidenceTier, platformScope };
+  }
+
+  if (row.publishStatus === 'publish') {
+    return {
+      publishStatus: 'publish',
+      publishReason: row.publishReason || 'manifest-publish-status',
+      evidenceTier: row.evidenceTier || evidenceTier,
+      platformScope: row.platformScope || platformScope,
+    };
+  }
+
+  return { publishStatus: 'publish', publishReason: 'accepted', evidenceTier, platformScope };
+}
+
 function filterKey(value) {
   return String(value || 'unknown')
     .toLowerCase()
@@ -99,7 +401,7 @@ function firstWikiUrl(enrichmentSources) {
     .find((url) => {
       if (!/^https:\/\/ark\.wiki\.gg\/wiki\//i.test(url)) return false;
       const title = decodeURIComponent(url.split('/wiki/')[1] || '');
-      return !/^(Special|File|Category|Template):/i.test(title);
+      return !/^(Special|File|Category|Template):/i.test(title) && !isBlockedWikiTitle(title);
     }) || '';
 }
 
@@ -108,7 +410,8 @@ function wikiTitleFromUrl(url) {
     const parsed = new URL(url);
     if (!/(\.|^)ark\.wiki\.gg$/i.test(parsed.hostname)) return '';
     if (!parsed.pathname.startsWith('/wiki/')) return '';
-    return decodeURIComponent(parsed.pathname.slice('/wiki/'.length)).replace(/_/g, ' ');
+    const title = decodeURIComponent(parsed.pathname.slice('/wiki/'.length)).replace(/_/g, ' ');
+    return isBlockedWikiTitle(title) ? '' : title;
   } catch {
     return '';
   }
@@ -210,6 +513,114 @@ function displayNotes(value) {
   return String(value || '').trim();
 }
 
+function markdownCountList(entries) {
+  if (!entries.length) return '- None';
+  return entries.map(([key, count]) => `- ${key || '(blank)'}: ${count}`).join('\n');
+}
+
+function countBy(values, selector) {
+  const counts = new Map();
+  for (const value of values) {
+    const key = selector(value) || '(blank)';
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])));
+}
+
+function reportRows(rows, formatter, limit = 50) {
+  if (!rows.length) return '- None';
+  const shown = rows.slice(0, limit).map(formatter);
+  if (rows.length > limit) shown.push(`- ... ${rows.length - limit} more`);
+  return shown.join('\n');
+}
+
+function writeItemPublicationReport({ manifestRows, publicItems, hiddenItems, rejectedDescriptions, categoryAdjustments, disabledEngramData }) {
+  mkdirSync(dirname(ITEM_PUBLICATION_REPORT_PATH), { recursive: true });
+  const now = new Date().toISOString();
+  const disabledHidden = hiddenItems.filter((row) => row.publishReason === 'game-ini-engram-hidden');
+  const report = `# Item Publication Filter Report
+
+Run date/time: ${now}
+
+## Summary
+
+- Manifest rows read: ${manifestRows.length}
+- Public rows rendered: ${publicItems.length}
+- Rows hidden from public page: ${hiddenItems.length}
+- Game.ini disabled engrams loaded: ${disabledEngramData?.disabled?.size || 0}
+- Rows hidden by Game.ini disabled engram: ${disabledHidden.length}
+- Rejected descriptions: ${rejectedDescriptions.length}
+- Category adjustments: ${categoryAdjustments.length}
+
+## Game.ini Disabled Engram Source
+
+- Path: \`${disabledEngramData?.path || 'Not configured'}\`
+
+## Hidden Rows By Status
+
+${markdownCountList(countBy(hiddenItems, (row) => row.publishStatus))}
+
+## Hidden Rows By Reason
+
+${markdownCountList(countBy(hiddenItems, (row) => row.publishReason))}
+
+## Hidden Rows By Evidence Tier
+
+${markdownCountList(countBy(hiddenItems, (row) => row.evidenceTier))}
+
+## Hidden Row Samples
+
+${reportRows(hiddenItems, (row) => `- ${row.displayName || row.className || row.itemKey}: ${row.publishStatus} / ${row.publishReason} / ${row.evidenceTier}${row.disabledEngram ? ` / ${row.disabledEngram} line ${row.disabledLine}` : ''}`)}
+
+## Game.ini Disabled Row Samples
+
+${reportRows(disabledHidden, (row) => `- ${row.displayName || row.className || row.itemKey}: ${row.disabledEngram} line ${row.disabledLine}`)}
+
+## Rejected Description Samples
+
+${reportRows(rejectedDescriptions, (row) => `- ${row.displayName || row.className || row.itemKey}: ${row.reason}`)}
+
+## Category Adjustment Samples
+
+${reportRows(categoryAdjustments, (row) => `- ${row.displayName || row.className || row.itemKey}: ${row.from || '(blank)'} -> ${row.to} (${row.reason})`)}
+`;
+  writeFileSync(ITEM_PUBLICATION_REPORT_PATH, report, 'utf8');
+
+  const descriptionReport = `# Item Description Sanitization Report
+
+Run date/time: ${now}
+
+## Summary
+
+- Manifest rows read: ${manifestRows.length}
+- Rejected descriptions: ${rejectedDescriptions.length}
+
+## Rejected Description Samples
+
+${reportRows(rejectedDescriptions, (row) => `- ${row.displayName || row.className || row.itemKey}: ${row.reason}`, 200)}
+`;
+  writeFileSync(ITEM_DESCRIPTION_REPORT_PATH, descriptionReport, 'utf8');
+
+  const categoryReport = `# Item Category Normalization Report
+
+Run date/time: ${now}
+
+## Summary
+
+- Manifest rows read: ${manifestRows.length}
+- Category adjustments: ${categoryAdjustments.length}
+
+## Adjustments By Reason
+
+${markdownCountList(countBy(categoryAdjustments, (row) => row.reason))}
+
+## Category Adjustment Samples
+
+${reportRows(categoryAdjustments, (row) => `- ${row.displayName || row.className || row.itemKey}: ${row.from || '(blank)'} -> ${row.to} (${row.reason})`, 200)}
+`;
+  writeFileSync(ITEM_CATEGORY_REPORT_PATH, categoryReport, 'utf8');
+}
+
 function normalizeItemRows(itemDoc) {
   const pageConfig = {
     title: 'Item Reference',
@@ -229,6 +640,7 @@ function normalizeItemRows(itemDoc) {
   const manualOverrides = itemDoc.manualOverrides || {};
   const cacheItems = itemCacheEntries();
   const iconAssociations = loadIconAssociations();
+  const disabledEngramData = loadDisabledEngrams(itemDoc);
   const itemCategories = itemDoc.categories?.length ? itemDoc.categories : ITEM_CATEGORY_DEFAULTS;
   const catByLabel = categoryMap(itemCategories);
   const fallbackCategory = catByLabel.get('Unknown') || ITEM_CATEGORY_DEFAULTS.at(-1);
@@ -241,6 +653,14 @@ function normalizeItemRows(itemDoc) {
       items: [],
       stats: {
         manifestRows: 0,
+        publicRows: 0,
+        hiddenRows: 0,
+        excludedRows: 0,
+        reviewOnlyRows: 0,
+        disabledByGameIniRows: 0,
+        disabledEngrams: disabledEngramData.disabled.size,
+        rejectedDescriptions: 0,
+        categoryAdjustments: 0,
         wikiUrls: 0,
         descriptions: 0,
         icons: 0,
@@ -249,26 +669,61 @@ function normalizeItemRows(itemDoc) {
   }
 
   const manifestRows = readCsv(ITEM_MANIFEST_PATH).rows;
-  const items = manifestRows.map((row) => {
+  const hiddenItems = [];
+  const rejectedDescriptions = [];
+  const categoryAdjustments = [];
+  const items = [];
+
+  for (const row of manifestRows) {
     const icon = iconAssociations.byKey.get(row.itemKey)
       || iconAssociations.byClass.get(String(row.className || '').toLowerCase())
       || {};
     const cache = cacheForItem(row, cacheItems);
     const override = overrideForItem(row, manualOverrides);
-    const categoryLabel = override.category || row.category || 'Unknown';
+    const categoryInfo = normalizedItemCategory(row, override);
+    const categoryLabel = categoryInfo.category;
+    if ((row.category || 'Unknown') !== categoryLabel) {
+      categoryAdjustments.push({
+        itemKey: row.itemKey,
+        displayName: override.displayName || row.displayName || row.className || row.itemKey,
+        from: row.category || 'Unknown',
+        to: categoryLabel,
+        reason: categoryInfo.reason,
+      });
+    }
     const category = catByLabel.get(categoryLabel) || fallbackCategory;
     const sourceLabel = sourceLabelFor(row, sourceLabels, override);
     const wikiUrl = override.wikiUrl || cache.wikiUrl || firstWikiUrl(row.enrichmentSources);
-    const description = override.description || cache.description || pageConfig.unavailableDescriptionLabel;
+    const rawDescription = override.description || cache.description || '';
+    const cleanDescription = usableDescription(rawDescription);
+    const descriptionWasRejected = Boolean(rawDescription && !cleanDescription);
+    if (descriptionWasRejected) {
+      rejectedDescriptions.push({
+        itemKey: row.itemKey,
+        displayName: override.displayName || row.displayName || row.className || row.itemKey,
+        reason: 'description-failed-sanitizer',
+      });
+    }
+    const publication = itemPublication(row, cache, override, descriptionWasRejected, disabledEngramData.disabled);
+    if (publication.publishStatus !== 'publish') {
+      hiddenItems.push({
+        itemKey: row.itemKey,
+        displayName: override.displayName || row.displayName || row.className || row.itemKey,
+        publishStatus: publication.publishStatus,
+        publishReason: publication.publishReason,
+        evidenceTier: publication.evidenceTier,
+        platformScope: publication.platformScope,
+        disabledEngram: publication.disabledEngram?.className || '',
+        disabledLine: publication.disabledEngram?.lineNumber || '',
+      });
+      continue;
+    }
+    const description = cleanDescription || pageConfig.unavailableDescriptionLabel;
     const craftingStation = override.craftingStation || cache.craftingStation || row.craftingStation || pageConfig.unknownCraftingStationLabel;
     const notes = displayNotes(override.notes || cache.notes || row.notes) || 'No notes listed.';
     const spawn = spawnDisplayFor(row);
     const itemIcon = itemIconFor(row, icon, category, pageConfig);
     const displayName = override.displayName || row.displayName || row.className || row.itemKey;
-    const hasReviewOverride = Object.prototype.hasOwnProperty.call(override, 'needsReview');
-    const needsReview = hasReviewOverride
-      ? boolish(override.needsReview)
-      : boolish(row.needsReview) || description === pageConfig.unavailableDescriptionLabel;
     const sourceFilter = filterKey(sourceLabel);
 
     const searchText = [
@@ -289,7 +744,7 @@ function normalizeItemRows(itemDoc) {
       row.notes,
     ].filter(Boolean).join(' ').toLowerCase();
 
-    return {
+    const item = {
       itemKey: row.itemKey,
       displayName,
       className: row.className,
@@ -313,15 +768,26 @@ function normalizeItemRows(itemDoc) {
       iconPath: itemIcon.path,
       iconFallback: itemIcon.fallback,
       iconStatus: itemIcon.status,
-      needsReview,
       searchText,
     };
-  }).sort((a, b) => {
+    items.push(item);
+  }
+
+  items.sort((a, b) => {
     const aSource = a.sourceLabel === 'Ark' ? `0 ${a.sourceLabel}` : `1 ${a.sourceLabel}`;
     const bSource = b.sourceLabel === 'Ark' ? `0 ${b.sourceLabel}` : `1 ${b.sourceLabel}`;
     return aSource.localeCompare(bSource, undefined, { sensitivity: 'base' })
       || a.category.localeCompare(b.category, undefined, { sensitivity: 'base' })
       || a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' });
+  });
+
+  writeItemPublicationReport({
+    manifestRows,
+    publicItems: items,
+    hiddenItems,
+    rejectedDescriptions,
+    categoryAdjustments,
+    disabledEngramData,
   });
 
   return {
@@ -331,6 +797,14 @@ function normalizeItemRows(itemDoc) {
     items,
     stats: {
       manifestRows: manifestRows.length,
+      publicRows: items.length,
+      hiddenRows: hiddenItems.length,
+      excludedRows: hiddenItems.filter((item) => item.publishStatus === 'exclude').length,
+      reviewOnlyRows: hiddenItems.filter((item) => item.publishStatus === 'review-only').length,
+      disabledByGameIniRows: hiddenItems.filter((item) => item.publishReason === 'game-ini-engram-hidden').length,
+      disabledEngrams: disabledEngramData.disabled.size,
+      rejectedDescriptions: rejectedDescriptions.length,
+      categoryAdjustments: categoryAdjustments.length,
       wikiUrls: items.filter((item) => item.wikiUrl).length,
       descriptions: items.filter((item) => item.description !== pageConfig.unavailableDescriptionLabel).length,
       icons: items.filter((item) => !item.iconFallback).length,
@@ -366,7 +840,6 @@ function buildContext() {
     accent,
     logoImage: site.logoImage || '',
     fontStylesheet: site.fontStylesheet || '',
-    reviewCount: mods.filter((m) => m.needsReview).length,
   };
 }
 
@@ -741,6 +1214,10 @@ function commonStyles(ctx) {
   }
   .item-fact span,
   .item-notes span { color: var(--text); overflow-wrap: anywhere; }
+  .crafting-stations { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 3px; }
+  .crafting-link { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent) 42%, transparent); }
+  .crafting-link:hover { color: #f4feff; border-bottom-color: currentColor; }
+  .crafting-separator { color: var(--muted); }
   .item-spawn-detail {
     display: flex; align-items: baseline; gap: 8px;
     margin-top: 10px;
@@ -867,7 +1344,7 @@ function pageNav(active) {
 function pageFooter(ctx, extraText = '') {
   if (extraText) return esc(extraText);
   if (ctx.site.footerText) return esc(ctx.site.footerText);
-  return `${esc(ctx.site.serverName || '')} &middot; ${ctx.mods.length} mods${ctx.reviewCount ? ` &middot; ${ctx.reviewCount} flagged for review` : ''}`;
+  return `${esc(ctx.site.serverName || '')} &middot; ${ctx.mods.length} mods`;
 }
 
 function pageShell(ctx, options) {
@@ -938,7 +1415,6 @@ function renderModRows(ctx) {
       ...(ctx.site.showAdditionalCategoryPills
         ? (m.additionalCategories || []).map((c) => `<span class="category-badge" style="--c:${esc(categoryColor(ctx, c))}">${esc(c)}</span>`)
         : []),
-      ...(m.needsReview ? ['<span class="category-badge pill-review">Needs review</span>'] : []),
     ].join('');
 
     const thumbHtml = thumb
@@ -1007,7 +1483,6 @@ function renderItemRows(ctx) {
     const pills = [
       `<span class="category-badge item-source-badge" style="--c:${esc(ctx.accent)}">${esc(item.sourceLabel)}</span>`,
       `<span class="category-badge" style="--c:${esc(item.categoryColor)}">${esc(item.category)}</span>`,
-      ...(item.needsReview ? ['<span class="category-badge pill-review">Needs review</span>'] : []),
     ].join('');
 
     const wikiHtml = item.wikiUrl
@@ -1027,7 +1502,7 @@ function renderItemRows(ctx) {
         <div class="item-details">
           <div class="item-facts">
             <div class="item-fact"><b>Source</b><span>${esc(item.sourceLabel)}</span></div>
-            <div class="item-fact"><b>Crafting</b><span>${esc(item.craftingStation)}</span></div>
+            <div class="item-fact"><b>Crafting</b><span class="crafting-stations">${craftingStationLinksHtml(item.craftingStation)}</span></div>
           </div>
           <div class="item-detail-stack">
             <div class="item-notes"><b>Notes</b><span>${esc(item.notes)}</span></div>
@@ -1161,7 +1636,6 @@ function renderReferenceEntry(entry, details, options = {}) {
   const badges = [
     `<span class="category-badge" style="--c:${esc(entry.color)}">${esc(entry.category)}</span>`,
     ...(entry.fakeData ? ['<span class="category-badge pill-review">Fake test data</span>'] : []),
-    ...(!entry.fakeData && entry.needsReview ? ['<span class="category-badge pill-review">Needs review</span>'] : []),
   ].join('');
   const tipsHtml = entry.tips?.length
     ? `<div class="detail"><b>Notes</b><span>${esc(entry.tips.join(' '))}</span></div>`
@@ -1229,7 +1703,7 @@ ${rows}
         <div class="item-empty" id="empty">No items match your search.</div>
       </div>
 `,
-    footerText: `${ctx.site.serverName || 'Server'} - ${ctx.items.length} items, ${ctx.itemStats.icons} icons, ${ctx.itemStats.descriptions} descriptions`,
+    footerText: `${ctx.site.serverName || 'Server'} - ${ctx.items.length} public items from ${ctx.itemStats.manifestRows} manifest rows, ${ctx.itemStats.hiddenRows} hidden`,
     script: `<script>
 (function () {
   var search = document.getElementById('search');
@@ -1391,8 +1865,8 @@ function main() {
     console.log(`Built ${path}`);
   }
 
-  console.log(`  ${ctx.mods.length} mods, ${ctx.categories.length} categories, ${ctx.reviewCount} flagged needsReview`);
-  console.log(`  ${ctx.items.length} items from item manifest (${ctx.itemStats.icons} icons, ${ctx.itemStats.descriptions} descriptions)`);
+  console.log(`  ${ctx.mods.length} mods, ${ctx.categories.length} categories`);
+  console.log(`  ${ctx.items.length} public items from ${ctx.itemStats.manifestRows} item manifest rows (${ctx.itemStats.hiddenRows} hidden, ${ctx.itemStats.disabledByGameIniRows} disabled by Game.ini, ${ctx.itemStats.rejectedDescriptions} rejected descriptions)`);
   console.log(`  ${ctx.creatures.length} creatures from data/creature-reference.yaml`);
 }
 

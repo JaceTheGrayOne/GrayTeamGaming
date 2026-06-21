@@ -1,5 +1,6 @@
 AGENTS.md
 _local/
+node_modules/
 assets/items/item-icons/*.log
 assets/items/item-icons/package-icons.csv
 assets/items/item-icons/wiki-icon-cache.json

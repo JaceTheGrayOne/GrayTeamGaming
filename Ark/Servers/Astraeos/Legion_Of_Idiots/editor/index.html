@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Legion of Idiots Reference Editor</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/editor/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <h1>Legion of Idiots Reference Editor</h1>
+        <p id="status-line">Local only - commits are manual</p>
+      </div>
+      <div class="top-actions">
+        <button id="refresh-btn" type="button">Refresh</button>
+        <button id="save-btn" type="button" disabled>Save YAML</button>
+        <button id="build-btn" type="button">Preview Build</button>
+        <button id="open-btn" type="button">Open Page</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="section-nav" aria-label="Editor sections">
+        <button class="section-tab active" type="button" data-section="mods">Mods</button>
+        <button class="section-tab" type="button" data-section="items">Items</button>
+        <button class="section-tab" type="button" data-section="creatures">Creatures</button>
+        <button class="section-tab" type="button" data-section="site">Site Settings</button>
+      </aside>
+
+      <section class="entry-pane">
+        <div class="pane-head">
+          <label class="searchbox">
+            <span>Search</span>
+            <input id="search" type="search" placeholder="Search entries..." autocomplete="off">
+          </label>
+          <label id="hidden-items-control" class="inline-toggle" hidden>
+            <input id="show-hidden-items" type="checkbox">
+            <span>Show hidden items</span>
+          </label>
+          <p id="entry-count" class="meta-line">Loading...</p>
+        </div>
+        <div id="entry-list" class="entry-list" role="listbox" aria-label="Entries"></div>
+      </section>
+
+      <section class="editor-pane">
+        <div class="editor-head">
+          <div>
+            <p id="section-label" class="kicker">Mods</p>
+            <h2 id="form-title">Select an entry</h2>
+            <p id="form-meta" class="meta-line"></p>
+          </div>
+          <div id="dirty-pill" class="dirty-pill">Saved</div>
+        </div>
+
+        <div id="messages" class="messages" aria-live="polite"></div>
+        <form id="edit-form" class="edit-form"></form>
+
+        <div class="utility">
+          <div class="utility-tabs" role="tablist">
+            <button class="utility-tab active" type="button" data-tab="preview">Preview</button>
+            <button class="utility-tab" type="button" data-tab="diff">YAML Diff</button>
+            <button class="utility-tab" type="button" data-tab="build">Build Log</button>
+          </div>
+          <div id="preview-panel" class="utility-panel"></div>
+          <pre id="diff-panel" class="utility-panel code-panel" hidden>No changes.</pre>
+          <pre id="build-panel" class="utility-panel code-panel" hidden></pre>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/editor/app.js" defer></script>
+</body>
+</html>

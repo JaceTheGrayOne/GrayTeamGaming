@@ -12,6 +12,11 @@ import {
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { parseYaml } from './lib/mini-yaml.mjs';
+import {
+  itemEngramClassCandidates,
+  itemEngramStemCandidates,
+  normalizedEngramStem,
+} from './lib/item-engram-helpers.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -22,6 +27,7 @@ const PATHS = {
   gameIni: join(workspaceRoot, 'Servers', 'Josh_Remote', 'Astraeos', 'Game.ini'),
   discoveryRoot: join(workspaceRoot, 'Servers', 'Lost_Colony', 'Beacon Mod Discovery'),
   siteModYaml: join(root, 'data', 'mod-reference.yaml'),
+  itemReferenceYaml: join(root, 'data', 'item-reference.yaml'),
   referenceLinks: join(root, '_local', 'references', 'Ark_Survival_Ascended_Info_Resources.md'),
   outputDir: join(root, '_local', 'docs', 'Data_Collection'),
 };
@@ -53,8 +59,17 @@ const CSV_COLUMNS = [
   'sourceEvidence',
   'enrichmentSources',
   'confidence',
-  'needsReview',
   'notes',
+  'publishStatus',
+  'publishReason',
+  'evidenceTier',
+  'platformScope',
+  'canonicalKey',
+  'duplicateOf',
+  'rawCategory',
+  'categoryReason',
+  'disabledByConfig',
+  'disabledConfigReferences',
 ];
 
 const WIKI = {
@@ -137,6 +152,10 @@ const EXCLUDED_NAME_PREFIXES = [
 
 const CATEGORY_RULES = [
   ['Saddle', /\bSaddle\b|Saddles|PrimalItemArmor_.*Saddle/i],
+  ['Cosmetic', /\bSkin\b|\bCostume\b|\bEmote\b|Hair(?:style)?|UnlockEmote|UnlockHair|Hairstyle|HairStyle/i],
+  ['Recipe', /\bRecipe\b|RecipeNote|_Recipe|Recipes?\//i],
+  ['Kibble', /\bKibble\b/i],
+  ['Egg', /\bEgg\b|(?:^|_)Egg_/i],
   ['Ammo', /\bAmmo\b|Arrow|Bullet|Dart|Shell|Bolt|CannonBall|Rocket|Grenade/i],
   ['Weapon', /\bWeapon\b|Weap|Rifle|Shotgun|Pistol|Sword|Spear|Bow|Crossbow|Whip|Bola|C4/i],
   ['Armor', /\bArmor\b|Boots|Gloves|Helmet|Pants|Shirt|Shield|DivingSuit|Riot|Ghillie|Chitin|Flak|Fur/i],
@@ -151,6 +170,19 @@ const CATEGORY_RULES = [
   ['Utility', /Cryo|Dino[Bb]all|Pod|Soul|Glider|Parachute|Backpack|Quiver|Map|Radio|Remote/i],
 ];
 
+const BLOCKED_WIKI_TITLE_PATTERNS = [
+  /^Mobile:/i,
+  /^ARK Mobile:/i,
+];
+
+const BLOCKED_BLUEPRINT_ROOTS = [
+  {
+    pattern: /^\/Game\/Abyss\//i,
+    platformScope: 'ase',
+    reason: 'blocked-blueprint-root-abyss',
+  },
+];
+
 function readText(path) {
   return readFileSync(path, 'utf8').replace(/^\uFEFF/, '');
 }
@@ -163,12 +195,61 @@ function loadJson(path) {
   }
 }
 
+function boolish(value) {
+  return value === true || String(value || '').toLowerCase() === 'true';
+}
+
 function uniq(values) {
   return [...new Set(values.filter((v) => v !== null && v !== undefined && String(v).trim() !== ''))];
 }
 
+function splitDelimited(value) {
+  return String(value || '')
+    .split(';')
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+function hasDelimitedValue(value, expected) {
+  const needle = String(expected || '').toLowerCase();
+  return splitDelimited(value).some((part) => part.toLowerCase() === needle);
+}
+
 function normalizeSlash(s) {
   return String(s || '').replace(/\\/g, '/');
+}
+
+function isBlockedWikiTitle(title) {
+  return BLOCKED_WIKI_TITLE_PATTERNS.some((pattern) => pattern.test(String(title || '').trim()));
+}
+
+function wikiTitleFromSource(value) {
+  try {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+    const parsed = new URL(raw);
+    if (!/(\.|^)ark\.wiki\.gg$/i.test(parsed.hostname)) return '';
+    if (!parsed.pathname.startsWith('/wiki/')) return '';
+    return decodeURIComponent(parsed.pathname.slice('/wiki/'.length)).replace(/_/g, ' ');
+  } catch {
+    return '';
+  }
+}
+
+function hasBlockedWikiTitle(row) {
+  if (isBlockedWikiTitle(row.displayName)) return true;
+  return splitDelimited(row.enrichmentSources).some((source) => isBlockedWikiTitle(wikiTitleFromSource(source)));
+}
+
+function blueprintBody(value) {
+  const match = String(value || '').match(/Blueprint'([^']+)'/i);
+  return match ? match[1] : String(value || '');
+}
+
+function blockedBlueprintRoot(row) {
+  const body = blueprintBody(row.blueprintPath);
+  if (!body) return null;
+  return BLOCKED_BLUEPRINT_ROOTS.find((entry) => entry.pattern.test(body)) || null;
 }
 
 function normalizeClassName(value) {
@@ -252,8 +333,39 @@ function gfiCodeFromClass(className) {
   return displayNameFromClass(className).replace(/[^A-Za-z0-9]/g, '');
 }
 
-function normalizeCategory(raw, className = '', assetPath = '') {
+function hardCategoryForClass(className = '', assetPath = '', displayName = '', rawCategory = '') {
+  const haystack = `${className} ${assetPath} ${displayName}`;
+  if (
+    /^Skins?$/i.test(rawCategory)
+    || /\b(Skin|Costume|Emote|Hair(?:style)?|Hair\s+Style|Head\s+Hair\s+Style)\b/i.test(displayName)
+    || /(?:UnlockEmote|UnlockHair|Hairstyle|HairStyle)/i.test(className)
+    || /^PrimalItemSkin_/i.test(className)
+  ) {
+    return { category: 'Cosmetic', reason: 'skin-cosmetic' };
+  }
+  if (/^Saddles?$/i.test(rawCategory) || /\bSaddle\b/i.test(displayName) || /\/Saddles?\//i.test(assetPath) || /PrimalItemArmor_.*Saddle/i.test(className)) {
+    return { category: 'Saddle', reason: 'saddle-item' };
+  }
+  if (/\bRecipe\b/i.test(displayName) || /RecipeNote|_Recipe|Recipes?\//i.test(haystack)) return { category: 'Recipe', reason: 'recipe-item' };
+  if (/\bKibble\b/i.test(displayName) || /Kibble/i.test(className)) return { category: 'Kibble', reason: 'kibble-item' };
+  if (/\bEgg\b/i.test(displayName) || /(?:^|_)Egg_/i.test(className) || /_Egg_|Egg_/i.test(className)) return { category: 'Egg', reason: 'egg-item' };
+  if (/^(PrimalItemStructure_|ItemStructure)/i.test(className)) return { category: 'Structure', reason: 'class-structure' };
+  if (/^PrimalItemArmor_/i.test(className)) return { category: 'Armor', reason: 'class-armor' };
+  if (/^PrimalItemAmmo_/i.test(className) || /\bAmmo\b/i.test(assetPath)) return { category: 'Ammo', reason: 'class-ammo' };
+  if (/^(PrimalItemWeapon_|PrimalItem_Weapon|Weapon_|Weap)/i.test(className)) return { category: 'Weapon', reason: 'class-weapon' };
+  if (/^PrimalItemResource_/i.test(className)) return { category: 'Resource', reason: 'class-resource' };
+  if (/^PrimalItemConsumable_/i.test(className)) return { category: 'Consumable', reason: 'class-consumable' };
+  if (/^PrimalItemArtifact/i.test(className)) return { category: 'Artifact', reason: 'class-artifact' };
+  if (/^PrimalItemTrophy/i.test(className)) return { category: 'Trophy', reason: 'class-trophy' };
+  if (/\/Structures?\//i.test(haystack)) return { category: 'Structure', reason: 'path-structure' };
+  return null;
+}
+
+function normalizeCategory(raw, className = '', assetPath = '', displayName = '') {
   const s = String(raw || '').trim();
+  const hard = hardCategoryForClass(className, assetPath, displayName, s);
+  if (hard) return hard.category;
+
   const exact = {
     Resources: 'Resource',
     Resource: 'Resource',
@@ -264,8 +376,14 @@ function normalizeCategory(raw, className = '', assetPath = '') {
     Weapons: 'Weapon',
     Weapon: 'Weapon',
     Armor: 'Armor',
-    Skins: 'Skin',
-    Skin: 'Skin',
+    Skins: 'Cosmetic',
+    Skin: 'Cosmetic',
+    Eggs: 'Egg',
+    Egg: 'Egg',
+    Kibbles: 'Kibble',
+    Kibble: 'Kibble',
+    Recipes: 'Recipe',
+    Recipe: 'Recipe',
     Consumables: 'Consumable',
     Consumable: 'Consumable',
     Ammunition: 'Ammo',
@@ -330,6 +448,30 @@ function loadSiteModNames() {
     sourceName: m.sourceName || '',
     curseforgeUrl: m.curseforgeUrl || '',
   }]));
+}
+
+function configuredPath(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  return resolve(raw);
+}
+
+function applyCollectionConfig() {
+  PATHS.packageDiscoveryPurpose = 'hard-coded-default';
+  if (!existsSync(PATHS.itemReferenceYaml)) return;
+  const doc = parseYaml(readText(PATHS.itemReferenceYaml)) || {};
+  const collection = doc.collection || {};
+
+  const serverConfigRoot = configuredPath(collection.serverConfigRoot);
+  if (serverConfigRoot) {
+    PATHS.gameUserSettings = join(serverConfigRoot, 'GameUserSettings.ini');
+    PATHS.gameIni = join(serverConfigRoot, 'Game.ini');
+  }
+
+  if (collection.gameUserSettingsPath) PATHS.gameUserSettings = configuredPath(collection.gameUserSettingsPath);
+  if (collection.gameIniPath) PATHS.gameIni = configuredPath(collection.gameIniPath);
+  if (collection.packageDiscoveryRoot) PATHS.discoveryRoot = configuredPath(collection.packageDiscoveryRoot);
+  PATHS.packageDiscoveryPurpose = collection.packageDiscoveryPurpose || (collection.packageDiscoveryRoot ? 'configured' : PATHS.packageDiscoveryPurpose);
 }
 
 function modNameFromEvidence(modId, modJson, siteModNames) {
@@ -429,12 +571,13 @@ function readManifestCandidates(statuses) {
       if (!isProbablyItemAsset(assetPath, assetName)) continue;
 
       const className = normalizeClassName(assetName);
+      const displayName = displayNameFromClass(className);
       const blueprintPath = manifestBlueprintPath(assetPath);
-      const category = normalizeCategory('', className, assetPath);
+      const category = normalizeCategory('', className, assetPath, displayName);
       const confidence = confidenceForManifestAsset(assetPath, className);
       candidates.push({
         itemKey: blueprintPath ? sanitizeKey(blueprintPath) : sanitizeKey(`${status.modId}:${className}`),
-        displayName: displayNameFromClass(className),
+        displayName,
         className,
         blueprintPath,
         gfiCode: gfiCodeFromClass(className),
@@ -455,7 +598,6 @@ function readManifestCandidates(statuses) {
         sourceEvidence: 'package-manifest',
         enrichmentSources: status.curseforgeUrl || '',
         confidence,
-        needsReview: confidence === 'low' ? 'true' : 'false',
         notes: confidence === 'low' ? 'Weak manifest filename/path inference.' : '',
       });
     }
@@ -494,9 +636,25 @@ function addEngramRef(map, className, context, lineNumber, sourceFile) {
   map.set(key, entry);
 }
 
+function addDisabledEngramRef(map, className, lineNumber, sourceFile) {
+  const key = normalizeClassName(className);
+  if (!key || !/(?:Engram|EngramEntry)/i.test(key)) return;
+  const entry = map.get(key) || {
+    className: key,
+    contexts: new Set(),
+    lineNumbers: new Set(),
+    sourceFiles: new Set(),
+  };
+  entry.contexts.add('explicit Game.ini EngramHidden=True');
+  entry.lineNumbers.add(lineNumber);
+  entry.sourceFiles.add(sourceFile);
+  map.set(key, entry);
+}
+
 function parseConfigReferences(gameIniText, gusText) {
   const itemRefs = new Map();
   const engramRefs = new Map();
+  const disabledEngramRefs = new Map();
   const blueprintRefs = [];
 
   const scan = (text, sourceFile) => {
@@ -509,11 +667,18 @@ function parseConfigReferences(gameIniText, gusText) {
       else if (/ConfigOverrideItemMaxQuantity|ItemMaxQuantity|Stack/i.test(line)) context = 'stack override';
       else if (/OverrideNamedEngramEntries/i.test(line)) context = 'engram override';
 
+      const isDisabledEngramLine = sourceFile === 'Game.ini'
+        && /OverrideNamedEngramEntries/i.test(line)
+        && /\bEngramHidden\s*=\s*True\b/i.test(line);
+
       for (const match of line.matchAll(/\b(ItemClassString|ResourceItemTypeString)\s*=\s*"([^"]+)"/gi)) {
         addConfigRef(itemRefs, match[2], match[1] === 'ItemClassString' ? 'crafting cost override target' : 'crafting cost resource requirement', lineNumber, sourceFile);
       }
       for (const match of line.matchAll(/\b(EngramClassName|EngramClassNameOverride)\s*=\s*"([^"]+)"/gi)) {
         addEngramRef(engramRefs, match[2], context, lineNumber, sourceFile);
+        if (isDisabledEngramLine && match[1].toLowerCase() === 'engramclassname') {
+          addDisabledEngramRef(disabledEngramRefs, match[2], lineNumber, sourceFile);
+        }
       }
       for (const match of line.matchAll(/Blueprint'([^']+)'/gi)) {
         const bp = `Blueprint'${match[1]}'`;
@@ -535,6 +700,7 @@ function parseConfigReferences(gameIniText, gusText) {
   return {
     itemRefs,
     engramRefs,
+    disabledEngramRefs,
     blueprintRefs,
   };
 }
@@ -544,7 +710,9 @@ function wikiRowFromCargoTitle(title, astraeosItemNames) {
   const blueprintPath = normalizeBlueprintPath(title.Blueprint || '');
   const className = classNameFromBlueprint(blueprintPath);
   const sourceType = astraeosItemNames.has(displayName) ? 'map' : 'base-game';
-  const category = normalizeCategory(title.Category || '', className, blueprintPath);
+  const rawCategory = title.Category || '';
+  const category = normalizeCategory(rawCategory, className, blueprintPath, displayName);
+  const categoryReason = categoryReasonFor({ className, assetPath: blueprintPath, blueprintPath, displayName, category, rawCategory });
   const hasAsaishBlueprint = /Blueprint'\/Game\/(?:PrimalEarth|ASA|Aberration|ScorchedEarth|Extinction|Genesis|LostIsland|TheIsland|Astraeos)\//i.test(blueprintPath);
   const confidence = className && hasAsaishBlueprint ? 'medium' : 'low';
   const sources = uniq([
@@ -576,14 +744,16 @@ function wikiRowFromCargoTitle(title, astraeosItemNames) {
     sourceEvidence: 'wiki',
     enrichmentSources: sources,
     confidence,
-    needsReview: confidence === 'low' ? 'true' : 'false',
     notes: confidence === 'low' ? 'Wiki-only row with unclear ASA/server specificity.' : '',
+    rawCategory,
+    categoryReason,
   };
 }
 
 function wikiRowFromAstraeosItem(item) {
   const displayName = String(item.name || '').trim();
-  const category = item.category || normalizeCategory('', displayName, displayName);
+  const rawCategory = item.category || '';
+  const category = rawCategory ? normalizeCategory(rawCategory, '', displayName, displayName) : normalizeCategory('', '', displayName, displayName);
   const sources = uniq([
     wikiPageUrl(displayName),
     WIKI.astraeosItems,
@@ -612,8 +782,9 @@ function wikiRowFromAstraeosItem(item) {
     sourceEvidence: 'wiki',
     enrichmentSources: sources,
     confidence: 'low',
-    needsReview: 'true',
     notes: 'Astraeos page item link without Cargo item table blueprint/class data.',
+    rawCategory,
+    categoryReason: rawCategory ? 'astraeos-section' : 'name-inference',
   };
 }
 
@@ -663,8 +834,8 @@ function astraeosSectionCategory(sectionLine, itemName) {
   if (/Consumables/i.test(section)) return 'Consumable';
   if (/Trophies|Tributes/i.test(section)) return 'Trophy';
   if (/Saddles/i.test(section)) return 'Saddle';
-  if (/Cosmetics/i.test(section)) return 'Skin';
-  return normalizeCategory('', itemName, itemName);
+  if (/Cosmetics/i.test(section)) return 'Cosmetic';
+  return normalizeCategory('', '', itemName, itemName);
 }
 
 async function fetchAstraeosItems() {
@@ -737,7 +908,7 @@ async function loadWikiData() {
       const astraeosItems = oldCache.astraeosItems || (oldCache.astraeosItemNames || []).map((name) => ({
         name,
         section: 'Items',
-        category: normalizeCategory('', name, name),
+        category: normalizeCategory('', '', name, name),
       }));
       const astraeosItemNames = new Set(astraeosItems.map((item) => item.name));
       const cargoNames = new Set(oldCache.cargoRows.map((title) => String(title._pageName || '').trim()).filter(Boolean));
@@ -811,7 +982,6 @@ function mergeRows(rows) {
     if (incoming.confidence) {
       existing.confidence = highestConfidence(existing.confidence || 'low', incoming.confidence);
     }
-    existing.needsReview = existing.confidence === 'low' || existing.needsReview === 'true' || incoming.needsReview === 'true' ? 'true' : 'false';
 
     if (incoming.sourceEvidence === 'wiki') {
       if (incoming.displayName && (!existing.displayName || existing.displayName === displayNameFromClass(existing.className))) {
@@ -862,7 +1032,7 @@ function applyConfigReferences(rows, configRefs) {
         className: ref.className,
         blueprintPath: '',
         gfiCode: gfiCodeFromClass(ref.className),
-        category: normalizeCategory('', ref.className, ''),
+        category: normalizeCategory('', ref.className, '', displayNameFromClass(ref.className)),
         sourceType: 'server-config',
         sourceModId: '',
         sourceModName: '',
@@ -879,7 +1049,6 @@ function applyConfigReferences(rows, configRefs) {
         sourceEvidence: 'config',
         enrichmentSources: '',
         confidence: 'low',
-        needsReview: 'true',
         notes: 'Config-referenced item class was not resolved to active package manifest or wiki data.',
       };
       rows.push(row);
@@ -901,19 +1070,14 @@ function applyEngramLinks(rows, configRefs) {
       classBase.replace(/^PrimalItem[A-Za-z]*_?/, ''),
       classBase.replace(/^ItemStructure/, ''),
       classBase.replace(/^Item/, ''),
+      ...itemEngramStemCandidates(row),
     ]).map((s) => s.toLowerCase());
     for (const name of names) byLooseName.set(name, row);
   }
 
   const unresolvedEngramRefs = [];
   for (const ref of configRefs.engramRefs.values()) {
-    const base = ref.className
-      .replace(/_C$/, '')
-      .replace(/^EngramEntry_/, '')
-      .replace(/^PrimalEngramEntry_/, '')
-      .replace(/^PrimalEngram_/, '')
-      .replace(/^Engram_/, '')
-      .toLowerCase();
+    const base = normalizedEngramStem(ref.className);
     const row = byLooseName.get(base);
     if (row) {
       row.engramClassName = addDelimited(row.engramClassName, [ref.className]);
@@ -925,6 +1089,131 @@ function applyEngramLinks(rows, configRefs) {
     }
   }
   return unresolvedEngramRefs;
+}
+
+function platformScopeForRow(row) {
+  if (hasBlockedWikiTitle(row)) return 'mobile';
+  const blockedRoot = blockedBlueprintRoot(row);
+  if (blockedRoot) return blockedRoot.platformScope;
+  if (row.sourceType === 'base-game' || row.sourceType === 'map' || row.sourceType === 'mod') return 'asa';
+  return 'unknown';
+}
+
+function evidenceTierForRow(row) {
+  const hasPackage = hasDelimitedValue(row.sourceEvidence, 'package-manifest');
+  const hasWiki = hasDelimitedValue(row.sourceEvidence, 'wiki');
+  const hasConfig = hasDelimitedValue(row.sourceEvidence, 'config');
+  if (hasPackage && hasConfig) return 'package+config';
+  if (hasPackage) return 'package';
+  if (hasWiki && hasConfig) return 'wiki+config';
+  if (hasWiki) return 'wiki-only';
+  if (hasConfig || row.sourceType === 'server-config') return 'config-only';
+  return 'unknown';
+}
+
+function hasExecutableIdentity(row) {
+  return Boolean(row.className || row.blueprintPath || row.spawnCommand);
+}
+
+function disabledEngramRefsForRow(row, configRefs) {
+  const disabled = [];
+  for (const engram of itemEngramClassCandidates(row)) {
+    const ref = configRefs.disabledEngramRefs.get(normalizeClassName(engram));
+    if (ref) disabled.push(ref);
+  }
+  return disabled;
+}
+
+function formatRefLocationOnly(ref) {
+  const files = [...ref.sourceFiles].sort().join(', ');
+  const lines = [...ref.lineNumbers].sort((a, b) => a - b);
+  return `${files} lines ${lines.slice(0, 8).join(', ')}${lines.length > 8 ? ', ...' : ''}`;
+}
+
+function formatRefLocation(ref) {
+  return `${ref.className} (${formatRefLocationOnly(ref)})`;
+}
+
+function applyDisabledEngramFields(rows, configRefs) {
+  for (const row of rows) {
+    const disabledRefs = disabledEngramRefsForRow(row, configRefs);
+    row.disabledByConfig = disabledRefs.length ? 'true' : (row.disabledByConfig || 'false');
+    row.disabledConfigReferences = disabledRefs.length
+      ? disabledRefs.map(formatRefLocation).join('; ')
+      : (row.disabledConfigReferences || '');
+  }
+  return rows;
+}
+
+function categoryReasonFor(row) {
+  const hard = hardCategoryForClass(
+    row.className || '',
+    row.assetPath || row.blueprintPath || '',
+    row.displayName || '',
+    row.rawCategory || row.category || ''
+  );
+  if (hard) return hard.reason;
+  return row.category ? 'source-category' : 'missing-category';
+}
+
+function classifyPublication(row) {
+  const platformScope = platformScopeForRow(row);
+  const evidenceTier = evidenceTierForRow(row);
+
+  if (boolish(row.disabledByConfig)) {
+    return { publishStatus: 'exclude', publishReason: 'game-ini-engram-hidden', evidenceTier, platformScope };
+  }
+
+  if (platformScope === 'mobile') {
+    return { publishStatus: 'exclude', publishReason: 'mobile-platform-exclusive', evidenceTier, platformScope };
+  }
+
+  const blockedRoot = blockedBlueprintRoot(row);
+  if (blockedRoot && !hasDelimitedValue(row.sourceEvidence, 'package-manifest')) {
+    return { publishStatus: 'exclude', publishReason: blockedRoot.reason, evidenceTier, platformScope };
+  }
+
+  if (evidenceTier === 'config-only' || row.sourceType === 'server-config') {
+    return { publishStatus: 'review-only', publishReason: 'config-only-unresolved', evidenceTier, platformScope };
+  }
+
+  if (evidenceTier === 'wiki-only' && !hasExecutableIdentity(row)) {
+    return { publishStatus: 'exclude', publishReason: 'wiki-only-no-executable-id', evidenceTier, platformScope };
+  }
+
+  if (evidenceTier === 'wiki-only' && row.confidence === 'low' && !boolish(row.serverReferenced)) {
+    return { publishStatus: 'review-only', publishReason: 'low-confidence-wiki-only', evidenceTier, platformScope };
+  }
+
+  if (evidenceTier === 'package' && row.confidence === 'low') {
+    return { publishStatus: 'review-only', publishReason: 'low-confidence-package-inference', evidenceTier, platformScope };
+  }
+
+  return { publishStatus: 'publish', publishReason: 'accepted', evidenceTier, platformScope };
+}
+
+function applyPublicationFields(rows) {
+  for (const row of rows) {
+    const classification = classifyPublication(row);
+    if (boolish(row.disabledByConfig)) {
+      row.publishStatus = classification.publishStatus;
+      row.publishReason = classification.publishReason;
+      row.evidenceTier = classification.evidenceTier;
+      row.platformScope = classification.platformScope;
+    } else {
+      row.publishStatus = row.publishStatus || classification.publishStatus;
+      row.publishReason = row.publishReason || classification.publishReason;
+      row.evidenceTier = row.evidenceTier || classification.evidenceTier;
+      row.platformScope = row.platformScope || classification.platformScope;
+    }
+    row.canonicalKey = row.canonicalKey || row.itemKey;
+    row.duplicateOf = row.duplicateOf || '';
+    row.rawCategory = row.rawCategory || '';
+    row.categoryReason = row.categoryReason || categoryReasonFor(row);
+    row.disabledByConfig = row.disabledByConfig || 'false';
+    row.disabledConfigReferences = row.disabledConfigReferences || '';
+  }
+  return rows;
 }
 
 function finalSort(rows) {
@@ -979,10 +1268,16 @@ function formatUnresolvedRefs(refs) {
   if (!refs.length) return '- None';
   return refs.map((ref) => {
     const contexts = [...ref.contexts].sort().join('; ');
-    const files = [...ref.sourceFiles].sort().join(', ');
-    const lines = [...ref.lineNumbers].sort((a, b) => a - b);
-    return `- ${ref.className}: ${contexts} (${files} lines ${lines.slice(0, 8).join(', ')}${lines.length > 8 ? ', ...' : ''})`;
+    return `- ${ref.className}: ${contexts} (${formatRefLocationOnly(ref)})`;
   }).join('\n');
+}
+
+function formatDisabledRows(rows) {
+  const disabledRows = rows.filter((row) => row.publishReason === 'game-ini-engram-hidden');
+  if (!disabledRows.length) return '- None';
+  return disabledRows.slice(0, 80).map((row) => (
+    `- ${row.displayName || row.className}: ${row.engramClassName} -> ${row.disabledConfigReferences}`
+  )).join('\n') + (disabledRows.length > 80 ? `\n- ... ${disabledRows.length - 80} more` : '');
 }
 
 function formatExtractionStatusTable(statuses, manifestCandidates) {
@@ -1015,7 +1310,9 @@ Run date/time: ${runDate}
 - Active mod source: \`${PATHS.gameUserSettings}\`
 - Server config overlay: \`${PATHS.gameIni}\`
 - Local package evidence root: \`${PATHS.discoveryRoot}\`
+- Package evidence purpose: ${PATHS.packageDiscoveryPurpose || 'unspecified'}
 - Site mod reference: \`${PATHS.siteModYaml}\`
+- Item collection config: \`${PATHS.itemReferenceYaml}\`
 - Local reference links: \`${PATHS.referenceLinks}\`
 - Wiki sources: ${WIKI.itemIds}; ${WIKI.cargoTable}; ${WIKI.astraeosItems}
 
@@ -1035,11 +1332,12 @@ Run date/time: ${runDate}
 
 - Manifest-derived first-pass item candidates: ${manifestCandidates.length}
 - Final item rows: ${rows.length}
-- Rows requiring review: ${rows.filter((r) => r.needsReview === 'true').length}
 - Server item config references parsed: ${configRefs.itemRefs.size}
 - Server engram references parsed: ${configRefs.engramRefs.size}
-- Unresolved config item references added as review rows: ${unresolvedItemRefs.length}
+- Explicit Game.ini hidden engrams parsed: ${configRefs.disabledEngramRefs.size}
+- Unresolved config item references added as server-config rows: ${unresolvedItemRefs.length}
 - Unresolved engram references reported only: ${unresolvedEngramRefs.length}
+- Rows hidden by explicit Game.ini disabled engram: ${rows.filter((r) => r.publishReason === 'game-ini-engram-hidden').length}
 
 ## Counts By Source Type
 
@@ -1048,6 +1346,24 @@ ${markdownCountList(countBy(rows, 'sourceType'))}
 ## Counts By Confidence
 
 ${markdownCountList(countBy(rows, 'confidence'))}
+
+## Counts By Publish Status
+
+${markdownCountList(countBy(rows, 'publishStatus'))}
+
+## Counts By Publish Reason
+
+${markdownCountList(countBy(rows, 'publishReason'))}
+
+## Counts By Evidence Tier
+
+${markdownCountList(countBy(rows, 'evidenceTier'))}
+
+## Game.ini Disabled Engram Rows
+
+These rows are hidden only when their linked \`engramClassName\` exactly matches an \`OverrideNamedEngramEntries(...EngramHidden=True)\` line in Game.ini.
+
+${formatDisabledRows(rows)}
 
 ## Wiki Enrichment
 
@@ -1072,7 +1388,7 @@ ${formatExtractionStatusTable(statuses, manifestCandidates)}
 
 ## Unresolved Config Item References
 
-These references were not resolved to package or wiki evidence, so they were added to the CSV as \`server-config\` rows with \`confidence=low\` and \`needsReview=true\`.
+These references were not resolved to package or wiki evidence, so they were added to the CSV as \`server-config\` rows with \`confidence=low\`.
 
 ${formatUnresolvedRefs(unresolvedItemRefs)}
 
@@ -1107,6 +1423,7 @@ function validateRequiredInputs() {
 }
 
 async function main() {
+  applyCollectionConfig();
   validateRequiredInputs();
   mkdirSync(PATHS.outputDir, { recursive: true });
 
@@ -1122,7 +1439,8 @@ async function main() {
   const merged = mergeRows([...manifestCandidates, ...wikiData.rows]);
   const { rows: configAppliedRows, unresolvedItemRefs } = applyConfigReferences(merged, configRefs);
   const unresolvedEngramRefs = applyEngramLinks(configAppliedRows, configRefs);
-  const rows = finalSort(configAppliedRows);
+  applyDisabledEngramFields(configAppliedRows, configRefs);
+  const rows = finalSort(applyPublicationFields(configAppliedRows));
 
   writeCsv(rows);
   writeReport({
@@ -1144,7 +1462,9 @@ async function main() {
   console.log(`Missing folders/manifests/packages: ${evidence.missingFolders.length}/${evidence.missingManifests.length}/${evidence.missingPackages.length}`);
   console.log(`Manifest candidates: ${manifestCandidates.length}`);
   console.log(`Final rows: ${rows.length}`);
-  console.log(`Rows requiring review: ${rows.filter((r) => r.needsReview === 'true').length}`);
+  console.log(`Rows publishable: ${rows.filter((r) => r.publishStatus === 'publish').length}`);
+  console.log(`Rows hidden from public output: ${rows.filter((r) => r.publishStatus !== 'publish').length}`);
+  console.log(`Rows hidden by Game.ini disabled engrams: ${rows.filter((r) => r.publishReason === 'game-ini-engram-hidden').length}`);
   console.log(`Wiki: ${wikiData.status}`);
   console.log(`Wrote ${PATHS.csv}`);
   console.log(`Wrote ${PATHS.report}`);

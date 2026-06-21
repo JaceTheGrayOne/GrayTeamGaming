@@ -21,6 +21,11 @@ PATHS.report = join(PATHS.reportDir, 'Item_Wiki_Enrichment_Report.md');
 const WIKI_API = 'https://ark.wiki.gg/api.php';
 const USER_AGENT = 'LegionOfIdiotsItemWikiEnricher/1.0 (local static-site data cache)';
 
+const BLOCKED_WIKI_TITLE_PATTERNS = [
+  /^Mobile:/i,
+  /^ARK Mobile:/i,
+];
+
 function parseArgs(argv) {
   const options = { limit: null };
   for (let i = 0; i < argv.length; i++) {
@@ -58,12 +63,12 @@ function readJson(path, fallback) {
   }
 }
 
-function boolish(value) {
-  return value === true || String(value || '').toLowerCase() === 'true';
-}
-
 function titleKey(title) {
   return String(title || '').replace(/_/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function isBlockedWikiTitle(title) {
+  return BLOCKED_WIKI_TITLE_PATTERNS.some((pattern) => pattern.test(String(title || '').trim()));
 }
 
 function firstWikiUrl(enrichmentSources) {
@@ -73,7 +78,7 @@ function firstWikiUrl(enrichmentSources) {
     .find((url) => {
       if (!/^https:\/\/ark\.wiki\.gg\/wiki\//i.test(url)) return false;
       const title = decodeURIComponent(url.split('/wiki/')[1] || '');
-      return !/^(Special|File|Category|Template):/i.test(title);
+      return !/^(Special|File|Category|Template):/i.test(title) && !isBlockedWikiTitle(title);
     }) || '';
 }
 
@@ -83,7 +88,7 @@ function titleFromWikiUrl(raw) {
     if (!/(\.|^)ark\.wiki\.gg$/i.test(url.hostname)) return '';
     if (!url.pathname.startsWith('/wiki/')) return '';
     const title = decodeURIComponent(url.pathname.slice('/wiki/'.length)).replace(/_/g, ' ');
-    return /^(Special|File|Category|Template):/i.test(title) ? '' : title;
+    return /^(Special|File|Category|Template):/i.test(title) || isBlockedWikiTitle(title) ? '' : title;
   } catch {
     return '';
   }
@@ -91,17 +96,19 @@ function titleFromWikiUrl(raw) {
 
 function cleanDescription(text) {
   const stripped = String(text || '')
+    .replace(/<\/?(?:onlyinclude|includeonly|noinclude)\b[^>]*>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
     .replace(/\[[^\]]+\]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
-  if (!stripped) return '';
+  if (!isUsableDescription(stripped)) return '';
 
   const sentences = stripped.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g) || [stripped];
   let out = sentences.slice(0, 2).join(' ').replace(/\s+/g, ' ').trim();
   if (out.length > 240) {
     out = `${out.slice(0, 237).replace(/\s+\S*$/, '')}...`;
   }
-  return out;
+  return isUsableDescription(out) ? out : '';
 }
 
 function cleanWikiText(value) {
@@ -115,13 +122,28 @@ function cleanWikiText(value) {
     s = s.replace(/\{\{[^{}]+\}\}/g, '');
   }
   return s
+    .replace(/<\/?(?:onlyinclude|includeonly|noinclude)\b[^>]*>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
     .replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, '$2')
     .replace(/\[\[([^\]]+)\]\]/g, '$1')
     .replace(/'''?/g, '')
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function isUsableDescription(value) {
+  const s = String(value || '').trim();
+  if (!s) return false;
+  if (/<[^>]+>/.test(s)) return false;
+  if (/^\s*[a-z]{2}\s*:/i.test(s)) return false;
+  if (/^\{\{.*\}\}$/.test(s)) return false;
+  return s.length >= 8;
 }
 
 function parseInfoboxFields(wikitext) {
@@ -254,13 +276,16 @@ function buildTasks(rows, limit) {
 }
 
 function baseCacheEntry(task, oldEntry) {
+  const oldWikiUrl = titleFromWikiUrl(oldEntry.wikiUrl || '') ? oldEntry.wikiUrl : '';
+  const oldWikiTitle = oldWikiUrl ? oldEntry.wikiTitle : '';
+  const oldDescription = task.wikiUrl || oldWikiUrl ? cleanDescription(oldEntry.description || '') : '';
   return {
     itemKey: task.row.itemKey,
     displayName: task.row.displayName,
     className: task.row.className,
-    wikiUrl: task.wikiUrl || oldEntry.wikiUrl || '',
-    wikiTitle: task.title || oldEntry.wikiTitle || '',
-    description: oldEntry.description || '',
+    wikiUrl: task.wikiUrl || oldWikiUrl || '',
+    wikiTitle: task.title || oldWikiTitle || '',
+    description: oldDescription,
     craftingStation: oldEntry.craftingStation || task.row.craftingStation || '',
     status: task.wikiUrl ? 'pending' : 'no-wiki',
     fetchedAt: oldEntry.fetchedAt || null,
@@ -330,7 +355,7 @@ async function main() {
 
     entry.wikiTitle = page.title || task.title;
     entry.wikiUrl = page.fullUrl || task.wikiUrl;
-    entry.description = page.description || oldEntry.description || '';
+    entry.description = page.description || cleanDescription(oldEntry.description || '') || '';
     entry.craftingStation = page.craftingStation || oldEntry.craftingStation || task.row.craftingStation || '';
     entry.status = entry.description ? 'resolved' : 'no-description';
     entry.fetchedAt = now;
@@ -352,11 +377,7 @@ async function main() {
   const wikiLinks = entries.filter((entry) => entry.wikiUrl).length;
   const descriptions = entries.filter((entry) => entry.description).length;
   const craftingStations = entries.filter((entry) => entry.craftingStation).length;
-  const manifestByKey = new Map(tasks.map((task) => [task.row.itemKey, task.row]));
-  const needsReview = entries.filter((entry) => {
-    const row = manifestByKey.get(entry.itemKey) || {};
-    return !entry.description || boolish(row.needsReview);
-  }).length;
+  const missingDescriptions = entries.filter((entry) => !entry.description).length;
 
   const report = `# Item Wiki Enrichment Report
 
@@ -374,7 +395,7 @@ Run date/time: ${now}
 - Wiki links resolved: ${wikiLinks}
 - Descriptions resolved: ${descriptions}
 - Crafting stations resolved: ${craftingStations}
-- Rows still needing review: ${needsReview}
+- Rows missing descriptions: ${missingDescriptions}
 - Batch errors: ${batchErrors.length || 'None'}
 
 ## Notes
@@ -394,7 +415,7 @@ ${batchErrors.length ? `## Batch Errors\n\n${batchErrors.map((error) => `- ${err
   console.log(`Wiki links resolved: ${wikiLinks}`);
   console.log(`Descriptions resolved: ${descriptions}`);
   console.log(`Crafting stations resolved: ${craftingStations}`);
-  console.log(`Rows still needing review: ${needsReview}`);
+  console.log(`Rows missing descriptions: ${missingDescriptions}`);
   console.log(`Wrote ${PATHS.cache}`);
   console.log(`Wrote ${PATHS.report}`);
 }

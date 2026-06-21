@@ -339,6 +339,10 @@
   }
   .item-fact span,
   .item-notes span { color: var(--text); overflow-wrap: anywhere; }
+  .crafting-stations { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 3px; }
+  .crafting-link { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent) 42%, transparent); }
+  .crafting-link:hover { color: #f4feff; border-bottom-color: currentColor; }
+  .crafting-separator { color: var(--muted); }
   .item-spawn-detail {
     display: flex; align-items: baseline; gap: 8px;
     margin-top: 10px;
@@ -497,7 +501,7 @@
       </div>
       <div class="meta-line"><span id="count">80</span> mods shown</div>
       <div class="list" id="list">
-      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: brachiosaurus additions ascended: brachiosaurus creatures brachiosaurus dino sauropod herbivore a towering long-neck herbivore. a heavy gatherer and mobile base platform once tamed.">
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: brachiosaurus additions ascended: brachiosaurus creatures brachiosaurus dino sauropod herbivore a towering long-neck herbivore. platform saddle &quot;gathering mode&quot; &quot;defense mode&quot;">
         <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/927131.png" alt="" loading="lazy"></div>
         <div class="mod-main">
           <div class="mod-head">
@@ -509,7 +513,7 @@
               <p>A towering long-neck herbivore.</p>
             </div>
             <div class="col col-why">
-              <p>A heavy gatherer and mobile base platform once tamed.</p>
+              <ul><li>Platform Saddle</li><li>&quot;Gathering Mode&quot;</li><li>&quot;Defense Mode&quot;</li></ul>
             </div>
           </div>
         </div>
@@ -537,7 +541,7 @@
            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
          </a></div>
       </article>
-      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: helicoprion additions ascended: helicoprion creatures helicoprion aquatic shark ocean a saw-toothed prehistoric shark. w-i-p">
+      <article class="mod" style="--title-c:#8cffad" data-categories="creatures" data-search="additions ascended: helicoprion additions ascended: helicoprion creatures helicoprion aquatic shark ocean a saw-toothed prehistoric shark. [taming] drop looted equipment -&gt; mount -&gt; quick-time button event -&gt; feed ratfish treats [saddle] functions as smithy [abilities - active] bite | tail swipe | jump switch swim mode: surface swimming (raft style movement +33% speed) \ free swimming [abilities - passive] immune to tusoteuthis grab/ink &amp; ammonite poison 3x damage to tusoteuthis &amp; ammonite can convert equipment into blueprints">
         <div class="mod-thumb"><img class="thumb" src="assets/mod-thumbnails/916922.jpeg" alt="" loading="lazy"></div>
         <div class="mod-main">
           <div class="mod-head">
@@ -549,7 +553,7 @@
               <p>A saw-toothed prehistoric shark.</p>
             </div>
             <div class="col col-why">
-              <p>W-I-P</p>
+              <ul><li>[Taming]</li><li>Drop looted equipment -&gt; mount -&gt; quick-time button event -&gt; feed Ratfish Treats</li><li>[Saddle]</li><li>Functions as Smithy</li><li>[Abilities - Active]</li><li>Bite | Tail Swipe | Jump</li><li>Switch Swim Mode: Surface Swimming (Raft style movement +33% speed) \ Free Swimming</li><li>[Abilities - Passive]</li><li>Immune to Tusoteuthis grab/ink &amp; Ammonite poison</li><li>3x Damage to Tusoteuthis &amp; Ammonite</li><li>Can convert Equipment into Blueprints</li></ul>
             </div>
           </div>
         </div>

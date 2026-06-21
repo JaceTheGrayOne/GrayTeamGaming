@@ -8,9 +8,6 @@
 #   - quote any sequence item (tip/tag/category) that starts with "word:"
 #   - each mod has exactly ONE primaryCategory (must match a category label)
 #
-# needsReview: true  => purpose could not be confidently confirmed from the
-#   CSV / mod name alone (no CurseForge API key was available at build time).
-#   Verify on the linked CurseForge page and replace the conservative text.
 # ===========================================================================
 
 site:
@@ -105,19 +102,20 @@ mods:
   - curseId: 927131
     sourceName: "Additions Ascended: Brachiosaurus"
     displayName: "Additions Ascended: Brachiosaurus"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-brachiosaurus
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-brachiosaurus"
     thumbnail: assets/mod-thumbnails/927131.webp
     primaryCategory: Creatures
     additionalCategories: []
     description: A towering long-neck herbivore.
     tips:
-      - A heavy gatherer and mobile base platform once tamed.
+      - Platform Saddle
+      - "\"Gathering Mode\""
+      - "\"Defense Mode\""
     tags:
       - brachiosaurus
       - dino
       - sauropod
       - herbivore
-    needsReview: false
   - curseId: 914844
     sourceName: "Additions Ascended: Deinotherium"
     displayName: "Additions Ascended: Deinotherium"
@@ -133,23 +131,31 @@ mods:
       - dino
       - herbivore
       - mammal
-    needsReview: false
   - curseId: 916922
     sourceName: "Additions Ascended: Helicoprion"
     displayName: "Additions Ascended: Helicoprion"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-helicoprion
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-helicoprion"
     thumbnail: assets/mod-thumbnails/916922.webp
     primaryCategory: Creatures
     additionalCategories: []
     description: A saw-toothed prehistoric shark.
     tips:
-      - W-I-P
+      - "[Taming]"
+      - "Drop looted equipment -> mount -> quick-time button event -> feed Ratfish Treats"
+      - "[Saddle]"
+      - Functions as Smithy
+      - "[Abilities - Active]"
+      - "Bite | Tail Swipe | Jump"
+      - "Switch Swim Mode: Surface Swimming (Raft style movement +33% speed) \\ Free Swimming"
+      - "[Abilities - Passive]"
+      - "Immune to Tusoteuthis grab/ink & Ammonite poison"
+      - "3x Damage to Tusoteuthis & Ammonite"
+      - Can convert Equipment into Blueprints
     tags:
       - helicoprion
       - aquatic
       - shark
       - ocean
-    needsReview: false
   - curseId: 926956
     sourceName: "Additions Ascended: Archelon"
     displayName: "Additions Ascended: Archelon"
@@ -165,7 +171,6 @@ mods:
       - aquatic
       - turtle
       - ocean
-    needsReview: false
   - curseId: 912902
     sourceName: "Additions Ascended: Deinosuchus"
     displayName: "Additions Ascended: Deinosuchus"
@@ -181,7 +186,6 @@ mods:
       - croc
       - semi-aquatic
       - predator
-    needsReview: false
   - curseId: 926259
     sourceName: "Additions Ascended: Acrocanthosaurus"
     displayName: "Additions Ascended: Acrocanthosaurus"
@@ -197,7 +201,6 @@ mods:
       - acro
       - carnivore
       - predator
-    needsReview: false
   - curseId: 900062
     sourceName: "Additions Ascended: Ceratosaurus"
     displayName: "Additions Ascended: Ceratosaurus"
@@ -212,7 +215,6 @@ mods:
       - ceratosaurus
       - carnivore
       - dino
-    needsReview: false
   - curseId: 908148
     sourceName: "Additions Ascended: Xiphactinus"
     displayName: "Additions Ascended: Xiphactinus"
@@ -228,7 +230,6 @@ mods:
       - aquatic
       - fish
       - ocean
-    needsReview: false
   - curseId: 931874
     sourceName: Arkitect Structures Remastered
     displayName: Arkitect Structures Remastered
@@ -247,7 +248,6 @@ mods:
       - structures
       - modular
       - base
-    needsReview: false
   - curseId: 929420
     sourceName: Super Spyglass Plus
     displayName: Super Spyglass Plus
@@ -263,7 +263,6 @@ mods:
       - creature info
       - taming
       - utility
-    needsReview: false
   - curseId: 942024
     sourceName: Dino Depot
     displayName: Dino Depot
@@ -281,7 +280,6 @@ mods:
       - soul trap
       - transport
       - tames
-    needsReview: false
   - curseId: 975282
     sourceName: Gigantoraptor
     displayName: Gigantoraptor
@@ -294,7 +292,6 @@ mods:
       - gigantoraptor
       - dino
       - bird
-    needsReview: false
   - curseId: 983782
     sourceName: Dear Jane
     displayName: Dear Jane
@@ -307,7 +304,6 @@ mods:
       - Provides XP bonuses and collectible cosmetics.
     tags:
       - decor
-    needsReview: false
   - curseId: 949521
     sourceName: MarniiMods Hairstyles
     displayName: MarniiMods Hairstyles
@@ -323,7 +319,6 @@ mods:
       - hairstyles
       - cosmetic
       - character
-    needsReview: false
   - curseId: 935528
     sourceName: Visual Storage
     displayName: Visual Storage
@@ -341,7 +336,6 @@ mods:
       - display
       - organization
       - building
-    needsReview: false
   - curseId: 1123428
     sourceName: "Moro's Gigantophis"
     displayName: "Moro's Gigantophis"
@@ -356,7 +350,6 @@ mods:
       - gigantophis
       - snake
       - dino
-    needsReview: false
   - curseId: 1038262
     sourceName: "Moro's Nothosaurus"
     displayName: "Moro's Nothosaurus"
@@ -371,7 +364,6 @@ mods:
       - nothosaurus
       - aquatic
       - marine
-    needsReview: false
   - curseId: 953108
     sourceName: "Moro's Tylosaurus"
     displayName: "Moro's Tylosaurus"
@@ -387,7 +379,6 @@ mods:
       - aquatic
       - marine
       - predator
-    needsReview: false
   - curseId: 929299
     sourceName: Stop The Steal
     displayName: Stop The Steal
@@ -403,7 +394,6 @@ mods:
       - protection
       - pvp
       - security
-    needsReview: false
   - curseId: 1136679
     sourceName: "Additions Ascended: Edmontonia"
     displayName: "Additions Ascended: Edmontonia"
@@ -419,7 +409,6 @@ mods:
       - herbivore
       - armored
       - dino
-    needsReview: false
   - curseId: 929838
     sourceName: Scribbles - Better Signs
     displayName: Scribbles - Better Signs
@@ -436,7 +425,6 @@ mods:
       - labels
       - decor
       - building
-    needsReview: false
   - curseId: 956237
     sourceName: "Moro's Livyatan"
     displayName: "Moro's Livyatan"
@@ -452,7 +440,6 @@ mods:
       - aquatic
       - whale
       - predator
-    needsReview: false
   - curseId: 951148
     sourceName: Ark-Nucleus
     displayName: Ark-Nucleus
@@ -468,7 +455,6 @@ mods:
       - management
       - server
       - framework
-    needsReview: false
   - curseId: 987274
     sourceName: "Additions Ascended: Anomalocaris"
     displayName: "Additions Ascended: Anomalocaris"
@@ -483,7 +469,6 @@ mods:
       - anomalocaris
       - aquatic
       - arthropod
-    needsReview: false
   - curseId: 1218463
     sourceName: "Moro's Hydrovanta"
     displayName: "Moro's Hydrovanta"
@@ -498,7 +483,6 @@ mods:
       - hydrovanta
       - aquatic
       - creature
-    needsReview: false
   - curseId: 931364
     sourceName: Glyph Transformations
     displayName: Glyph Transformations
@@ -514,7 +498,6 @@ mods:
       - glyph
       - transformation
       - cosmetic
-    needsReview: false
   - curseId: 932225
     sourceName: Mouse Saver - Easy Dino Attacks
     displayName: Mouse Saver - Easy Dino Attacks
@@ -530,7 +513,6 @@ mods:
       - mounts
       - accessibility
       - qol
-    needsReview: false
   - curseId: 951574
     sourceName: Inventory Backup Saver
     displayName: Inventory Backup Saver
@@ -547,7 +529,6 @@ mods:
       - backup
       - recovery
       - safety
-    needsReview: false
   - curseId: 933576
     sourceName: Return The Beacons!
     displayName: Return The Beacons!
@@ -564,7 +545,6 @@ mods:
       - supply drops
       - loot
       - visibility
-    needsReview: false
   - curseId: 928621
     sourceName: Utilities Plus
     displayName: Utilities Plus
@@ -580,7 +560,6 @@ mods:
       - tools
       - transfer
       - convenience
-    needsReview: false
   - curseId: 940975
     sourceName: Cybers Structures QoL+ (Crossplay)
     displayName: Cybers Structures QoL+ (Crossplay)
@@ -596,7 +575,6 @@ mods:
       - building
       - qol
       - crossplay
-    needsReview: false
   - curseId: 930170
     sourceName: Cliffans Backpacks
     displayName: Cliffans Backpacks
@@ -612,7 +590,6 @@ mods:
       - storage
       - inventory
       - gear
-    needsReview: false
   - curseId: 935408
     sourceName: Der Dino Finder
     displayName: Der Dino Finder
@@ -629,7 +606,6 @@ mods:
       - locate
       - tames
       - tracking
-    needsReview: false
   - curseId: 941697
     sourceName: Better Breeding
     displayName: Better Breeding
@@ -646,7 +622,6 @@ mods:
       - imprint
       - babies
       - qol
-    needsReview: false
   - curseId: 929800
     sourceName: TG Stacking Mod 1000-50
     displayName: TG Stacking Mod 1000-50
@@ -662,7 +637,6 @@ mods:
       - stack size
       - resources
       - inventory
-    needsReview: false
   - curseId: 1149214
     sourceName: "Castles, Keeps, and Forts - CKF"
     displayName: "Castles, Keeps, and Forts (CKF)"
@@ -678,7 +652,6 @@ mods:
       - medieval
       - building
       - fortifications
-    needsReview: false
   - curseId: 1051882
     sourceName: Juans Deep Sea Diving Equipment
     displayName: Juans Deep Sea Diving Equipment
@@ -694,7 +667,6 @@ mods:
       - underwater
       - oxygen
       - gear
-    needsReview: false
   - curseId: 1305730
     sourceName: Cliffans Improved Miners Helmet
     displayName: Cliffans Improved Miners Helmet
@@ -710,7 +682,6 @@ mods:
       - light
       - mining
       - caves
-    needsReview: false
   - curseId: 1200390
     sourceName: Cliffans Nautical Turrets
     displayName: Cliffans Nautical Turrets
@@ -727,7 +698,6 @@ mods:
       - defense
       - nautical
       - building
-    needsReview: false
   - curseId: 1383579
     sourceName: "Cliffans Weapons: Medieval"
     displayName: "Cliffans Weapons: Medieval"
@@ -743,7 +713,6 @@ mods:
       - medieval
       - rp
       - cosmetic
-    needsReview: false
   - curseId: 1528173
     sourceName: "Cliffan's Dynamic Survivors"
     displayName: "Cliffan's Dynamic Survivors"
@@ -759,7 +728,6 @@ mods:
       - survivors
       - npc
       - cosmetic
-    needsReview: false
   - curseId: 961601
     sourceName: Cliffans Wardrobe
     displayName: Cliffans Wardrobe
@@ -775,7 +743,6 @@ mods:
       - clothing
       - outfits
       - cosmetic
-    needsReview: false
   - curseId: 939244
     sourceName: "Cliffans Weapons: Western"
     displayName: "Cliffans Weapons: Western"
@@ -789,7 +756,6 @@ mods:
       - western
       - rp
       - cosmetic
-    needsReview: false
   - curseId: 937184
     sourceName: JVH Landscaping
     displayName: JVH Landscaping
@@ -805,7 +771,6 @@ mods:
       - decor
       - garden
       - building
-    needsReview: false
   - curseId: 966079
     sourceName: JVH Garden Decor
     displayName: JVH Garden Decor
@@ -821,7 +786,6 @@ mods:
       - decor
       - furniture
       - building
-    needsReview: false
   - curseId: 1135454
     sourceName: Cliffans RP Emotes
     displayName: Cliffans RP Emotes
@@ -837,7 +801,6 @@ mods:
       - rp
       - animations
       - social
-    needsReview: false
   - curseId: 928506
     sourceName: Cheat Death
     displayName: Cheat Death
@@ -854,7 +817,6 @@ mods:
       - survival
       - protection
       - recovery
-    needsReview: false
   - curseId: 1002596
     sourceName: Better Trains
     displayName: Better Trains
@@ -870,7 +832,6 @@ mods:
       - rail
       - transport
       - vehicles
-    needsReview: false
   - curseId: 1093934
     sourceName: Mantling
     displayName: Mantling
@@ -887,7 +848,6 @@ mods:
       - climbing
       - movement
       - traversal
-    needsReview: false
   - curseId: 1011767
     sourceName: Better Jumping
     displayName: Better Jumping
@@ -904,7 +864,6 @@ mods:
       - movement
       - traversal
       - qol
-    needsReview: false
   - curseId: 1540591
     sourceName: Crash Protector
     displayName: Crash Protector
@@ -921,7 +880,6 @@ mods:
       - stability
       - performance
       - utility
-    needsReview: false
   - curseId: 941450
     sourceName: Awesome ARK Tools
     displayName: Awesome ARK Tools
@@ -937,7 +895,6 @@ mods:
       - tools
       - management
       - utility
-    needsReview: false
   - curseId: 1548444
     sourceName: Aquarium
     displayName: Aquarium
@@ -954,7 +911,6 @@ mods:
       - decor
       - fish
       - building
-    needsReview: false
   - curseId: 1281957
     sourceName: Feras Immersive Food
     displayName: Feras Immersive Food
@@ -972,7 +928,6 @@ mods:
       - cooking
       - immersion
       - meals
-    needsReview: false
   - curseId: 929271
     sourceName: Additional Handheld Lights
     displayName: Additional Handheld Lights
@@ -988,7 +943,6 @@ mods:
       - lighting
       - torch
       - utility
-    needsReview: false
   - curseId: 929578
     sourceName: "AP: Death Recovery"
     displayName: "AP: Death Recovery"
@@ -1005,7 +959,6 @@ mods:
       - recovery
       - corpse
       - items
-    needsReview: false
   - curseId: 986540
     sourceName: Paleo ARK Ascension
     displayName: Paleo ARK Ascension
@@ -1021,7 +974,6 @@ mods:
       - creatures
       - dinos
       - expansion
-    needsReview: false
   - curseId: 970540
     sourceName: "Paleo ARK - Evo | Predators"
     displayName: "Paleo ARK - Evo | Predators"
@@ -1037,7 +989,6 @@ mods:
       - predators
       - apex
       - creatures
-    needsReview: false
   - curseId: 1382641
     sourceName: "Paleo ARK - Evo | Herbivores"
     displayName: "Paleo ARK - Evo | Herbivores"
@@ -1052,7 +1003,6 @@ mods:
       - paleo ark
       - herbivores
       - creatures
-    needsReview: false
   - curseId: 1105106
     sourceName: "Paleo ARK - Evo | Aquatic"
     displayName: "Paleo ARK - Evo | Aquatic"
@@ -1068,7 +1018,6 @@ mods:
       - aquatic
       - creatures
       - ocean
-    needsReview: false
   - curseId: 972484
     sourceName: "Paleo ARK EVO+ | Native Aquatics"
     displayName: "Paleo ARK EVO+ | Native Aquatics"
@@ -1084,7 +1033,6 @@ mods:
       - aquatic
       - native
       - creatures
-    needsReview: false
   - curseId: 1182199
     sourceName: "Paleo ARK EVO+ | Rulers of the Wastelands"
     displayName: "Paleo ARK EVO+ | Rulers of the Wastelands"
@@ -1099,7 +1047,6 @@ mods:
       - paleo ark
       - wasteland
       - creatures
-    needsReview: false
   - curseId: 1137407
     sourceName: Castle Craft Decor
     displayName: Castle Craft Decor
@@ -1115,7 +1062,6 @@ mods:
       - decor
       - medieval
       - building
-    needsReview: false
   - curseId: 1222937
     sourceName: Map Unlocker
     displayName: Map Unlocker
@@ -1132,7 +1078,6 @@ mods:
       - unlock
       - exploration
       - navigation
-    needsReview: false
   - curseId: 1073132
     sourceName: Tek War Map
     displayName: Tek War Map
@@ -1150,7 +1095,6 @@ mods:
       - tek
       - map
       - war
-    needsReview: false
   - curseId: 1443086
     sourceName: Structure Waterfalls
     displayName: Structure Waterfalls
@@ -1166,7 +1110,6 @@ mods:
       - decor
       - water
       - building
-    needsReview: false
   - curseId: 1017926
     sourceName: Auto Pickup
     displayName: Auto Pickup
@@ -1182,7 +1125,6 @@ mods:
       - farming
       - harvest
       - qol
-    needsReview: false
   - curseId: 1369237
     sourceName: Camping Survivor
     displayName: Camping Survivor
@@ -1199,7 +1141,6 @@ mods:
       - tent
       - survival
       - travel
-    needsReview: false
   - curseId: 935809
     sourceName: Knot Better Motorboat
     displayName: Knot Better Motorboat
@@ -1215,7 +1156,6 @@ mods:
       - boat
       - water
       - vehicles
-    needsReview: false
   - curseId: 1493653
     sourceName: Durability Display
     displayName: Durability Display
@@ -1231,7 +1171,6 @@ mods:
       - hud
       - gear
       - info
-    needsReview: false
   - curseId: 1429843
     sourceName: Additional Hitmarkers
     displayName: Additional Hitmarkers
@@ -1248,7 +1187,6 @@ mods:
       - combat
       - hud
       - feedback
-    needsReview: false
   - curseId: 1440987
     sourceName: Locational Damage
     displayName: Locational Damage
@@ -1265,7 +1203,6 @@ mods:
       - headshot
       - combat
       - balance
-    needsReview: false
   - curseId: 1032529
     sourceName: Day Indicator
     displayName: Day Indicator
@@ -1281,7 +1218,6 @@ mods:
       - hud
       - info
       - time
-    needsReview: false
   - curseId: 1311474
     sourceName: Swim Sprint
     displayName: Swim Sprint
@@ -1298,7 +1234,6 @@ mods:
       - sprint
       - movement
       - water
-    needsReview: false
   - curseId: 957494
     sourceName: Global Dynamic Player Death Displayer
     displayName: Global Dynamic Player Death Displayer
@@ -1314,7 +1249,6 @@ mods:
       - notifications
       - server
       - info
-    needsReview: false
   - curseId: 948902
     sourceName: Rhythmbox
     displayName: Rhythmbox
@@ -1331,7 +1265,6 @@ mods:
       - audio
       - jukebox
       - sound
-    needsReview: false
   - curseId: 974371
     sourceName: RPG Medieval & Fantasy Jukebox
     displayName: RPG Medieval & Fantasy Jukebox
@@ -1348,7 +1281,6 @@ mods:
       - music
       - medieval
       - rp
-    needsReview: false
   - curseId: 930128
     sourceName: Klinger Additional Boats
     displayName: Klinger Additional Boats
@@ -1364,7 +1296,6 @@ mods:
       - water
       - transport
       - vehicles
-    needsReview: false
   - curseId: 1122696
     sourceName: Astraeos - Mythological Creatures
     displayName: Astraeos - Mythological Creatures
@@ -1381,7 +1312,6 @@ mods:
       - mythological
       - creatures
       - fantasy
-    needsReview: false
   - curseId: 1015955
     sourceName: Astraeos - Trireme Ships
     displayName: Astraeos - Trireme Ships
@@ -1398,4 +1328,3 @@ mods:
       - ships
       - trireme
       - boats
-    needsReview: false

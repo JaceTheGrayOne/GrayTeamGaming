@@ -339,6 +339,10 @@
   }
   .item-fact span,
   .item-notes span { color: var(--text); overflow-wrap: anywhere; }
+  .crafting-stations { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 3px; }
+  .crafting-link { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent) 42%, transparent); }
+  .crafting-link:hover { color: #f4feff; border-bottom-color: currentColor; }
+  .crafting-separator { color: var(--muted); }
   .item-spawn-detail {
     display: flex; align-items: baseline; gap: 8px;
     margin-top: 10px;
