@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-14T21:49:14.246Z",
+  "fetchedAt": "2026-06-21T15:50:47.494Z",
   "source": "curseforge-api",
   "mods": {
     "900062": {
@@ -203,9 +203,9 @@
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/glyph-transformations",
       "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/898/513/256/256/638344188112690699.png",
       "categories": [
-        "General",
         "Rebalancing",
-        "Creatures"
+        "Creatures",
+        "General"
       ],
       "thumbnail": "assets/mod-thumbnails/931364.png"
     },
@@ -235,9 +235,9 @@
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/return-the-beacons-rtb",
       "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/902/996/256/256/638351719783384580.jpeg",
       "categories": [
+        "General",
         "Visuals and Sounds",
-        "Rebalancing",
-        "General"
+        "Rebalancing"
       ],
       "thumbnail": "assets/mod-thumbnails/933576.jpeg"
     },
@@ -291,10 +291,10 @@
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-weapons-western",
       "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/907/269/256/256/638358241302782349.jpeg",
       "categories": [
-        "Visuals and Sounds",
         "Rebalancing",
         "Structures",
-        "Weapons"
+        "Weapons",
+        "Visuals and Sounds"
       ],
       "thumbnail": "assets/mod-thumbnails/939244.jpeg"
     },
@@ -302,7 +302,7 @@
       "name": "Cybers Structures QoL+ (Crossplay)",
       "summary": "Adding support for some Quality of Life to structures and other essential items",
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cybers-structures",
-      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/985/888/256/256/638495745806778606.png",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1866/964/256/256/639171341039507508.png",
       "categories": [
         "Rebalancing",
         "Structures"
@@ -319,6 +319,17 @@
         "General"
       ],
       "thumbnail": "assets/mod-thumbnails/941450.png"
+    },
+    "941556": {
+      "name": "RR-MedievalRoleplayDeco!",
+      "summary": "RoleplayDeco Mod",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/rr-medievalroleplaydeco",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/943/274/256/256/638426414581970477.png",
+      "categories": [
+        "Structures",
+        "General"
+      ],
+      "thumbnail": "assets/mod-thumbnails/941556.png"
     },
     "941697": {
       "name": "Better Breeding",
@@ -338,12 +349,22 @@
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/dino-depot",
       "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/910/158/256/256/638363777480918040.png",
       "categories": [
-        "ARKathon Winners",
         "Rebalancing",
         "Structures",
+        "ARKathon Winners",
         "Weapons"
       ],
       "thumbnail": "assets/mod-thumbnails/942024.png"
+    },
+    "947899": {
+      "name": "Yuty Auto Courage Mode (For Servers)",
+      "summary": "Allows you to enable courage mode on a yutyrannus while on a server.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/yuty-auto-courage-mode",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/916/900/256/256/638376361093899177.octet-stream",
+      "categories": [
+        "Rebalancing"
+      ],
+      "thumbnail": "assets/mod-thumbnails/947899.png"
     },
     "948902": {
       "name": "Rhythmbox",
@@ -461,9 +482,9 @@
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evo-plus-native-aquatics",
       "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1086/178/256/256/638628091161252758.png",
       "categories": [
+        "Creatures",
         "Visuals and Sounds",
-        "Rebalancing",
-        "Creatures"
+        "Rebalancing"
       ],
       "thumbnail": "assets/mod-thumbnails/972484.png"
     },
@@ -503,8 +524,8 @@
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-ascension",
       "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1155/882/256/256/638723362124325153.png",
       "categories": [
-        "Creatures",
-        "Visuals and Sounds"
+        "Visuals and Sounds",
+        "Creatures"
       ],
       "thumbnail": "assets/mod-thumbnails/986540.png"
     },
@@ -610,8 +631,8 @@
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/mantling",
       "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1071/77/256/256/638606459139246404.png",
       "categories": [
-        "General",
-        "Rebalancing"
+        "Rebalancing",
+        "General"
       ],
       "thumbnail": "assets/mod-thumbnails/1093934.png"
     },
@@ -688,6 +709,16 @@
       ],
       "thumbnail": "assets/mod-thumbnails/1149214.jpeg"
     },
+    "1170263": {
+      "name": "B+ Platforms",
+      "summary": "Platforms and wedges",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/b-platforms",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1147/884/256/256/638714678992645032.png",
+      "categories": [
+        "Structures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1170263.png"
+    },
     "1182199": {
       "name": "Paleo ARK EVO+ | Rulers of the Wastelands",
       "summary": "Adds desert-dwelling Apex dinosaurs Ledumahadi and Empirosaurus",
@@ -731,6 +762,26 @@
         "General"
       ],
       "thumbnail": "assets/mod-thumbnails/1222937.png"
+    },
+    "1246872": {
+      "name": "Cyrus's Critters: Redpanda",
+      "summary": "This mod adds an adorable shoulder pet to your ark - The Redpanda! ",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cyruss-critters-redpanda",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1234/662/256/256/638809015751039538.png",
+      "categories": [
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1246872.png"
+    },
+    "1280446": {
+      "name": "Cat Distribution System [Crossplay]",
+      "summary": "Makes cats friendly on servers, just like on singleplayer.",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cat-distribution-system",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1302/773/256/256/638846895399697501.png",
+      "categories": [
+        "Creatures"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1280446.png"
     },
     "1281957": {
       "name": "Feras Immersive Food",
@@ -793,9 +844,9 @@
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-weapons-medieval",
       "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1518/874/256/256/638986471157627306.jpg",
       "categories": [
-        "Weapons",
         "Visuals and Sounds",
         "Rebalancing",
+        "Weapons",
         "General"
       ],
       "thumbnail": "assets/mod-thumbnails/1383579.jpg"
@@ -806,8 +857,8 @@
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/additional-hitmarkers",
       "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1681/481/256/256/639068447821579541.png",
       "categories": [
-        "General",
-        "Visuals and Sounds"
+        "Visuals and Sounds",
+        "General"
       ],
       "thumbnail": "assets/mod-thumbnails/1429843.png"
     },
@@ -833,6 +884,16 @@
       ],
       "thumbnail": "assets/mod-thumbnails/1443086.jpg"
     },
+    "1488888": {
+      "name": "R&M Clothing and Accessories",
+      "summary": "Custom Cosmetics Clothing Mod",
+      "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/r-m-clothing-and-accessories",
+      "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1719/939/256/256/639093769437646360.png",
+      "categories": [
+        "Custom Cosmetics"
+      ],
+      "thumbnail": "assets/mod-thumbnails/1488888.png"
+    },
     "1493653": {
       "name": "Durability Display",
       "summary": "This mod displays durability numbers directly on item and blueprints inside any inventory and on your Quick Slots. It also comes with an HUD that show the Current durability of equipped Armor, Shields, Weapons and Saddles/Modules that use Durability.",
@@ -849,8 +910,8 @@
       "websiteUrl": "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-visible-immersion",
       "logoUrl": "https://83374.media.forgecdn.net/avatars/thumbnails/1807/606/256/256/639143644652485559.jpg",
       "categories": [
-        "Visuals and Sounds",
         "General",
+        "Visuals and Sounds",
         "Rebalancing"
       ],
       "thumbnail": "assets/mod-thumbnails/1528173.jpg"

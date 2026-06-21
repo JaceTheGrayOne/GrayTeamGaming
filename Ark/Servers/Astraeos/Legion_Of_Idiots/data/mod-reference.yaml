@@ -1,5 +1,5 @@
 # ===========================================================================
-# mod-reference.yaml — human-editable source of truth for the quick-reference page.
+# mod-reference.yaml - human-editable source of truth for the quick-reference page.
 #
 # Edit this file, then run `npm run build` to regenerate index.html.
 # Style rules for this file (so the bundled YAML reader stays happy):
@@ -27,15 +27,14 @@ site:
     - Core Mods
     - Gameplay
     - Quality of Life
-    - Death & Recovery
-    - UI & Info
+    - "Death & Recovery"
+    - "UI & Info"
     - Building
     - Creatures
     - Transportation
-    - Equipment & Items
+    - "Equipment & Items"
     - Cosmetic
     - Audio
-
 categories:
   - id: creatures
     label: Creatures
@@ -63,12 +62,12 @@ categories:
     textColor: "#efad78"
     icon: assets/category-icons/building.svg
   - id: ui-info
-    label: UI & Info
+    label: "UI & Info"
     color: "#8cf4ff"
     textColor: "#b9fbff"
     icon: assets/category-icons/ui-info.svg
   - id: equipment-items
-    label: Equipment & Items
+    label: "Equipment & Items"
     color: "#ffb347"
     textColor: "#ffd18a"
     icon: assets/category-icons/equipment-items.svg
@@ -88,7 +87,7 @@ categories:
     textColor: "#fff1a3"
     icon: assets/category-icons/audio.svg
   - id: death-recovery
-    label: Death & Recovery
+    label: "Death & Recovery"
     color: "#e32636"
     textColor: "#ff7f8a"
     icon: assets/category-icons/death-recovery.svg
@@ -97,179 +96,61 @@ categories:
     color: "#d9f7ff"
     textColor: "#f2fdff"
     icon: assets/category-icons/admin.svg
-
 mods:
-  - curseId: 927131
-    sourceName: "Additions Ascended: Brachiosaurus"
-    displayName: "Additions Ascended: Brachiosaurus"
-    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-brachiosaurus"
-    thumbnail: assets/mod-thumbnails/927131.webp
-    primaryCategory: Creatures
-    additionalCategories: []
-    description: A towering long-neck herbivore.
-    tips:
-      - Platform Saddle
-      - "\"Gathering Mode\""
-      - "\"Defense Mode\""
-    tags:
-      - brachiosaurus
-      - dino
-      - sauropod
-      - herbivore
-  - curseId: 914844
-    sourceName: "Additions Ascended: Deinotherium"
-    displayName: "Additions Ascended: Deinotherium"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-deinotherium
-    thumbnail: assets/mod-thumbnails/914844.webp
-    primaryCategory: Creatures
-    additionalCategories: []
-    description: A prehistoric elephant-like herbivore.
-    tips:
-      - Strong melee and harvesting power; useful for clearing trees and brush.
-    tags:
-      - deinotherium
-      - dino
-      - herbivore
-      - mammal
-  - curseId: 916922
-    sourceName: "Additions Ascended: Helicoprion"
-    displayName: "Additions Ascended: Helicoprion"
-    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-helicoprion"
-    thumbnail: assets/mod-thumbnails/916922.webp
-    primaryCategory: Creatures
-    additionalCategories: []
-    description: A saw-toothed prehistoric shark.
-    tips:
-      - "[Taming]"
-      - "Drop looted equipment -> mount -> quick-time button event -> feed Ratfish Treats"
-      - "[Saddle]"
-      - Functions as Smithy
-      - "[Abilities - Active]"
-      - "Bite | Tail Swipe | Jump"
-      - "Switch Swim Mode: Surface Swimming (Raft style movement +33% speed) \\ Free Swimming"
-      - "[Abilities - Passive]"
-      - "Immune to Tusoteuthis grab/ink & Ammonite poison"
-      - "3x Damage to Tusoteuthis & Ammonite"
-      - Can convert Equipment into Blueprints
-    tags:
-      - helicoprion
-      - aquatic
-      - shark
-      - ocean
-  - curseId: 926956
-    sourceName: "Additions Ascended: Archelon"
-    displayName: "Additions Ascended: Archelon"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-archelon
-    thumbnail: assets/mod-thumbnails/926956.webp
-    primaryCategory: Creatures
-    additionalCategories: []
-    description: A giant prehistoric sea turtle.
-    tips:
-      - Durable water travel and diving support.
-    tags:
-      - archelon
-      - aquatic
-      - turtle
-      - ocean
-  - curseId: 912902
-    sourceName: "Additions Ascended: Deinosuchus"
-    displayName: "Additions Ascended: Deinosuchus"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-deinosuchus
-    thumbnail: assets/mod-thumbnails/912902.webp
-    primaryCategory: Creatures
-    additionalCategories: []
-    description: A massive prehistoric crocodile.
+  - curseId: 929800
+    sourceName: TG Stacking Mod 1000-50
+    displayName: TG Stacking Mod 1000-50
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/tg-stacking-mod-1000-50"
+    thumbnail: assets/mod-thumbnails/929800.webp
+    primaryCategory: Quality of Life
+    additionalCategories:
+    description: Increases item stack sizes up to 1000.
     tips:
       - W-I-P
     tags:
-      - deinosuchus
-      - croc
-      - semi-aquatic
-      - predator
-  - curseId: 926259
-    sourceName: "Additions Ascended: Acrocanthosaurus"
-    displayName: "Additions Ascended: Acrocanthosaurus"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-acro
-    thumbnail: assets/mod-thumbnails/926259.webp
+      - stacking
+      - stack size
+      - resources
+      - inventory
+  - curseId: 1122696
+    sourceName: Astraeos - Mythological Creatures
+    displayName: Astraeos - Mythological Creatures
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/astraeos-mythological-creatures"
+    thumbnail: assets/mod-thumbnails/1122696.webp
     primaryCategory: Creatures
-    additionalCategories: []
-    description: Alarge apex carnivore.
+    additionalCategories:
+      - Core Mods
+    description: Mythological creatures themed around the Astraeos map.
     tips:
-      - High-tier land combat mount.
+      - Minotaur, Medusa, Skeletons, and other mythological creatures.
     tags:
-      - acrocanthosaurus
-      - acro
-      - carnivore
-      - predator
-  - curseId: 900062
-    sourceName: "Additions Ascended: Ceratosaurus"
-    displayName: "Additions Ascended: Ceratosaurus"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/aaceratosaurus_test
-    thumbnail: assets/mod-thumbnails/900062.webp
-    primaryCategory: Creatures
-    additionalCategories: []
-    description: A horned mid-size carnivore.
+      - astraeos
+      - mythological
+      - creatures
+      - fantasy
+  - curseId: 1015955
+    sourceName: Astraeos - Trireme Ships
+    displayName: Astraeos - Trireme Ships
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/astraeos-trireme-ships"
+    thumbnail: assets/mod-thumbnails/1015955.webp
+    primaryCategory: Transportation
+    additionalCategories:
+      - Core Mods
+    description: Trireme ships themed around the Astraeos map with massive building surface area.
     tips:
-      - W-I-P
+      - Large ancient-style ships for ocean transport and sea bases.
     tags:
-      - ceratosaurus
-      - carnivore
-      - dino
-  - curseId: 908148
-    sourceName: "Additions Ascended: Xiphactinus"
-    displayName: "Additions Ascended: Xiphactinus"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/aaxiphactinus_test
-    thumbnail: assets/mod-thumbnails/908148.webp
-    primaryCategory: Creatures
-    additionalCategories: []
-    description: A large aggressive prehistoric fish.
-    tips:
-      - W-I-P
-    tags:
-      - xiphactinus
-      - aquatic
-      - fish
-      - ocean
-  - curseId: 931874
-    sourceName: Arkitect Structures Remastered
-    displayName: Arkitect Structures Remastered
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/arkitect-structures-remastered
-    thumbnail: assets/mod-thumbnails/931874.webp
-    primaryCategory: Building
-    additionalCategories: []
-    description: Full replacement for the vanilla building sets.
-    tips:
-      - Additional variants for each tier.
-      - Improved UI/UX.
-      - Additional snap points for all pieces.
-      - Many "Quality of Life" improvements like the ASR Structure Tray.
-    tags:
-      - building
-      - structures
-      - modular
-      - base
-  - curseId: 929420
-    sourceName: Super Spyglass Plus
-    displayName: Super Spyglass Plus
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/super-spyglass-plus
-    thumbnail: assets/mod-thumbnails/929420.webp
-    primaryCategory: UI & Info
-    additionalCategories: []
-    description: An upgraded spyglass that passively shows detailed configurable creature and structure info.
-    tips:
-      - Read wild creature stats, levels, gender, torpor, ownership and taming info from a distance.
-    tags:
-      - spyglass
-      - creature info
-      - taming
-      - utility
+      - astraeos
+      - ships
+      - trireme
+      - boats
   - curseId: 942024
     sourceName: Dino Depot
     displayName: Dino Depot
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/dino-depot
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/dino-depot"
     thumbnail: assets/mod-thumbnails/942024.webp
     primaryCategory: Gameplay
-    additionalCategories: []
+    additionalCategories:
     description: Full replacement for the vanilla Cryo Pod system.
     tips:
       - Much more flexible and easier to use.
@@ -280,13 +161,45 @@ mods:
       - soul trap
       - transport
       - tames
+  - curseId: 931364
+    sourceName: Glyph Transformations
+    displayName: Glyph Transformations
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/glyph-transformations"
+    thumbnail: assets/mod-thumbnails/931364.webp
+    primaryCategory: Gameplay
+    additionalCategories:
+    description: A creature collection and morphing system allowing players to store creature DNA and transform into them.
+    tips:
+      - Levelpods are used to store creature DNA and increase transformation power level.
+      - All transformation functions are accessed via the Radial Menu.
+    tags:
+      - glyph
+      - transformation
+      - cosmetic
+  - curseId: 927131
+    sourceName: "Additions Ascended: Brachiosaurus"
+    displayName: "Additions Ascended: Brachiosaurus"
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-brachiosaurus"
+    thumbnail: assets/mod-thumbnails/927131.webp
+    primaryCategory: Creatures
+    additionalCategories:
+    description: A towering long-neck herbivore.
+    tips:
+      - Platform Saddle
+      - "\"Gathering Mode\""
+      - "\"Defense Mode\""
+    tags:
+      - brachiosaurus
+      - dino
+      - sauropod
+      - herbivore
   - curseId: 975282
     sourceName: Gigantoraptor
     displayName: Gigantoraptor
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/gigantoraptor
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/gigantoraptor"
     thumbnail: assets/mod-thumbnails/975282.webp
     primaryCategory: Creatures
-    additionalCategories: []
+    additionalCategories:
     description: A large feathered oviraptorid.
     tags:
       - gigantoraptor
@@ -295,34 +208,37 @@ mods:
   - curseId: 983782
     sourceName: Dear Jane
     displayName: Dear Jane
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/dear-jane
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/dear-jane"
     thumbnail: assets/mod-thumbnails/983782.webp
     primaryCategory: Core Mods
-    additionalCategories: []
+    additionalCategories:
     description: Adds additional survivor notes which can be collected.
     tips:
       - Provides XP bonuses and collectible cosmetics.
     tags:
       - decor
-  - curseId: 949521
-    sourceName: MarniiMods Hairstyles
-    displayName: MarniiMods Hairstyles
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/marniimods-hairstyles
-    thumbnail: assets/mod-thumbnails/949521.webp
-    primaryCategory: Cosmetic
-    additionalCategories: []
-    description: Adds a large selection of new character hairstyles and head pieces.
+  - curseId: 931874
+    sourceName: Arkitect Structures Remastered
+    displayName: Arkitect Structures Remastered
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/arkitect-structures-remastered"
+    thumbnail: assets/mod-thumbnails/931874.webp
+    primaryCategory: Building
+    additionalCategories:
+    description: Full replacement for the vanilla building sets.
     tips:
-      - Apply new styles at a mirror or character customization station.
+      - Additional variants for each tier.
+      - Improved UI/UX.
+      - Additional snap points for all pieces.
+      - "Many \"Quality of Life\" improvements like the ASR Structure Tray."
     tags:
-      - hair
-      - hairstyles
-      - cosmetic
-      - character
+      - building
+      - structures
+      - modular
+      - base
   - curseId: 935528
     sourceName: Visual Storage
     displayName: Visual Storage
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/visual-storage
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/visual-storage"
     thumbnail: assets/mod-thumbnails/935528.webp
     primaryCategory: Building
     additionalCategories:
@@ -339,10 +255,10 @@ mods:
   - curseId: 1123428
     sourceName: "Moro's Gigantophis"
     displayName: "Moro's Gigantophis"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/moros-gigantophis
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/moros-gigantophis"
     thumbnail: assets/mod-thumbnails/1123428.webp
     primaryCategory: Creatures
-    additionalCategories: []
+    additionalCategories:
     description: A giant prehistoric snake.... with a gun.
     tips:
       - W-I-P
@@ -353,10 +269,10 @@ mods:
   - curseId: 1038262
     sourceName: "Moro's Nothosaurus"
     displayName: "Moro's Nothosaurus"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/moros-nothosaurus
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/moros-nothosaurus"
     thumbnail: assets/mod-thumbnails/1038262.webp
     primaryCategory: Creatures
-    additionalCategories: []
+    additionalCategories:
     description: An agile marine reptile.
     tips:
       - W-I-P
@@ -367,10 +283,10 @@ mods:
   - curseId: 953108
     sourceName: "Moro's Tylosaurus"
     displayName: "Moro's Tylosaurus"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/moros-tylosaurus
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/moros-tylosaurus"
     thumbnail: assets/mod-thumbnails/953108.webp
     primaryCategory: Creatures
-    additionalCategories: []
+    additionalCategories:
     description: A large predatory marine reptile.
     tips:
       - W-I-P
@@ -379,40 +295,10 @@ mods:
       - aquatic
       - marine
       - predator
-  - curseId: 929299
-    sourceName: Stop The Steal
-    displayName: Stop The Steal
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/stop-the-steal-ascended
-    thumbnail: assets/mod-thumbnails/929299.webp
-    primaryCategory: Quality of Life
-    additionalCategories: []
-    description: Prevents the Icthy and Truodon from stealing items from players.
-    tips:
-      - W-I-P
-    tags:
-      - anti-theft
-      - protection
-      - pvp
-      - security
-  - curseId: 1136679
-    sourceName: "Additions Ascended: Edmontonia"
-    displayName: "Additions Ascended: Edmontonia"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-edmontonia
-    thumbnail: assets/mod-thumbnails/1136679.webp
-    primaryCategory: Creatures
-    additionalCategories: []
-    description: An armored ankylosaur-like herbivore.
-    tips:
-      - W-I-P
-    tags:
-      - edmontonia
-      - herbivore
-      - armored
-      - dino
   - curseId: 929838
     sourceName: Scribbles - Better Signs
     displayName: Scribbles - Better Signs
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/scribbles-better-signs
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/scribbles-better-signs"
     thumbnail: assets/mod-thumbnails/929838.webp
     primaryCategory: Building
     additionalCategories:
@@ -425,28 +311,57 @@ mods:
       - labels
       - decor
       - building
-  - curseId: 956237
-    sourceName: "Moro's Livyatan"
-    displayName: "Moro's Livyatan"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/moros-livyatan
-    thumbnail: assets/mod-thumbnails/956237.webp
+  - curseId: 1218463
+    sourceName: "Moro's Hydrovanta"
+    displayName: "Moro's Hydrovanta"
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/moros-hydrovanta"
+    thumbnail: assets/mod-thumbnails/1218463.webp
     primaryCategory: Creatures
-    additionalCategories: []
-    description: A giant predatory prehistoric whale.
+    additionalCategories:
+    description: A custom aquatic creature.
     tips:
       - W-I-P
     tags:
-      - livyatan
+      - hydrovanta
       - aquatic
-      - whale
-      - predator
+      - creature
+  - curseId: 929420
+    sourceName: Super Spyglass Plus
+    displayName: Super Spyglass Plus
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/super-spyglass-plus"
+    thumbnail: assets/mod-thumbnails/929420.webp
+    primaryCategory: "UI & Info"
+    additionalCategories:
+    description: An upgraded spyglass that passively shows detailed configurable creature and structure info.
+    tips:
+      - Read wild creature stats, levels, gender, torpor, ownership and taming info from a distance.
+    tags:
+      - spyglass
+      - creature info
+      - taming
+      - utility
+  - curseId: 929299
+    sourceName: Stop The Steal
+    displayName: Stop The Steal
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/stop-the-steal-ascended"
+    thumbnail: assets/mod-thumbnails/929299.webp
+    primaryCategory: Quality of Life
+    additionalCategories:
+    description: Prevents the Icthy and Truodon from stealing items from players.
+    tips:
+      - W-I-P
+    tags:
+      - anti-theft
+      - protection
+      - pvp
+      - security
   - curseId: 951148
     sourceName: Ark-Nucleus
     displayName: Ark-Nucleus
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/ark-nucleus
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/ark-nucleus"
     thumbnail: assets/mod-thumbnails/951148.webp
     primaryCategory: Admin
-    additionalCategories: []
+    additionalCategories:
     description: A server administration and management toolkit.
     tips:
       - Accessed via a UI button in the top right of the Inventory screen.
@@ -455,56 +370,13 @@ mods:
       - management
       - server
       - framework
-  - curseId: 987274
-    sourceName: "Additions Ascended: Anomalocaris"
-    displayName: "Additions Ascended: Anomalocaris"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/additions-ascended-anomalocaris
-    thumbnail: assets/mod-thumbnails/987274.webp
-    primaryCategory: Creatures
-    additionalCategories: []
-    description: A prehistoric aquatic arthropod.
-    tips:
-      - W-I-P
-    tags:
-      - anomalocaris
-      - aquatic
-      - arthropod
-  - curseId: 1218463
-    sourceName: "Moro's Hydrovanta"
-    displayName: "Moro's Hydrovanta"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/moros-hydrovanta
-    thumbnail: assets/mod-thumbnails/1218463.webp
-    primaryCategory: Creatures
-    additionalCategories: []
-    description: A custom aquatic creature.
-    tips:
-      - W-I-P
-    tags:
-      - hydrovanta
-      - aquatic
-      - creature
-  - curseId: 931364
-    sourceName: Glyph Transformations
-    displayName: Glyph Transformations
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/glyph-transformations
-    thumbnail: assets/mod-thumbnails/931364.webp
-    primaryCategory: Gameplay
-    additionalCategories: []
-    description: A creature collection and morphing system allowing players to store creature DNA and transform into them.
-    tips:
-      - Levelpods are used to store creature DNA and increase transformation power level.
-      - All transformation functions are accessed via the Radial Menu.
-    tags:
-      - glyph
-      - transformation
-      - cosmetic
   - curseId: 932225
     sourceName: Mouse Saver - Easy Dino Attacks
     displayName: Mouse Saver - Easy Dino Attacks
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/mouse-saver-easy-dino-attacks
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/mouse-saver-easy-dino-attacks"
     thumbnail: assets/mod-thumbnails/932225.webp
     primaryCategory: Quality of Life
-    additionalCategories: []
+    additionalCategories:
     description: Allows holding the attack button to automatically keep attacking while riding creatures.
     tips:
       - Reduces hand strain during long farming or combat sessions.
@@ -516,11 +388,11 @@ mods:
   - curseId: 951574
     sourceName: Inventory Backup Saver
     displayName: Inventory Backup Saver
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/inventory-backup-saver
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/inventory-backup-saver"
     thumbnail: assets/mod-thumbnails/951574.webp
     primaryCategory: Admin
     additionalCategories:
-      - Death & Recovery
+      - "Death & Recovery"
     description: Saves a backup of inventories so items can be restored after loss.
     tips:
       - Backups occur every 5 minutes.
@@ -530,13 +402,13 @@ mods:
       - recovery
       - safety
   - curseId: 933576
-    sourceName: Return The Beacons!
-    displayName: Return The Beacons!
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/return-the-beacons-rtb
+    sourceName: "Return The Beacons!"
+    displayName: "Return The Beacons!"
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/return-the-beacons-rtb"
     thumbnail: assets/mod-thumbnails/933576.webp
     primaryCategory: Quality of Life
     additionalCategories:
-      - UI & Info
+      - "UI & Info"
     description: Provides Supply Drop style light beams on player corpses when they die for easy location and recovery.
     tips:
       - Can be fully configured via a button in the Escape menu.
@@ -548,10 +420,10 @@ mods:
   - curseId: 928621
     sourceName: Utilities Plus
     displayName: Utilities Plus
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/utilities-plus
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/utilities-plus"
     thumbnail: assets/mod-thumbnails/928621.webp
     primaryCategory: Quality of Life
-    additionalCategories: []
+    additionalCategories:
     description: Adds a collection of re-usable tools and items.
     tips:
       - Torch, Spear, Bola, Whip, Parachute, Glider, Grappling Hook, etc...
@@ -563,10 +435,10 @@ mods:
   - curseId: 940975
     sourceName: Cybers Structures QoL+ (Crossplay)
     displayName: Cybers Structures QoL+ (Crossplay)
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/cybers-structures
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cybers-structures"
     thumbnail: assets/mod-thumbnails/940975.webp
     primaryCategory: Building
-    additionalCategories: []
+    additionalCategories:
     description: A complete overhaul of many existing structures and the addition of new structures to facilitate automation and QOL.
     tips:
       - W-I-P
@@ -575,13 +447,29 @@ mods:
       - building
       - qol
       - crossplay
+  - curseId: 935408
+    sourceName: Der Dino Finder
+    displayName: Der Dino Finder
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/der-dino-finder"
+    thumbnail: assets/mod-thumbnails/935408.webp
+    primaryCategory: Quality of Life
+    additionalCategories:
+      - "UI & Info"
+    description: "Configurable Minimap \"radar\" for locating wild creatures."
+    tips:
+      - Can be accessed via a button on the minimap/map.
+    tags:
+      - dino finder
+      - locate
+      - tames
+      - tracking
   - curseId: 930170
     sourceName: Cliffans Backpacks
     displayName: Cliffans Backpacks
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/cliffan-backpacks
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cliffan-backpacks"
     thumbnail: assets/mod-thumbnails/930170.webp
     primaryCategory: Quality of Life
-    additionalCategories: []
+    additionalCategories:
     description: Adds wearable backpacks that provide extra carry capacity and optional lighting.
     tips:
       - There are three Tiers of backpack and backpack rarity impacts weight reduction.
@@ -590,60 +478,29 @@ mods:
       - storage
       - inventory
       - gear
-  - curseId: 935408
-    sourceName: Der Dino Finder
-    displayName: Der Dino Finder
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/der-dino-finder
-    thumbnail: assets/mod-thumbnails/935408.webp
-    primaryCategory: Quality of Life
-    additionalCategories:
-      - UI & Info
-    description: Configurable Minimap "radar" for locating wild creatures.
-    tips:
-      - Can be accessed via a button on the minimap/map.
-    tags:
-      - dino finder
-      - locate
-      - tames
-      - tracking
   - curseId: 941697
     sourceName: Better Breeding
     displayName: Better Breeding
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/better-breeding
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/better-breeding"
     thumbnail: assets/mod-thumbnails/941697.webp
     primaryCategory: Gameplay
     additionalCategories:
       - Quality of Life
     description: Streamlines the breeding process.
     tips:
-      - Only allows the highest stats and "best" traits to be passed down when breeding.
+      - "Only allows the highest stats and \"best\" traits to be passed down when breeding."
     tags:
       - breeding
       - imprint
       - babies
       - qol
-  - curseId: 929800
-    sourceName: TG Stacking Mod 1000-50
-    displayName: TG Stacking Mod 1000-50
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/tg-stacking-mod-1000-50
-    thumbnail: assets/mod-thumbnails/929800.webp
-    primaryCategory: Quality of Life
-    additionalCategories: []
-    description: Increases item stack sizes up to 1000.
-    tips:
-      - W-I-P
-    tags:
-      - stacking
-      - stack size
-      - resources
-      - inventory
   - curseId: 1149214
-    sourceName: "Castles, Keeps, and Forts - CKF"
-    displayName: "Castles, Keeps, and Forts (CKF)"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/ckf-castles-keeps-forts
+    sourceName: Castles, Keeps, and Forts - CKF
+    displayName: Castles, Keeps, and Forts (CKF)
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/ckf-castles-keeps-forts"
     thumbnail: assets/mod-thumbnails/1149214.webp
     primaryCategory: Building
-    additionalCategories: []
+    additionalCategories:
     description: Medieval castle, keep, and fort building pieces for stone-age and RP builds.
     tips:
       - W-I-P
@@ -655,10 +512,10 @@ mods:
   - curseId: 1051882
     sourceName: Juans Deep Sea Diving Equipment
     displayName: Juans Deep Sea Diving Equipment
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/juans-deep-sea-diving-equipment
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/juans-deep-sea-diving-equipment"
     thumbnail: assets/mod-thumbnails/1051882.webp
-    primaryCategory: Equipment & Items
-    additionalCategories: []
+    primaryCategory: "Equipment & Items"
+    additionalCategories:
     description: Diving gear that bridges the gap between land and sea exploration prior to the Scuba Armor.
     tips:
       - Makes deep-sea exploration and underwater farming far more practical.
@@ -670,11 +527,11 @@ mods:
   - curseId: 1305730
     sourceName: Cliffans Improved Miners Helmet
     displayName: Cliffans Improved Miners Helmet
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/cliffans-improved-miners-helmet
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-improved-miners-helmet"
     thumbnail: assets/mod-thumbnails/1305730.webp
-    primaryCategory: Equipment & Items
-    additionalCategories:
-    description: An improved miner's helmet with a better light.
+    primaryCategory: "Equipment & Items"
+    additionalCategories: null
+    description: "An improved miner's helmet with a better light."
     tips:
       - Brighter hands-free lighting for caves and night work.
     tags:
@@ -685,11 +542,11 @@ mods:
   - curseId: 1200390
     sourceName: Cliffans Nautical Turrets
     displayName: Cliffans Nautical Turrets
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/nautical-turrets
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/nautical-turrets"
     thumbnail: assets/mod-thumbnails/1200390.webp
     primaryCategory: Transportation
     additionalCategories:
-     - Equipment & Items
+      - "Equipment & Items"
     description: Cannons and mountable swivle turrets for ships.
     tips:
       - Useful for defending ocean platforms and rafts.
@@ -701,10 +558,10 @@ mods:
   - curseId: 1383579
     sourceName: "Cliffans Weapons: Medieval"
     displayName: "Cliffans Weapons: Medieval"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/cliffans-weapons-medieval
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-weapons-medieval"
     thumbnail: assets/mod-thumbnails/1383579.webp
-    primaryCategory: Equipment & Items
-    additionalCategories: []
+    primaryCategory: "Equipment & Items"
+    additionalCategories:
     description: Medieval-themed melee and ranged weapons.
     tips:
       - W-I-P
@@ -716,10 +573,10 @@ mods:
   - curseId: 1528173
     sourceName: "Cliffan's Dynamic Survivors"
     displayName: "Cliffan's Dynamic Survivors"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/cliffans-visible-immersion
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-visible-immersion"
     thumbnail: assets/mod-thumbnails/1528173.webp
     primaryCategory: Cosmetic
-    additionalCategories: []
+    additionalCategories:
     description: Adds immersion-focused survivor animations and behaviors.
     tips:
       - Survivors will dynamically react to weather, conditions, time of day, and other circumstances with unique behaviors and animations.
@@ -731,10 +588,10 @@ mods:
   - curseId: 961601
     sourceName: Cliffans Wardrobe
     displayName: Cliffans Wardrobe
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/cliffans-wardrobe
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-wardrobe"
     thumbnail: assets/mod-thumbnails/961601.webp
     primaryCategory: Cosmetic
-    additionalCategories: []
+    additionalCategories:
     description: Adds wardrobe outfits and clothing options for character customization.
     tips:
       - W-I-P
@@ -746,10 +603,10 @@ mods:
   - curseId: 939244
     sourceName: "Cliffans Weapons: Western"
     displayName: "Cliffans Weapons: Western"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/cliffans-weapons-western
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-weapons-western"
     thumbnail: assets/mod-thumbnails/939244.webp
-    primaryCategory: Equipment & Items
-    additionalCategories: []
+    primaryCategory: "Equipment & Items"
+    additionalCategories:
     description: Western-themed firearms.
     tags:
       - weapons
@@ -759,10 +616,10 @@ mods:
   - curseId: 937184
     sourceName: JVH Landscaping
     displayName: JVH Landscaping
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/jvh-landscaping-mod
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/jvh-landscaping-mod"
     thumbnail: assets/mod-thumbnails/937184.webp
     primaryCategory: Building
-    additionalCategories: []
+    additionalCategories:
     description: Adds landscaping pieces such as paths, plants, and terrain decor for base surroundings.
     tips:
       - Useful for shaping yards, gardens, and immersive base exteriors.
@@ -771,28 +628,13 @@ mods:
       - decor
       - garden
       - building
-  - curseId: 966079
-    sourceName: JVH Garden Decor
-    displayName: JVH Garden Decor
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/jvh-garden-decor
-    thumbnail: assets/mod-thumbnails/966079.webp
-    primaryCategory: Building
-    additionalCategories: []
-    description: Adds garden-themed decorative items like planters, furniture, and ornaments.
-    tips:
-      - W-I-P
-    tags:
-      - garden
-      - decor
-      - furniture
-      - building
   - curseId: 1135454
     sourceName: Cliffans RP Emotes
     displayName: Cliffans RP Emotes
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/cliffans-emotes
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cliffans-emotes"
     thumbnail: assets/mod-thumbnails/1135454.webp
     primaryCategory: Cosmetic
-    additionalCategories: []
+    additionalCategories:
     description: Adds extra roleplay emotes and animations for characters.
     tips:
       - Adds expressiveness for roleplay.
@@ -804,14 +646,14 @@ mods:
   - curseId: 928506
     sourceName: Cheat Death
     displayName: Cheat Death
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/cheat-death
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cheat-death"
     thumbnail: assets/mod-thumbnails/928506.webp
-    primaryCategory: Death & Recovery
+    primaryCategory: "Death & Recovery"
     additionalCategories:
       - Quality of Life
     description: Allows tames to escape death..
     tips:
-      - A craftable item that as long as it is in the creatures inventory it will teleport to the assigned "Cheat Death" flag instead of dying or if it's owner dies while it is alive.
+      - "A craftable item that as long as it is in the creatures inventory it will teleport to the assigned \"Cheat Death\" flag instead of dying or if it's owner dies while it is alive."
     tags:
       - death
       - survival
@@ -820,10 +662,10 @@ mods:
   - curseId: 1002596
     sourceName: Better Trains
     displayName: Better Trains
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/better-trains
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/better-trains"
     thumbnail: assets/mod-thumbnails/1002596.webp
     primaryCategory: Transportation
-    additionalCategories: []
+    additionalCategories:
     description: Improved Trains.
     tips:
       - Faster, easier to access and control Trains.
@@ -835,11 +677,11 @@ mods:
   - curseId: 1093934
     sourceName: Mantling
     displayName: Mantling
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/mantling
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/mantling"
     thumbnail: assets/mod-thumbnails/1093934.webp
     primaryCategory: Gameplay
     additionalCategories:
-       - Quality of Life
+      - Quality of Life
     description: Lets your character climb and pull up onto ledges instead of getting stuck on them.
     tips:
       - Smoother traversal over rocks, walls, and uneven terrain.
@@ -851,12 +693,12 @@ mods:
   - curseId: 1011767
     sourceName: Better Jumping
     displayName: Better Jumping
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/better-jumping
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/better-jumping"
     thumbnail: assets/mod-thumbnails/1011767.webp
     primaryCategory: Gameplay
     additionalCategories:
       - Quality of Life
-    description: Improves the survivor's directional control when jumping.
+    description: "Improves the survivor's directional control when jumping."
     tips:
       - More responsive movement and easier parkour around obstacles.
     tags:
@@ -867,9 +709,9 @@ mods:
   - curseId: 1540591
     sourceName: Crash Protector
     displayName: Crash Protector
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/crash-protector
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/crash-protector"
     thumbnail: assets/mod-thumbnails/1540591.webp
-    primaryCategory: Death & Recovery
+    primaryCategory: "Death & Recovery"
     additionalCategories:
       - Quality of Life
     description: Prevents unfair deaths and loss due to crashes.
@@ -883,10 +725,10 @@ mods:
   - curseId: 941450
     sourceName: Awesome ARK Tools
     displayName: Awesome ARK Tools
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/awesome-admin-tools
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/awesome-admin-tools"
     thumbnail: assets/mod-thumbnails/941450.webp
     primaryCategory: Admin
-    additionalCategories: []
+    additionalCategories:
     description: A set of admin and management tools.
     tips:
       - Tools for use by Admins for managing the server and its players.
@@ -898,10 +740,10 @@ mods:
   - curseId: 1548444
     sourceName: Aquarium
     displayName: Aquarium
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/aquarium
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/aquarium"
     thumbnail: assets/mod-thumbnails/1548444.webp
     primaryCategory: Building
-    additionalCategories: []
+    additionalCategories:
     description: Aquariums and fish-tank decor with genuine water volumes for displaying aquatic life in bases.
     tips:
       - These are very large and are genuine water volumes.
@@ -914,10 +756,10 @@ mods:
   - curseId: 1281957
     sourceName: Feras Immersive Food
     displayName: Feras Immersive Food
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/feras-immersive-food
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/feras-immersive-food"
     thumbnail: assets/mod-thumbnails/1281957.webp
     primaryCategory: Gameplay
-    additionalCategories: []
+    additionalCategories:
     description: Adds a variety of immersive food and cooking content for more varied meals.
     tips:
       - Includes meals ranging from simple and easy to hand craft to complexe recipes.
@@ -931,13 +773,13 @@ mods:
   - curseId: 929271
     sourceName: Additional Handheld Lights
     displayName: Additional Handheld Lights
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/additional-lights
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/additional-lights"
     thumbnail: assets/mod-thumbnails/929271.webp
-    primaryCategory: Equipment & Items
-    additionalCategories: []
+    primaryCategory: "Equipment & Items"
+    additionalCategories:
     description: Handheld Lantern and Flashlight.
     tips:
-      - Both the lantern and Flashlight can be attached to the player's belt/shoulder for hands-free light.
+      - "Both the lantern and Flashlight can be attached to the player's belt/shoulder for hands-free light."
     tags:
       - lights
       - lighting
@@ -946,9 +788,9 @@ mods:
   - curseId: 929578
     sourceName: "AP: Death Recovery"
     displayName: "AP: Death Recovery"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/ap-death-recovery
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/ap-death-recovery"
     thumbnail: assets/mod-thumbnails/929578.webp
-    primaryCategory: Death & Recovery
+    primaryCategory: "Death & Recovery"
     additionalCategories:
       - Quality of Life
     description: Craftable Gravestones to help you recover your items and body after death.
@@ -962,10 +804,10 @@ mods:
   - curseId: 986540
     sourceName: Paleo ARK Ascension
     displayName: Paleo ARK Ascension
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-ascension
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-ascension"
     thumbnail: assets/mod-thumbnails/986540.webp
     primaryCategory: Creatures
-    additionalCategories: []
+    additionalCategories:
     description: A creature expansion from the Paleo ARK series adding new prehistoric creatures.
     tips:
       - Part of the Paleo ARK family of creature mods.
@@ -977,10 +819,10 @@ mods:
   - curseId: 970540
     sourceName: "Paleo ARK - Evo | Predators"
     displayName: "Paleo ARK - Evo | Predators"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-apex-predators
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-apex-predators"
     thumbnail: assets/mod-thumbnails/970540.webp
     primaryCategory: Creatures
-    additionalCategories: []
+    additionalCategories:
     description: A creature expansion from the Paleo ARK series adding new prehistoric creatures.
     tips:
       - Part of the Paleo ARK family of creature mods.
@@ -992,10 +834,10 @@ mods:
   - curseId: 1382641
     sourceName: "Paleo ARK - Evo | Herbivores"
     displayName: "Paleo ARK - Evo | Herbivores"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-hard-hitting-herbivores
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-hard-hitting-herbivores"
     thumbnail: assets/mod-thumbnails/1382641.webp
     primaryCategory: Creatures
-    additionalCategories: []
+    additionalCategories:
     description: A creature expansion from the Paleo ARK series adding new prehistoric creatures.
     tips:
       - Part of the Paleo ARK family of creature mods.
@@ -1006,10 +848,10 @@ mods:
   - curseId: 1105106
     sourceName: "Paleo ARK - Evo | Aquatic"
     displayName: "Paleo ARK - Evo | Aquatic"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-dangerous-depths
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evolution-dangerous-depths"
     thumbnail: assets/mod-thumbnails/1105106.webp
     primaryCategory: Creatures
-    additionalCategories: []
+    additionalCategories:
     description: A creature expansion from the Paleo ARK series adding new prehistoric creatures.
     tips:
       - Part of the Paleo ARK family of creature mods.
@@ -1021,10 +863,10 @@ mods:
   - curseId: 972484
     sourceName: "Paleo ARK EVO+ | Native Aquatics"
     displayName: "Paleo ARK EVO+ | Native Aquatics"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evo-plus-native-aquatics
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evo-plus-native-aquatics"
     thumbnail: assets/mod-thumbnails/972484.webp
     primaryCategory: Creatures
-    additionalCategories: []
+    additionalCategories:
     description: A creature expansion from the Paleo ARK series adding new prehistoric creatures.
     tips:
       - Part of the Paleo ARK family of creature mods.
@@ -1036,10 +878,10 @@ mods:
   - curseId: 1182199
     sourceName: "Paleo ARK EVO+ | Rulers of the Wastelands"
     displayName: "Paleo ARK EVO+ | Rulers of the Wastelands"
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evo-rulers-of-the-wastelands
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/paleo-ark-evo-rulers-of-the-wastelands"
     thumbnail: assets/mod-thumbnails/1182199.webp
     primaryCategory: Creatures
-    additionalCategories: []
+    additionalCategories:
     description: A creature expansion from the Paleo ARK series adding new prehistoric creatures.
     tips:
       - Part of the Paleo ARK family of creature mods.
@@ -1050,10 +892,10 @@ mods:
   - curseId: 1137407
     sourceName: Castle Craft Decor
     displayName: Castle Craft Decor
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/castle-craft-decor
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/castle-craft-decor"
     thumbnail: assets/mod-thumbnails/1137407.webp
     primaryCategory: Building
-    additionalCategories: []
+    additionalCategories:
     description: Castle and medieval-themed decorative pieces for themed builds.
     tips:
       - Useful for creating themed builds and decorations.
@@ -1065,12 +907,12 @@ mods:
   - curseId: 1222937
     sourceName: Map Unlocker
     displayName: Map Unlocker
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/map-unlocker
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/map-unlocker"
     thumbnail: assets/mod-thumbnails/1222937.webp
-    primaryCategory: UI & Info
+    primaryCategory: "UI & Info"
     additionalCategories:
       - Quality of Life
-    description: Reveals the in-game map to survivor's on spawn.
+    description: "Reveals the in-game map to survivor's on spawn."
     tips:
       - Removes the need to manually explore every tile to fill the map.
     tags:
@@ -1081,9 +923,9 @@ mods:
   - curseId: 1073132
     sourceName: Tek War Map
     displayName: Tek War Map
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/tek-war-map
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/tek-war-map"
     thumbnail: assets/mod-thumbnails/1073132.webp
-    primaryCategory: UI & Info
+    primaryCategory: "UI & Info"
     additionalCategories:
       - Quality of Life
     description: A Tek themed warmap with additional functionality
@@ -1098,10 +940,10 @@ mods:
   - curseId: 1443086
     sourceName: Structure Waterfalls
     displayName: Structure Waterfalls
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/structure-waterfalls
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/structure-waterfalls"
     thumbnail: assets/mod-thumbnails/1443086.webp
     primaryCategory: Building
-    additionalCategories: []
+    additionalCategories:
     description: Adds placeable waterfall structures for decorative water features.
     tips:
       - Useful for creating scenic water features in your builds.
@@ -1113,10 +955,10 @@ mods:
   - curseId: 1017926
     sourceName: Auto Pickup
     displayName: Auto Pickup
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/auto-pickup
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/auto-pickup"
     thumbnail: assets/mod-thumbnails/1017926.webp
     primaryCategory: Quality of Life
-    additionalCategories: []
+    additionalCategories:
     description: Hot key to AOE-loot any dropped items in a radius around the player.
     tips:
       - Hotkey is G or N by default.
@@ -1128,9 +970,9 @@ mods:
   - curseId: 1369237
     sourceName: Camping Survivor
     displayName: Camping Survivor
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/camping-survivor
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/camping-survivor"
     thumbnail: assets/mod-thumbnails/1369237.webp
-    primaryCategory: Equipment & Items
+    primaryCategory: "Equipment & Items"
     additionalCategories:
       - Building
     description: Adds easly craftable camping gear such as tents and campfire setups for travel and temporary rest points.
@@ -1144,10 +986,10 @@ mods:
   - curseId: 935809
     sourceName: Knot Better Motorboat
     displayName: Knot Better Motorboat
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/knot-better-motorboat
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/knot-better-motorboat"
     thumbnail: assets/mod-thumbnails/935809.webp
     primaryCategory: Transportation
-    additionalCategories: []
+    additionalCategories:
     description: Improves the motorboat with better handling, capacity, and building surface area.
     tips:
       - Makes water travel and sea bases more practical.
@@ -1159,10 +1001,10 @@ mods:
   - curseId: 1493653
     sourceName: Durability Display
     displayName: Durability Display
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/durability-display
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/durability-display"
     thumbnail: assets/mod-thumbnails/1493653.webp
-    primaryCategory: UI & Info
-    additionalCategories: []
+    primaryCategory: "UI & Info"
+    additionalCategories:
     description: Shows item durability clearly so you know when gear is about to break.
     tips:
       - Helps you repair or swap tools before they fail mid-task.
@@ -1174,12 +1016,12 @@ mods:
   - curseId: 1429843
     sourceName: Additional Hitmarkers
     displayName: Additional Hitmarkers
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/additional-hitmarkers
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/additional-hitmarkers"
     thumbnail: assets/mod-thumbnails/1429843.webp
-    primaryCategory: UI & Info
+    primaryCategory: "UI & Info"
     additionalCategories:
       - Gameplay
-    description: Hit-Marker feedback for hitting "Weak" or "Armored" points on a creature or structure.
+    description: "Hit-Marker feedback for hitting \"Weak\" or \"Armored\" points on a creature or structure."
     tips:
       - Better visual confirmation in combat and while harvesting.
     tags:
@@ -1190,9 +1032,9 @@ mods:
   - curseId: 1440987
     sourceName: Locational Damage
     displayName: Locational Damage
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/creature-locational-damage
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/creature-locational-damage"
     thumbnail: assets/mod-thumbnails/1440987.webp
-    primaryCategory: UI & Info
+    primaryCategory: "UI & Info"
     additionalCategories:
       - Gameplay
     description: Adds location-based damage to all creatures so hits to weak spots like the head deal more damage.
@@ -1206,10 +1048,10 @@ mods:
   - curseId: 1032529
     sourceName: Day Indicator
     displayName: Day Indicator
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/day-indicator
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/day-indicator"
     thumbnail: assets/mod-thumbnails/1032529.webp
-    primaryCategory: UI & Info
-    additionalCategories: []
+    primaryCategory: "UI & Info"
+    additionalCategories:
     description: Displays the current in-game day count on the HUD.
     tips:
       - Day count, Map, and Current Biome display briefly on every day change.
@@ -1221,7 +1063,7 @@ mods:
   - curseId: 1311474
     sourceName: Swim Sprint
     displayName: Swim Sprint
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/swim-sprint
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/swim-sprint"
     thumbnail: assets/mod-thumbnails/1311474.webp
     primaryCategory: Gameplay
     additionalCategories:
@@ -1237,10 +1079,10 @@ mods:
   - curseId: 957494
     sourceName: Global Dynamic Player Death Displayer
     displayName: Global Dynamic Player Death Displayer
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/global-dynamic-player-death-displayer
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/global-dynamic-player-death-displayer"
     thumbnail: assets/mod-thumbnails/957494.webp
-    primaryCategory: UI & Info
-    additionalCategories: []
+    primaryCategory: "UI & Info"
+    additionalCategories:
     description: Broadcasts player death notifications across the server.
     tips:
       - Adds awareness of deaths and events happening server-wide.
@@ -1252,7 +1094,7 @@ mods:
   - curseId: 948902
     sourceName: Rhythmbox
     displayName: Rhythmbox
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/rhythmbox
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/rhythmbox"
     thumbnail: assets/mod-thumbnails/948902.webp
     primaryCategory: Audio
     additionalCategories:
@@ -1265,66 +1107,101 @@ mods:
       - audio
       - jukebox
       - sound
-  - curseId: 974371
-    sourceName: RPG Medieval & Fantasy Jukebox
-    displayName: RPG Medieval & Fantasy Jukebox
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/rpg-fantasy-jukbox
-    thumbnail: assets/mod-thumbnails/974371.webp
-    primaryCategory: Audio
+  - curseId: 947899
+    sourceName: Yuty Auto Courage Mode (For Servers)
+    displayName: Yuty Auto Courage Mode (For Servers)
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/yuty-auto-courage-mode"
+    thumbnail: assets/mod-thumbnails/947899.png
+    primaryCategory: Quality of Life
     additionalCategories:
-      - Building
-    description: Medieval and fantasy themed music tracks for the Ryhtmbox.
+      - Creatures
+    description: Adds server-side Yutyrannus courage-mode automation.
     tips:
-      - Sets the mood for RP and medieval-themed builds.
+      - Newly added from the active server mod list; review settings and player-facing behavior.
     tags:
-      - jukebox
-      - music
-      - medieval
-      - rp
-  - curseId: 930128
-    sourceName: Klinger Additional Boats
-    displayName: Klinger Additional Boats
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/klinger-additional-boats-server
-    thumbnail: assets/mod-thumbnails/930128.webp
-    primaryCategory: Transportation
-    additionalCategories: []
-    description: Catamaran style boat that is faster, turns more easily and has a larger building surface area compared to the Raft.
-    tips:
-      - More options for transport, fishing, and ocean building.
-    tags:
-      - boats
-      - water
-      - transport
-      - vehicles
-  - curseId: 1122696
-    sourceName: Astraeos - Mythological Creatures
-    displayName: Astraeos - Mythological Creatures
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/astraeos-mythological-creatures
-    thumbnail: assets/mod-thumbnails/1122696.webp
+      - yutyrannus
+      - courage
+      - automation
+      - server
+    needsReview: true
+  - curseId: 1246872
+    sourceName: "Cyrus's Critters: Redpanda"
+    displayName: "Cyrus's Critters: Redpanda"
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cyruss-critters-redpanda"
+    thumbnail: assets/mod-thumbnails/1246872.png
     primaryCategory: Creatures
     additionalCategories:
-      - Core Mods
-    description: Mythological creatures themed around the Astraeos map.
+      - Cosmetic
+    description: Adds the Redpanda shoulder pet creature.
     tips:
-      - Minotaur, Medusa, Skeletons, and other mythological creatures.
+      - Newly added from the active server mod list; verify taming, spawn, and utility notes.
     tags:
-      - astraeos
-      - mythological
-      - creatures
-      - fantasy
-  - curseId: 1015955
-    sourceName: Astraeos - Trireme Ships
-    displayName: Astraeos - Trireme Ships
-    curseforgeUrl: https://www.curseforge.com/ark-survival-ascended/mods/astraeos-trireme-ships
-    thumbnail: assets/mod-thumbnails/1015955.webp
-    primaryCategory: Transportation
+      - redpanda
+      - shoulder pet
+      - creature
+    needsReview: true
+  - curseId: 941556
+    sourceName: "RR-MedievalRoleplayDeco!"
+    displayName: "RR-MedievalRoleplayDeco!"
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/rr-medievalroleplaydeco"
+    thumbnail: assets/mod-thumbnails/941556.png
+    primaryCategory: Building
     additionalCategories:
-      - Core Mods
-    description: Trireme ships themed around the Astraeos map with massive building surface area.
+      - Cosmetic
+    description: Adds medieval roleplay decoration pieces.
     tips:
-      - Large ancient-style ships for ocean transport and sea bases.
+      - Newly added from the active server mod list; curate practical build and placement notes.
     tags:
-      - astraeos
-      - ships
-      - trireme
-      - boats
+      - roleplay
+      - medieval
+      - decor
+      - building
+    needsReview: true
+  - curseId: 1488888
+    sourceName: "R&M Clothing and Accessories"
+    displayName: "R&M Clothing and Accessories"
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/r-m-clothing-and-accessories"
+    thumbnail: assets/mod-thumbnails/1488888.png
+    primaryCategory: Cosmetic
+    additionalCategories:
+      - "Equipment & Items"
+    description: Adds custom clothing and accessory cosmetics.
+    tips:
+      - Newly added from the active server mod list; verify unlock and crafting details.
+    tags:
+      - clothing
+      - accessories
+      - cosmetic
+    needsReview: true
+  - curseId: 1170263
+    sourceName: B+ Platforms
+    displayName: B+ Platforms
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/b-platforms"
+    thumbnail: assets/mod-thumbnails/1170263.png
+    primaryCategory: Building
+    additionalCategories:
+      - Transportation
+    description: Adds platform and wedge building pieces.
+    tips:
+      - Newly added from the active server mod list; verify supported platform use cases.
+    tags:
+      - platforms
+      - wedges
+      - building
+    needsReview: true
+  - curseId: 1280446
+    sourceName: "Cat Distribution System [Crossplay]"
+    displayName: "Cat Distribution System [Crossplay]"
+    curseforgeUrl: "https://www.curseforge.com/ark-survival-ascended/mods/cat-distribution-system"
+    thumbnail: assets/mod-thumbnails/1280446.png
+    primaryCategory: Creatures
+    additionalCategories:
+      - Quality of Life
+    description: Makes cats friendly on servers.
+    tips:
+      - Newly added from the active server mod list; verify how players encounter or use the cats.
+    tags:
+      - cats
+      - creatures
+      - server
+    needsReview: true
